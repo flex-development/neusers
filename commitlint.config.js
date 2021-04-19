@@ -1,5 +1,5 @@
 const { Rule, RuleConfigTuple } = require('@commitlint/types')
-const { readdirSync } = require('fs')
+const { existsSync, lstatSync, readdirSync } = require('fs')
 const { resolve } = require('path')
 const { Record } = require('typescript')
 
@@ -83,7 +83,13 @@ module.exports = {
     'scope-enum': () => {
       const APP = resolve(__dirname, 'app')
 
-      const directories = arr => arr.filter(d => d.isDirectory())
+      const directories = arr => {
+        return arr.filter(d => {
+          const path = resolve(APP, d)
+
+          return existsSync(path) && lstatSync(resolve(APP, d)).isDirectory()
+        })
+      }
 
       const app = directories(readdirSync(APP))
       const subdomains = directories(readdirSync(resolve(APP, 'subdomains')))
