@@ -1,0 +1,138 @@
+# Git Configuration
+# See: http://michaelwales.com/articles/make-gitconfig-work-for-you/
+
+# General Aliases
+[alias]
+  # Git Add & Commit - All in one step
+  ac = "!f() { git add .; git cm \"$@\"; }; f"
+
+  # Add new git remote
+  ar = "!f() { git remote add \"$0\" \"$1\"; }; f"
+
+  # Checkout and push new branch to origin
+  b = "!f() { git checkout -b \"$@\"; git puo \"$@\"; }; f"
+
+  # Delete a branch locally
+  bdel= "!f() { git branch -D $@; }; f"
+ 
+  # Delete a branch remotely
+  bdelr= "!f() { git push origin --delete $@; }; f"
+
+  # Git Commit with message
+  cm = "!f() { git commit -m \"$@\"; }; f"
+
+  # Checkout branch
+  ch = "!f() { git checkout $@; }; f"
+
+  # Checkout branch and pull latest version
+  chp = "!f() { git ch $@; git pull; }; f"
+
+  # Create new local repo, perform initial commit, and push to Github
+  launch = "!f() { git local; git rao $@; git puo next; }; f"
+
+  # Start a new local repository and perform initial commit
+  local = "!f() { git init; git add -A; git chore initial commit; git branch -M next; }; f"
+
+  # Tell Git to start tracking branch and push to origin
+  puo = "!f() { git push -u origin $@ --no-verify; }; f"
+
+  # Add new remote origin
+  rao = "!f() { git remote add origin $@; }; f"
+
+  # Remove local .git directory
+  restart = "!f() { rm -rf .git; echo \"Removed .git directory.\"; }; f"
+
+# Conventional Commits
+# See: https://www.conventionalcommits.org/
+# See: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#type
+[alias]
+  # Changes that affect the build system or external dependencies
+  build = "!f() { git ac \"build: $@\"; }; f"
+
+  # Changes to our CI configuration files and scripts
+  ci = "!f() { git ac \"ci: $@\"; }; f"
+
+  # Changes that don't impact external users
+  chore = "!f() { git ac \"chore: $@\"; }; f"
+
+  # Documentation only changes
+  docs = "!f() { git ac \"docs: $@\"; }; f"
+
+  # New features
+  feat = "!f() { git ac \"feat: $@\"; }; f"
+  
+  # Bug fixes
+  fix = "!f() { git ac \"fix: $@\"; }; f"
+
+  # Performance improvements
+  perf = "!f() { git ac \"perf: $@\"; }; f"
+  
+  # Code improvements
+  refactor = "!f() { git ac \"refactor: $@\"; }; f"
+
+  # Revert past changes
+  revert = "!f() { git ac \"revert: $@\"; }; f"
+
+  # Changes that do not affect the meaning of the code
+  style = "!f() { git ac \"style: $@\"; }; f"
+
+  # Adding missing tests or correcting existing tests
+  test = "!f() { git ac \"test: $@\"; }; f"
+
+  # Work in progress
+  wip = "!f() { git ac \"wip: $@\"; }; f"
+
+# Git Flow Aliases
+[alias]
+  # Create a new feature branch and push upstream
+  feat = "!f() { git b feat/$@; }; f"
+
+  # Create a new hotfix branch and push upstream
+  hotfix = "!f() { git b hotfix/$@; }; f"
+
+  # Create a new release branch and push upstream
+  release = "!f() { git b release/$@; }; f"
+
+  # Create a new support branch and push upstream
+  support = "!f() { git b support/$@; }; f"
+
+# Helper Aliases
+[alias]
+  # Generate a SSH key
+  keygen = "!f() { ssh-keygen -t rsa -b 4096 -C \"$@\"; }; f"
+
+  # Recursively delete files matching a pattern
+  pdel = "!f() { find . -type f -name \"$@\" -delete; }; f"
+
+  # Generate a secret signing key
+  signingkey = "!f() { openssl rand -base64 32; }; f"
+
+# Husky
+[alias]
+  # Force push commits without running `pre-push` hook
+  fpnv = "!f() { git push --force --no-verify; }; f"
+
+  # Push commits without running `pre-push` hook
+  pnv = "!f() { git push --no-verify; }; f"
+
+[core]
+  ignorecase = false
+
+[gitflow "prefix"]
+	feature = feature/
+	release = release/
+	hotfix = hotfix/
+  support = support/
+	versiontag = v
+
+[init]
+	defaultBranch = main
+
+[url "https://bitbucket.org/"]
+    insteadOf = bb:
+
+[url "https://github.com/"]
+    insteadOf = gh:
+
+[url "https://gist.github.com/"]
+    insteadOf = gist:

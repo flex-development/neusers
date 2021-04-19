@@ -1,0 +1,25 @@
+{
+  "collection": "@nestjs/schematics",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": true,
+          "introspectComments": true
+        }
+      }
+    ],
+    "tsConfigPath": "tsconfig.build.json",
+    "webpack": true,
+    "webpackConfigPath": "webpack.config.js"
+  },
+  "entryFile": "main",
+  "generateOptions": {
+    "spec": true
+  },
+  "language": "ts",
+  "monorepo": false,
+  "sourceRoot": "app"
+}

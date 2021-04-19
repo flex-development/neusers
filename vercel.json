@@ -1,0 +1,54 @@
+{
+  "github": {
+    "autoAlias": true,
+    "enabled": true,
+    "silent": false
+  },
+  "functions": {
+    "api/*.ts": {
+      "maxDuration": 30,
+      "memory": 3008
+    }
+  },
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/repo",
+      "destination": "https://github.com/flex-development/neusers",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/api"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Prettier Ignore
+# See: https://prettier.io/docs/en/ignore.html
+
+.vercel/**
+.vscode/**
+api/**
+node_modules/**
+
+*.d.ts
