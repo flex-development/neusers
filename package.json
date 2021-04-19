@@ -21,7 +21,7 @@
     "format": "prettier --write \"./\"",
     "lint": "eslint . --ext js,ts --fix --cache",
     "test": "bash ./scripts/jest.sh",
-    "prestart": "vc env pull .env --yes",
+    "predev": "vc env pull .env --yes",
     "dev": "vc dev -l $PORT",
     "start": "nest start",
     "start:debug": "yarn start --debug"
