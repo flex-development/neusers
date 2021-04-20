@@ -3,9 +3,8 @@
  * @module app/lib/interfaces
  */
 
-export type {
-  APIExceptionErrors,
-  IAPIException
-} from './api-exception.interface'
+export type { AppExceptionJSON } from './app-exception-json.interface'
+export type { Entity } from './entity.interface'
+export type { EnvironmentVariables } from './environment-variables.interface'
 
 /* eslint-disable prettier/prettier */

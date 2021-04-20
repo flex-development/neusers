@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import AppModule from './app.module'
-import { CONFIGURATION } from './config/configuration'
+import { CONF } from './config/configuration'
 import useGlobal from './useGlobal'
 
 /**
@@ -24,7 +24,7 @@ async function bootstrap(): Promise<void> {
   await useGlobal(app)
 
   // Start application server
-  await app.listen(CONFIGURATION.PORT)
+  await app.listen(CONF.PORT)
 }
 
 // Initialize application

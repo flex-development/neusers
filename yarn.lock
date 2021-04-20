@@ -1210,6 +1210,11 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
+"@jest-mock/express@latest":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@jest-mock/express/-/express-1.4.1.tgz#7d588a116fb956319a31fa551a32ab2d96a09d59"
+  integrity sha512-pixTkrW4qbdNmhnSkE+EXnYhSJfFSmhWWWe5EC84HsMzpGCbqUn12Wa7uX8NYBzhfZGZniMXV2R3ZlRRPzk4TA==
+
 "@jest/console@^27.0.0-next.8":
   version "27.0.0-next.8"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-27.0.0-next.8.tgz#ac43a30fe7ad588b42b979a5be0112bc5cec7fc3"
@@ -1222,7 +1227,7 @@
     jest-util "^27.0.0-next.8"
     slash "^3.0.0"
 
-"@jest/core@^27.0.0-next.3", "@jest/core@^27.0.0-next.8":
+"@jest/core@^27.0.0-next.8":
   version "27.0.0-next.8"
   resolved "https://registry.yarnpkg.com/@jest/core/-/core-27.0.0-next.8.tgz#fec9b519649a40d4ef346ce57f373d265e0d3a02"
   integrity sha512-uVxp69L0kc8cQTGHwXU0hQfYg1ju08sgxGbXjCr6ajwuOx4tfB6Tlx7Jk27C33W6SKTFy2u/5B3K9lLVxOWJyg==
@@ -1380,7 +1385,7 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@jest/types@^27.0.0-next.8":
+"@jest/types@^27.0.0-next.3", "@jest/types@^27.0.0-next.8":
   version "27.0.0-next.8"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-27.0.0-next.8.tgz#bbc9f2acad3fea3e71444bfe06af522044a38951"
   integrity sha512-MBZVjl9Fu55djCItO81sa/ifxTsqRBwepHcKM/f3sgEpGlxGFNNeKBMBRX9OcgGE64YMi7kW4MATSb2lJSGfVw==
@@ -1891,7 +1896,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@26.x", "@types/jest@latest":
+"@types/jest@latest":
   version "26.0.22"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.22.tgz#8308a1debdf1b807aa47be2838acdcd91e88fbe6"
   integrity sha512-eeWwWjlqxvBxc4oQdkueW5OF/gtfSceKk4OnOAGlUSwS/liBRtZppbJuz1YkgbrbfGOoeBHun9fOvXnjNwrSOw==
@@ -2012,6 +2017,16 @@
   integrity sha512-uci4Esokrw9qGb9bvhhSVEjd6rkny/dk5PK/Qz4yxKiyppEI+dOPlNrZBahE3i+PoKFYyDxChVXZ/ysS/nrm1Q==
   dependencies:
     "@types/superagent" "*"
+
+"@types/urijs@latest":
+  version "1.19.15"
+  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.15.tgz#0142b92b52d07c4ba97dd82e7a54a875332942ec"
+  integrity sha512-pEDVREIvkyRtzpWlO5nqsUgR/JpLv9+lAzvkERCwoH2jXxl+TmaTNshhL7gjQLhfqgFUzCM6ovmoB1JssTop1A==
+
+"@types/validator@^13.1.3":
+  version "13.1.3"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.1.3.tgz#366b394aa3fbeed2392bf0a20ded606fa4a3d35e"
+  integrity sha512-DaOWN1zf7j+8nHhqXhIgNmS+ltAC53NXqGxYuBhWqWgqolRhddKzfZU814lkHQSTG0IUfQxU7Cg0gb8fFWo2mA==
 
 "@types/yargs-parser@*":
   version "20.2.0"
@@ -2606,7 +2621,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@0.21.1, axios@^0.21.1:
+axios@0.21.1, axios@^0.21.1, axios@latest:
   version "0.21.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
   integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
@@ -3084,6 +3099,15 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
+
+class-validator@latest:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.13.1.tgz#381b2001ee6b9e05afd133671fbdf760da7dec67"
+  integrity sha512-zWIeYFhUitvAHBwNhDdCRK09hWx+P0HUwFE8US8/CxFpMVzkUK8RJl7yOIE+BVu2lxyPNgeOaFv78tLE47jBIg==
+  dependencies:
+    "@types/validator" "^13.1.3"
+    libphonenumber-js "^1.9.7"
+    validator "^13.5.2"
 
 clean-stack@^2.0.0:
   version "2.2.0"
@@ -4539,6 +4563,11 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
+ga-measurement-protocol@latest:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/ga-measurement-protocol/-/ga-measurement-protocol-1.1.2.tgz#24d211672a555444e3bcae1d2f6e621a697341fe"
+  integrity sha512-ojOzDvSv5fWY0fPWnWjXU8PFtsm6c9Vu92rz6/THbpn6rsL/h4fArWr3+tV58erDyEQg82OPoE9duo+8rUbuOQ==
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
@@ -5439,7 +5468,7 @@ jest-circus@^27.0.0-next.8:
     stack-utils "^2.0.3"
     throat "^6.0.1"
 
-jest-cli@^27.0.0-next.3:
+jest-cli@^27.0.0-next.8:
   version "27.0.0-next.8"
   resolved "https://registry.yarnpkg.com/jest-cli/-/jest-cli-27.0.0-next.8.tgz#2d72da247fc2ecf5571c6d7e8de9ff6716183048"
   integrity sha512-t14p7r8t0e6+dL7kq2VaWsV+XV5w0wFFCti8R+2+gH5hnivLA77iTtBC/JiNBbDcI47JPhm75CSaK3z7mBJOBw==
@@ -5768,7 +5797,19 @@ jest-snapshot@^27.0.0-next.8:
     pretty-format "^27.0.0-next.8"
     semver "^7.3.2"
 
-jest-util@^27.0.0-next.8, jest-util@next:
+jest-util@27.0.0-next.3:
+  version "27.0.0-next.3"
+  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-27.0.0-next.3.tgz#096e4badb4def7cd748ab17bf72cec82144ab385"
+  integrity sha512-vjHPCxbp880wPXMLXgN5+KuYs1eLMEnANCtoDVUIBWGeLU+1V8TcnXPO8OiCNoamYA24LJfgHE1zoWnF3r6qOg==
+  dependencies:
+    "@jest/types" "^27.0.0-next.3"
+    "@types/node" "*"
+    chalk "^4.0.0"
+    graceful-fs "^4.2.4"
+    is-ci "^3.0.0"
+    micromatch "^4.0.2"
+
+jest-util@^27.0.0-next.8:
   version "27.0.0-next.8"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-27.0.0-next.8.tgz#3372df3779b16192fcaf7afdb0a88a07ef6abaf4"
   integrity sha512-yL+OHfe0uyjofzTwkSPyzJ4mihhMJsTAEp0OcvBP23V9IjKFvt76aV2+iab+wlGZP+K4lpjkr1vd7JK9+Kc6Ew==
@@ -5823,14 +5864,14 @@ jest-worker@^27.0.0-next.8:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-jest@27.0.0-next.3:
-  version "27.0.0-next.3"
-  resolved "https://registry.yarnpkg.com/jest/-/jest-27.0.0-next.3.tgz#cb7f4b9b0fe02435fb6e1456faa269e02b7d890c"
-  integrity sha512-IEyeC+9dWcjkF2M1vbi09tNN+HN5Vf4tsZa1yhCXP96n8a3FEgSQUw1x79uC77fXa4Z5VU2YTa9nRrCoSqWclw==
+jest@27.0.0-next.8:
+  version "27.0.0-next.8"
+  resolved "https://registry.yarnpkg.com/jest/-/jest-27.0.0-next.8.tgz#d16644a273122a8df8199d254df4209e6a9f9476"
+  integrity sha512-LjCtGL4SbSD+hFDykFdlriZ70iW0ZBU60n4UIraq/Ug2jGzrBqNznVLiVFRwvkdZcEzq634MOKE9/xV2PafdVg==
   dependencies:
-    "@jest/core" "^27.0.0-next.3"
+    "@jest/core" "^27.0.0-next.8"
     import-local "^3.0.2"
-    jest-cli "^27.0.0-next.3"
+    jest-cli "^27.0.0-next.8"
 
 jmespath@^0.15.0:
   version "0.15.0"
@@ -6163,6 +6204,11 @@ libnpmversion@^1.2.0:
     json-parse-even-better-errors "^2.3.1"
     semver "^7.3.5"
     stringify-package "^1.0.1"
+
+libphonenumber-js@^1.9.7:
+  version "1.9.16"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.9.16.tgz#84fcadf834a1e4234dab3399b5798cf8ff809683"
+  integrity sha512-PaHT7nTtnejZ0HHekAaA0olv6BUTKZGtKM4SCQS0yE3XjFuVo/tjePMHUAr32FKwIZfyPky1ExMUuaiBAUmV6w==
 
 lines-and-columns@^1.1.6:
   version "1.1.6"
@@ -8990,16 +9036,15 @@ trim-off-newlines@^1.0.0:
   resolved "https://registry.yarnpkg.com/trim-off-newlines/-/trim-off-newlines-1.0.1.tgz#9f9ba9d9efa8764c387698bcbfeb2c848f11adb3"
   integrity sha1-n5up2e+odkw4dpi8v+sshI8RrbM=
 
-ts-jest@27.0.0-next.7:
-  version "27.0.0-next.7"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-27.0.0-next.7.tgz#dfc0117bdbb9daef4a536490fdaae37d82979135"
-  integrity sha512-g9RgCSx9sEyWE3onanpeBLQIFe2UAI/qNCrCZd7rNYE+8K/M7iq/Q9wsFgyOZ7QgLDyNjYbIxXsZ/xCkhgJJpA==
+ts-jest@27.0.0-next.9:
+  version "27.0.0-next.9"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-27.0.0-next.9.tgz#04457b664829b7c8fb55defe4e0681420c3389fb"
+  integrity sha512-cBPbeOeenjtupe2Vcbb3vKqE7VED23jfGagDu6l3QjZCbx03pedqOrl02ajBKy/tT2B3TIFQt4BtwQRxig9eyw==
   dependencies:
-    "@types/jest" "26.x"
     bs-logger "0.x"
     buffer-from "1.x"
     fast-json-stable-stringify "2.x"
-    jest-util next
+    jest-util "27.0.0-next.3"
     json5 "2.x"
     lodash "4.x"
     make-error "1.x"
@@ -9255,6 +9300,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+urijs@latest:
+  version "1.19.6"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.6.tgz#51f8cb17ca16faefb20b9a31ac60f84aa2b7c870"
+  integrity sha512-eSXsXZ2jLvGWeLYlQA3Gh36BcjF+0amo92+wHPyN1mdR8Nxf75fuEuYTd9c0a+m/vhCjRK0ESlE9YNLW+E1VEw==
+
 urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
@@ -9313,6 +9363,11 @@ validate-npm-package-name@^3.0.0, validate-npm-package-name@~3.0.0:
   integrity sha1-X6kS2B630MdK/BQN5zF/DKffQ34=
   dependencies:
     builtins "^1.0.3"
+
+validator@^13.5.2:
+  version "13.5.2"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.5.2.tgz#c97ae63ed4224999fb6f42c91eaca9567fe69a46"
+  integrity sha512-mD45p0rvHVBlY2Zuy3F3ESIe1h5X58GPfAtslBjY7EtTqGquZTj+VX/J4RnHWN8FKq0C9WRVt1oWAcytWRuYLQ==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"

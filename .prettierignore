@@ -3,7 +3,8 @@
 
 .vercel/**
 .vscode/**
-api/**
+coverage/**
+dist/**
 node_modules/**
 
 *.d.ts

@@ -1,8 +1,12 @@
 import type { INestApplication } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as pkg from '../package.json'
-import { CONFIGURATION } from './config/configuration'
+import { CONF } from './config/configuration'
+import { AllExceptionsFilter } from './lib/filters'
+import { PageviewInterceptor } from './lib/interceptors'
+import { EnvironmentVariables } from './lib/interfaces'
 
 /**
  * @file Implementation - useGlobal
@@ -10,7 +14,6 @@ import { CONFIGURATION } from './config/configuration'
  * @see https://github.com/jlarmstrongiv/create-vercel-http-server-handler
  */
 
-const { URL, VERCEL_ENV } = CONFIGURATION
 const { description, homepage, license, version } = pkg
 
 export type App = INestApplication | NestExpressApplication
@@ -24,6 +27,13 @@ export type App = INestApplication | NestExpressApplication
  * @return {Promise<App>} Promise containing app with globals initialized
  */
 const useGlobal = async (app: App): Promise<typeof app> => {
+  // Instantiate new Config service
+  const Config = new ConfigService<EnvironmentVariables>(CONF)
+
+  // Add global filters and interceptors
+  app.useGlobalFilters(new AllExceptionsFilter(Config))
+  app.useGlobalInterceptors(new PageviewInterceptor(Config))
+
   // Initialize OpenAPI document builder
   const builder = new DocumentBuilder()
 
@@ -33,7 +43,7 @@ const useGlobal = async (app: App): Promise<typeof app> => {
   builder.setVersion(version)
   builder.setLicense(license, `https://opensource.org/licenses/${license}`)
   builder.setContact('GitHub', homepage, (null as unknown) as string)
-  builder.addServer(URL, VERCEL_ENV.toUpperCase())
+  builder.addServer(CONF.URL, CONF.VERCEL_ENV.toUpperCase())
   builder.addTag('users', 'CRUD operations')
 
   // Generate OpenAPI object

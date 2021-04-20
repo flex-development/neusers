@@ -5,14 +5,12 @@ import {
   ExceptionClassName as ClassName,
   ExceptionStatus as Status
 } from '../enums'
-import type {
-  APIExceptionErrors as ExceptionErrors,
-  IAPIException as IException
-} from '../interfaces'
+import type { AppExceptionJSON as IException } from '../interfaces'
+import type { AppExceptionErrors as ExceptionErrors } from '../types'
 
 /**
- * @file Implementation - APIException
- * @module app/lib/exceptions/api-exception
+ * @file Exceptions - AppException
+ * @module app/lib/exceptions/app.exception
  */
 
 /**
@@ -21,9 +19,9 @@ import type {
  * @class
  * @extends HttpException
  */
-export default class APIException extends HttpException {
+export default class AppException extends HttpException {
   /**
-   * Instantiate an `APIException` Exception.
+   * Instantiate an `AppException` Exception.
    *
    * @param {Status} [code] - HTTP error code
    * @param {string} [message] - Error message
@@ -35,33 +33,37 @@ export default class APIException extends HttpException {
     message: string = 'Internal server error',
     data: PlainObject = {}
   ) {
-    super(APIException.createBody(data, message, code), code)
+    super(AppException.createBody(data, message, code), code)
   }
 
   /**
-   * Generates a JSON object representing an APIException.
+   * Generates a JSON object representing an AppException.
    *
    * @param {PlainObject} [data] - Additional error data
    * @param {string} [message] - Error message
    * @param {Status} [code] - HTTP error code
-   * @return {IException} JSON object representing an APIException
+   * @return {IException} JSON object representing an AppException
    */
   public static createBody(
     data: PlainObject | string = {},
     message: string = 'Internal server error',
     code: Status = Status.INTERNAL_SERVER_ERROR
   ): IException {
-    if (typeof data === 'string') data = { message }
+    if (typeof data === 'string') data = { message: data }
 
     const name = Object.keys(Status).find(key => Status[key] === code) || ''
 
+    /* eslint-disable sort-keys */
+
     return {
-      className: ClassName[name],
+      name: name as IException['name'],
+      message: typeof data?.message === 'string' ? data.message : message,
       code,
-      data: omit(data, ['errors']),
-      errors: data.errors,
-      message: data.message || message,
-      name: name as IException['name']
+      className: ClassName[name],
+      data: omit(data, ['errors', 'message']),
+      errors: data.errors
     }
+
+    /* eslint-enable sort-keys */
   }
 }

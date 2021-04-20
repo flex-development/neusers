@@ -1,18 +1,17 @@
 import type { PlainObject } from 'simplytyped'
 import { ExceptionClassName, ExceptionStatus } from '../enums'
+import type { AppExceptionErrors } from '../types'
 
 /**
- * @file Interface - IAPIException
- * @module app/lib/interfaces/IAPIException
+ * @file Interface - AppExceptionJSON
+ * @module app/lib/interfaces/AppExceptionJSON
  */
 
-export interface IAPIException {
+export interface AppExceptionJSON {
   readonly className: ExceptionClassName
   readonly code: ExceptionStatus
   readonly data: PlainObject
-  readonly errors?: PlainObject | (PlainObject | string)[]
+  readonly errors?: AppExceptionErrors
   readonly message: string
   readonly name: keyof typeof ExceptionStatus
 }
-
-export type APIExceptionErrors = PlainObject | (PlainObject | string)[]

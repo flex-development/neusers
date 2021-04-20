@@ -18,7 +18,8 @@ const config: Config.InitialOptions = {
   displayName: pkg.name.split('@flex-development/')[1],
   globals: {
     'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.test.json'
+      tsconfig: '<rootDir>/tsconfig.test.json',
+      useESM: true
     }
   },
   moduleDirectories: ['node_modules'],

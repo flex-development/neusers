@@ -1,10 +1,15 @@
+import type { PlainObject } from 'simplytyped'
+import type { EnvironmentVariables } from '../lib/interfaces'
+
 /**
- * @file NestJS App Configuration
+ * @file Config - NestJS App Configuration
  * @module app/config/configuration
  * @see https://docs.nestjs.com/techniques/configuration
  */
 
 const {
+  GA_ENABLED,
+  GA_TRACKING_ID,
   NODE_ENV = 'development',
   PORT = '8080',
   TITLE = 'Neusers',
@@ -16,36 +21,33 @@ const {
 } = process.env
 
 /**
- * Shape of object containing environment variables used in this application.
+ * @property {EnvironmentVariables} CONF - Environment variables
  */
-export interface EnvironmentVariables {
-  readonly NODE_ENV: string
-  readonly PORT: number
-  readonly TITLE: string
-  readonly URL: string
-  readonly VERCEL: number
-  readonly VERCEL_ENV: string
-  readonly VERCEL_GIT_COMMIT_REF: string
-  readonly VERCEL_GIT_COMMIT_SHA: string
-}
+export const CONF: EnvironmentVariables = (() => {
+  const ev: PlainObject = {
+    GA_ENABLED: JSON.parse(`${GA_ENABLED || false}`),
+    GA_TRACKING_ID,
+    NODE_ENV: NODE_ENV.toLowerCase(),
+    PORT: JSON.parse(PORT),
+    TITLE,
+    URL: URL.startsWith('http://') ? URL : `https://${URL}`,
+    VERCEL: JSON.parse(VERCEL),
+    VERCEL_ENV: VERCEL_ENV.toLowerCase(),
+    VERCEL_GIT_COMMIT_REF,
+    VERCEL_GIT_COMMIT_SHA
+  }
 
-/**
- * @property {EnvironmentVariables} CONFIGURATION - Enivronment variables
- */
-export const CONFIGURATION: EnvironmentVariables = {
-  NODE_ENV: NODE_ENV.toLowerCase(),
-  PORT: JSON.parse(PORT),
-  TITLE,
-  URL: URL.startsWith('http://') ? URL : `https://${URL}`,
-  VERCEL: JSON.parse(VERCEL),
-  VERCEL_ENV: VERCEL_ENV.toLowerCase(),
-  VERCEL_GIT_COMMIT_REF,
-  VERCEL_GIT_COMMIT_SHA
-}
+  ev.DEV = ev.NODE_ENV === 'development' || ev.VERCEL_ENV === 'development'
+  ev.PREVIEW = ev.NODE_ENV === 'test' || ev.VERCEL_ENV === 'preview'
+  ev.PROD = ev.NODE_ENV === 'production' || ev.VERCEL_ENV === 'production'
+  ev.TEST = ev.NODE_ENV === 'test'
+
+  return ev as EnvironmentVariables
+})()
 
 /**
  * Returns an object containing the application's environment variables.
  *
  * @return {EnvironmentVariables} Environment variables
  */
-export default (): EnvironmentVariables => CONFIGURATION
+export default (): EnvironmentVariables => CONF
