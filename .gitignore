@@ -62,6 +62,16 @@ jspm_packages/
 .env.test
 .env*.local
 
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+firebase-adminsdk.json
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
+
 ### Jest ###
 coverage/
 

@@ -1,6 +1,6 @@
 import { getMockReq } from '@jest-mock/express'
 import type { CallHandler, ExecutionContext } from '@nestjs/common'
-import type { User } from '@neusers/subdomains/users/interfaces'
+import type { IEntity } from '@neusers/lib/interfaces/entity.interface'
 import FixtureConfig from '@tests/fixtures/config.fixture'
 import faker from 'faker'
 import URI from 'urijs'
@@ -15,7 +15,7 @@ import Subject from '../pageview.interceptor'
 jest.mock('../../../config/measurement-protocol')
 
 describe('app/lib/interceptors/PageviewInterceptor', () => {
-  const TestSubject = new Subject<User>(FixtureConfig)
+  const TestSubject = new Subject<IEntity>(FixtureConfig)
 
   describe('exports', () => {
     it('class by default', () => {
@@ -25,7 +25,7 @@ describe('app/lib/interceptors/PageviewInterceptor', () => {
   })
 
   describe('#intercept', () => {
-    const uri = new URI('/users?path="users"')
+    const uri = new URI('/users?path=users')
 
     const req = getMockReq({
       headers: {
@@ -41,7 +41,7 @@ describe('app/lib/interceptors/PageviewInterceptor', () => {
     it('sends pageview hit', async () => {
       const context = { switchToHttp: () => ({ getRequest: () => req }) }
 
-      const next: CallHandler<User[]> = {
+      const next: CallHandler<IEntity[]> = {
         handle: jest.fn().mockReturnValue(Promise.resolve([]))
       }
 

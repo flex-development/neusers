@@ -33,7 +33,7 @@ describe('app/lib/filters/AllExceptionsFilter', () => {
   })
 
   describe('#catch', () => {
-    const uri = new URI('/users?path="users"')
+    const uri = new URI('/users?path=users')
 
     const req = getMockReq({
       headers: { 'user-agent': faker.internet.userAgent() },

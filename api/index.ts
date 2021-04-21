@@ -15,13 +15,13 @@ import useGlobal from '../app/useGlobal'
 
 const nestApplicationOptions: NestApplicationOptions = {
   cors: true,
-  logger: true
+  logger: console
 }
 
 const bootstrapOptions: BootstrapOptions = {
   AppModule,
   nestApplicationOptions,
-  useGlobal: useGlobal as unknown as UseGlobal
+  useGlobal: (useGlobal as unknown) as UseGlobal
 }
 
 export default createVercelHandler(bootstrapOptions)

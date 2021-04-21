@@ -8,6 +8,11 @@ import type { EnvironmentVariables } from '../lib/interfaces'
  */
 
 const {
+  ALGOLIA_API_KEY = '',
+  ALGOLIA_APP_ID = '',
+  FIREBASE_CLIENT_EMAIL = '',
+  FIREBASE_PRIVATE_KEY = '',
+  FIREBASE_PROJECT_ID = '',
   GA_ENABLED,
   GA_TRACKING_ID,
   NODE_ENV = 'development',
@@ -25,6 +30,11 @@ const {
  */
 export const CONF: EnvironmentVariables = (() => {
   const ev: PlainObject = {
+    ALGOLIA_API_KEY,
+    ALGOLIA_APP_ID,
+    FIREBASE_CLIENT_EMAIL,
+    FIREBASE_PRIVATE_KEY: FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    FIREBASE_PROJECT_ID,
     GA_ENABLED: JSON.parse(`${GA_ENABLED || false}`),
     GA_TRACKING_ID,
     NODE_ENV: NODE_ENV.toLowerCase(),
@@ -38,7 +48,7 @@ export const CONF: EnvironmentVariables = (() => {
   }
 
   ev.DEV = ev.NODE_ENV === 'development' || ev.VERCEL_ENV === 'development'
-  ev.PREVIEW = ev.NODE_ENV === 'test' || ev.VERCEL_ENV === 'preview'
+  ev.PREVIEW = ev.VERCEL_ENV === 'preview'
   ev.PROD = ev.NODE_ENV === 'production' || ev.VERCEL_ENV === 'production'
   ev.TEST = ev.NODE_ENV === 'test'
 
