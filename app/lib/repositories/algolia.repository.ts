@@ -1,13 +1,11 @@
 import type { SearchOptions, Settings } from '@algolia/client-search'
 import type { SearchIndex } from 'algoliasearch'
-import type { PartialBy } from 'fireorm'
-import { BaseFirestoreRepository as Repo } from 'fireorm'
-import { isPlainObject } from 'lodash'
 import clamp from 'lodash/clamp'
 import isEmpty from 'lodash/isEmpty'
+import isPlainObject from 'lodash/isPlainObject'
 import isUndefined from 'lodash/isUndefined'
 import join from 'lodash/join'
-import merge from 'lodash/merge'
+import mergeWith from 'lodash/mergeWith'
 import omit from 'lodash/omit'
 import pick from 'lodash/pick'
 import uniq from 'lodash/uniq'
@@ -23,6 +21,7 @@ import type {
   SearchResponseRepo as SearchResponse,
   WithOID
 } from '../types'
+import Repo from './entity.repository'
 
 /**
  * @file Global Repository - AlgoliaRepository
@@ -30,7 +29,8 @@ import type {
  */
 
 /**
- * Integrates the Algolia Search client and Fireorm.
+ * Integrates Algolia Search client and the `EntityRepository` base class, an
+ * extension of `BaseFirestoreRepository` from Fireorm.
  *
  * @see https://www.algolia.com/doc/api-reference/api-parameters/
  * @see https://fireorm.js.org
@@ -91,10 +91,10 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
   oidk: keyof TO
 
   /**
-   * Instantiates a Firestore repository compatiable with Algolia Search client.
+   * Instantiates an `EntityRepostitory` compatiable with Algolia Search client.
    *
-   * The search index name (and subsequent repository path), {@param name}, will
-   * be prefixed with the Node environment followed by an underscore (_).
+   * The search index name will be prefixed with the Node environment followed
+   * by an underscore (_).
    *
    * @param {string} name - Name of search index to initialize
    * @param {string} oidk - Name of key to use when setting objectID
@@ -115,43 +115,11 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
   }
 
   /**
-   * Creates a new entity and updates the search index.
-   *
-   * The entity will be timestamped and assigned an `id` if not present.
-   *
-   * @async
-   * @param {PartialBy<TO, 'id'>} dto - Data to create new entity
-   * @return {Promise<TO>} Promise containing new entity
-   * @throws {AppException}
-   */
-  async create(dto: PartialBy<TO, 'id'>): OrNever<Promise<TO>> {
-    throw new AppException(
-      ExceptionStatus.NOT_IMPLEMENTED,
-      'Method not implemented'
-    )
-  }
-
-  /**
-   * Deletes an entity and updates the search index.
-   *
-   * @async
-   * @param {string} objectID - objectID of resource to delete
-   * @return {Promise<void>} Nothing when complete
-   * @throws {AppException}
-   */
-  async delete(objectID: TO['id']): OrNever<Promise<void>> {
-    throw new AppException(
-      ExceptionStatus.NOT_IMPLEMENTED,
-      'Method not implemented'
-    )
-  }
-
-  /**
    * Executes a search against the index.
    *
    * @async
    * @param {SearchParams} [params] - Search index options
-   * @return {Promise<SearchResponse<TO>>} Promise containing searchr response
+   * @return {Promise<SearchResponse<TO>>} Promise containing search response
    * @throws {AppException}
    */
   async findAll(
@@ -214,19 +182,13 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
     objectID: TO['id'],
     params: Pick<SearchParams, 'attributesToRetrieve' | 'userToken'> = {}
   ): OrNever<Promise<Partial<WithOID<TO>>>> {
+    // Check if object exists as entity
+    await this.get(objectID)
+
+    // Pick relevant search params
     const $params = pick(params, ['attributesToRetrieve', 'userToken'])
 
-    const { hits } = await this.findAll({ ...pick($params), objectID })
-    const object = hits[0]
-
-    if (!object || object.objectID !== objectID) {
-      const data = { errors: { objectID }, params: $params }
-      const message = `Object with objectID "${objectID}" not found`
-
-      throw new AppException(404, message, data)
-    }
-
-    return object
+    return (await this.findAll({ ...pick($params), objectID })).hits[0]
   }
 
   /**
@@ -305,47 +267,28 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
     if (!isEmpty(objectID)) filtersarr.push(`objectID:${objectID}`)
 
     // Build base options object
-    let options = {
+    const options = {
       ...AlgoliaRepository.DSO,
       ...rest,
       attributesToRetrieve,
       disableTypoToleranceOnAttributes: dTTOA ? uniq(dTTOA) : undefined,
-      filters: join(uniq(filtersarr), ' '),
+      filters: join(uniq(filtersarr), ' ').trim(),
       hitsPerPage: hits ? clamp(JSON.parse(`${hits}`), 1, MAX) : undefined,
       length: length ? clamp(JSON.parse(`${length}`), 1, MAX) : undefined,
       offset: !isUndefined(o) ? clamp(JSON.parse(`${o}`), 0, MAX) : undefined,
       optionalWords: optionalWords ? uniq(optionalWords) : undefined,
-      page: page ? clamp(JSON.parse(`${page}`), 1, MAX) : undefined,
+      page: page ? clamp(JSON.parse(`${page}`), 0, MAX) : undefined,
       query: !isEmpty(query) ? query.toLowerCase() : undefined
     }
 
     // Format and merge options
     if (isPlainObject(aoptions)) {
-      options = merge(options, this.searchOptions(aoptions))
+      return mergeWith(options, this.searchOptions(aoptions), (objv, srcv) => {
+        if (Array.isArray(objv)) return objv.concat(srcv)
+        return
+      })
     }
 
     return options
-  }
-
-  /**
-   * Partially updates an entity and updates the search index.
-   * The entity's `created_at` and `id` properties cannot be patched.
-   *
-   * @async
-   * @param {string} objectID - objectID of resource to update
-   * @param {PartialBy<TO, 'created_at' | 'id'>} dto - Data to patch entity
-   * @param {string[]} [rfields] - Additional readonly fields
-   * @return {Promise<TO>} Promise containing updated entity
-   * @throws {AppException}
-   */
-  async patch(
-    objectID: TO['id'],
-    dto: PartialBy<TO, 'created_at' | 'id'>,
-    rfields: string[] = []
-  ): OrNever<Promise<TO>> {
-    throw new AppException(
-      ExceptionStatus.NOT_IMPLEMENTED,
-      'Method not implemented'
-    )
   }
 }

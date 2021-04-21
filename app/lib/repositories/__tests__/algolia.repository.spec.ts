@@ -1,20 +1,34 @@
-import { BaseFirestoreRepository as MockBaseRepo } from 'fireorm'
+import { ExceptionStatus } from '@neusers/lib/enums/exception-status.enum'
+import AppException from '@neusers/lib/exceptions/app.exception'
+import type { AppExceptionJSON } from '@neusers/lib/interfaces'
+import SearchParams from '@neusers/lib/models/search-params.model'
 import Algolia from '../../../config/algolia'
 import Subject from '../algolia.repository'
+import MockEntityRepository from '../entity.repository'
+import SEARCH_INDEX_404 from './__fixtures__/algolia-search-index-404.fixture'
 import type { ICar } from './__fixtures__/cars.fixture'
-import { CARS_INDEX_NAME as indexName } from './__fixtures__/cars.fixture'
+import {
+  CARS_INDEX_NAME as indexName,
+  CARS_ROOT
+} from './__fixtures__/cars.fixture'
 
 /**
  * @file Unit Tests - AlgoliaRepository
  * @module app/lib/repositories/tests/AlgoliaRepository
  */
 
-jest.mock('fireorm/lib/src/BaseFirestoreRepository')
 jest.mock('../../../config/algolia')
+jest.mock('../entity.repository')
 
 const mockAlgolia = Algolia as jest.Mocked<typeof Algolia>
 
 describe('app/lib/repositories/AlgoliaRepository', () => {
+  const OBJECTS = Object.values(CARS_ROOT).map(object => ({
+    ...object,
+    created_at: new Date().toISOString(),
+    updated_at: null
+  }))
+
   let TestSubject = {} as Subject<ICar>
 
   describe('exports', () => {
@@ -29,8 +43,8 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
       TestSubject = new Subject<ICar>(indexName)
     })
 
-    it('calls BaseFirestoreRepository class constructor', () => {
-      expect(MockBaseRepo.prototype.constructor).toBeCalledTimes(1)
+    it('calls EntityRepository class constructor', () => {
+      expect(MockEntityRepository.prototype.constructor).toBeCalledTimes(1)
     })
 
     it('initializes search index', () => {
@@ -60,71 +74,231 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
     })
   })
 
-  describe('#create', () => {
-    it.todo('timestamps entity')
-
-    it.todo('assigns id if dto.id is nullable')
-
-    it.todo('calls super.create')
-
-    it.todo('throws 400 if object with dto.id already exists')
-  })
-
-  describe('#delete', () => {
-    it.todo('throws if object does not exist')
-
-    it.todo('calls super.delete')
-  })
-
   describe('#findAll', () => {
-    it.todo('formats search params')
+    const TestSubject = new Subject<ICar>(indexName)
 
-    it.todo('calls #index.saveObjects with #objects return value')
+    const spyFind = jest.spyOn(MockEntityRepository.prototype, 'find')
 
-    it.todo('calls #index.search')
+    beforeEach(() => {
+      spyFind.mockReturnValue(Promise.resolve(OBJECTS))
+    })
 
-    it.todo('handles missing search index error')
+    it('formats search params', async () => {
+      const spy = jest.spyOn(TestSubject, 'searchOptions')
+
+      await TestSubject.findAll()
+
+      expect(spy).toBeCalledTimes(1)
+      expect(spy).toBeCalledWith({})
+    })
+
+    it('calls #index.saveObjects with #objects return value', async () => {
+      // @ts-expect-error testing invocation
+      const spy = jest.spyOn(TestSubject.index, 'saveObjects')
+      const objects = await TestSubject.objects()
+
+      await TestSubject.findAll()
+
+      expect(spy).toBeCalledTimes(1)
+
+      spy.mock.calls[0][0].forEach((callobj, i) => {
+        expect(callobj).toMatchObject(objects[i])
+      })
+    })
+
+    it('calls #index.search', async () => {
+      await TestSubject.findAll()
+
+      // @ts-expect-error testing invocation
+      expect(jest.spyOn(TestSubject.index, 'search')).toBeCalledTimes(1)
+    })
+
+    it('handles missing search index error', async () => {
+      // @ts-expect-error testing
+      const spy = jest.spyOn(TestSubject.index, 'search')
+
+      spy.mockReturnValueOnce(Promise.reject(SEARCH_INDEX_404))
+
+      const response = await TestSubject.findAll()
+
+      expect(response).toMatchObject({
+        hits: [],
+        hitsPerPage: 0,
+        // @ts-expect-error testing
+        index: TestSubject.index_name,
+        nbHits: 0,
+        nbPages: 0,
+        page: 0,
+        query: ''
+      })
+    })
   })
 
   describe('#findOneById', () => {
-    it.todo('returns search index object')
+    const TestSubject = new Subject<ICar>(indexName)
 
-    it.todo('throws 404 if object does not exist')
+    const spyFind = jest.spyOn(MockEntityRepository.prototype, 'find')
+
+    beforeEach(() => {
+      spyFind.mockReturnValue(Promise.resolve(OBJECTS))
+    })
+
+    it('returns search index object', async () => {
+      const object = OBJECTS[0]
+      const result = await TestSubject.findOneById(object.id)
+
+      expect(result.objectID).toBe(object.id)
+    })
   })
 
   describe('#objects', () => {
-    it.todo('adds objectID property to each object using current oidk')
+    const TestSubject = new Subject<ICar>(indexName)
 
-    it.todo('handles error if #find throws')
+    const spyFind = jest.spyOn(MockEntityRepository.prototype, 'find')
+
+    it('adds objectID property to each object using current oidk', async () => {
+      spyFind.mockReturnValue(Promise.resolve(OBJECTS))
+
+      const objs = await TestSubject.objects()
+
+      objs.forEach(obj => expect(obj.objectID).toBe(obj[TestSubject.oidk]))
+    })
+
+    it('handles error if #find throws', async () => {
+      const error = new Error('Test')
+
+      spyFind.mockReturnValue(Promise.reject(error))
+
+      let exception = {} as AppException
+
+      try {
+        await TestSubject.objects()
+      } catch (error) {
+        exception = error
+      }
+
+      expect(exception.constructor.name).toBe('AppException')
+
+      const ejson = exception.getResponse() as AppExceptionJSON
+
+      expect(ejson.code).toBe(ExceptionStatus.INTERNAL_SERVER_ERROR)
+      expect(ejson.data).toMatchObject({
+        // @ts-expect-error testing
+        index_name: TestSubject.index_name,
+        oidk: TestSubject.oidk
+      })
+      expect(ejson.message).toBe(error.message)
+    })
   })
 
   describe('#searchOptions', () => {
-    it.todo('formats params.attributesToRetrieve')
+    const { DSO } = Subject
 
-    it.todo('formats params.disableTypoToleranceOnAttributes')
+    const TestSubject = new Subject<ICar>(indexName)
 
-    it.todo('formats params.filters')
+    const duplicatesarr = ['foo', 'foo']
 
-    it.todo('formats params.hitsPerPage')
+    it('formats params.attributesToRetrieve', () => {
+      const options = TestSubject.searchOptions({
+        attributesToRetrieve: duplicatesarr
+      })
 
-    it.todo('formats params.length')
+      const expectedarr = DSO.attributesToRetrieve?.concat([duplicatesarr[0]])
+      const expected = expect.arrayContaining(expectedarr || [])
 
-    it.todo('formats params.objectID')
+      expect(options.attributesToRetrieve).toEqual(expected)
+    })
 
-    it.todo('formats params.offset')
+    it('formats params.disableTypoToleranceOnAttributes', () => {
+      const options = TestSubject.searchOptions({
+        disableTypoToleranceOnAttributes: duplicatesarr
+      })
 
-    it.todo('formats params.optionalWords')
+      const expected = expect.arrayContaining([duplicatesarr[0]])
 
-    it.todo('formats params.page')
+      expect(options.disableTypoToleranceOnAttributes).toEqual(expected)
+    })
 
-    it.todo('formats params.query')
-  })
+    it('formats params.filters', () => {
+      const params = { filters: 'prop:foo prop:foo' }
 
-  describe('#patch', () => {
-    it.todo('throws if object does not exist')
+      const options = TestSubject.searchOptions(params)
 
-    it.todo('removes readonly fields from dto')
+      expect(options.filters).toBe(params.filters.split(' ')[0])
+    })
 
-    it.todo('calls #update')
+    it('formats params.hitsPerPage', () => {
+      const params = ({ hitsPerPage: '0' } as unknown) as SearchParams
+
+      const options = TestSubject.searchOptions(params)
+
+      expect(options.hitsPerPage).toBe(1)
+    })
+
+    it('formats params.length', () => {
+      const params = ({ length: '-2' } as unknown) as SearchParams
+
+      const options = TestSubject.searchOptions(params)
+
+      expect(options.length).toBe(1)
+    })
+
+    it('formats params.objectID', () => {
+      const params = { objectID: OBJECTS[0].id }
+
+      const options = TestSubject.searchOptions(params)
+
+      expect(options.filters).toBe(`objectID:${params.objectID}`)
+    })
+
+    it('formats params.offset', () => {
+      const params = ({ offset: '-1' } as unknown) as SearchParams
+
+      const options = TestSubject.searchOptions(params)
+
+      expect(options.offset).toBe(0)
+    })
+
+    it('formats params.optionalWords', () => {
+      const options = TestSubject.searchOptions({
+        optionalWords: duplicatesarr
+      })
+
+      const expected = expect.arrayContaining([duplicatesarr[0]])
+
+      expect(options.optionalWords).toEqual(expected)
+    })
+
+    it('formats params.page', () => {
+      const params = { page: -1 }
+
+      const options = TestSubject.searchOptions(params)
+
+      expect(options.page).toBe(params.page * -1 - 1)
+    })
+
+    it('formats params.query', () => {
+      const params = { query: 'QUERYSTRING' }
+
+      const options = TestSubject.searchOptions(params)
+
+      expect(options.query).toBe(params.query.toLowerCase())
+    })
+
+    it('formats and merges additional search params', () => {
+      const duplicatesarr2 = ['prop', 'prop']
+
+      const params = { attributesToRetrieve: duplicatesarr }
+      const aoptions = { attributesToRetrieve: duplicatesarr2 }
+
+      const options = TestSubject.searchOptions(params, aoptions)
+
+      let expectedarr = DSO.attributesToRetrieve?.concat([duplicatesarr[0]])
+      expectedarr = expectedarr?.concat([duplicatesarr2[1]])
+
+      const expected = expect.arrayContaining(expectedarr || [])
+
+      expect(options.attributesToRetrieve).toEqual(expected)
+    })
   })
 })

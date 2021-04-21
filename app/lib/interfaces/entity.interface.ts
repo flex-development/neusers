@@ -16,4 +16,9 @@ export interface IEntity extends IFirestoreEntity {
    * Unique identifier for the entity.
    */
   readonly id: NumberToString<number> | string
+
+  /**
+   * Date and time entity was modified (ISO 8601 format).
+   */
+  readonly updated_at: string | null
 }

@@ -29,37 +29,35 @@ export class Car extends Entity implements ICar {
   model_year: ICar['model_year']
 }
 
-export const CARS_ROOT: Record<ICar['id'], ICar> = {
+export const CARS_ROOT: Record<
+  ICar['id'],
+  Omit<ICar, 'created_at' | 'updated_at'>
+> = {
   JH4DC54805S081355: {
-    created_at: new Date().toISOString(),
     id: 'JH4DC54805S081355',
     make: 'Mitsubishi',
     model: '3000GT',
     model_year: 1995
   },
   KMHTC6AD5FU539428: {
-    created_at: new Date().toISOString(),
     id: 'KMHTC6AD5FU539428',
     make: 'Honda',
     model: 'CR-V',
     model_year: 2007
   },
   SCFFDAAE2BG795532: {
-    created_at: new Date().toISOString(),
     id: 'SCFFDAAE2BG795532',
     make: 'Mercury',
     model: 'Cougar',
     model_year: 1967
   },
   TRUWT28N141705117: {
-    created_at: new Date().toISOString(),
     id: 'TRUWT28N141705117',
     make: 'Volkswagen',
     model: 'Passat',
     model_year: 2001
   },
   WAUVT68E05A682764: {
-    created_at: new Date().toISOString(),
     id: 'WAUVT68E05A682764',
     make: 'Ford',
     model: 'F-Series',

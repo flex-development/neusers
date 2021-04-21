@@ -1,4 +1,5 @@
 import type { SearchOptions, SearchResponse } from '@algolia/client-search'
+import type { PartialBy } from 'fireorm'
 import type { PlainObject } from 'simplytyped'
 import type { ExceptionStatus } from './enums/exception-status.enum'
 
@@ -16,6 +17,20 @@ export type AppExceptionErrors = PlainObject | (PlainObject | string)[]
  * Type representing an empty object.
  */
 export type EmptyObject = Record<never, never>
+
+/**
+ * Base data transfer object for entities.
+ */
+export type EntityDTO<E extends PlainObject = PlainObject> = PartialBy<
+  E,
+  EntityReadonlyProps
+>
+
+/**
+ * Readonly properties of all entities. These properties can only be updated
+ * internally by the `EntityRepository` class.
+ */
+export type EntityReadonlyProps = 'created_at' | 'id' | 'updated_at'
 
 /**
  * JSON response from an `HttpException`.

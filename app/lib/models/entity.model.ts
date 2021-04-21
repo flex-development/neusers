@@ -1,4 +1,4 @@
-import { IsString, IsUUID } from 'class-validator'
+import { IsOptional, IsString, IsUUID } from 'class-validator'
 import { IEntity } from '../interfaces/entity.interface'
 
 /**
@@ -12,4 +12,8 @@ export default class Entity implements IEntity {
 
   @IsUUID()
   id: IEntity['id']
+
+  @IsString()
+  @IsOptional()
+  updated_at: IEntity['updated_at']
 }

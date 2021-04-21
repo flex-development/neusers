@@ -38,6 +38,7 @@
     "@types/lodash": "latest",
     "@types/node": "latest",
     "@types/pino": "latest",
+    "@types/uuid": "latest",
     "@types/validator": "latest",
     "algoliasearch": "latest",
     "axios": "latest",
@@ -58,6 +59,7 @@
     "tsconfig-paths": "latest",
     "tslib": "latest",
     "typescript": "4.3.0-dev.20210306",
+    "uuid": "latest",
     "validator": "latest"
   },
   "devDependencies": {

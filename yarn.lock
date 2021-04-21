@@ -1276,11 +1276,6 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@feathersjs/errors@pre":
-  version "5.0.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@feathersjs/errors/-/errors-5.0.0-pre.2.tgz#f6ccc9faf463ac43a969ba875377a6da9591e19d"
-  integrity sha512-rYEGimXzyI3eFvueaDm3m/Uj+e13grYOIc2a/Sw6NHJMgBe48Y1tFaD5RMTXRq2ZsyGWyGD4dYr4WKs5++ukzw==
-
 "@firebase/analytics-types@0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@firebase/analytics-types/-/analytics-types-0.4.0.tgz#d6716f9fa36a6e340bc0ecfe68af325aa6f60508"
@@ -2372,7 +2367,7 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@*", "@types/express@latest":
+"@types/express@latest":
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
   integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
@@ -2386,13 +2381,6 @@
   version "5.5.2"
   resolved "https://registry.yarnpkg.com/@types/faker/-/faker-5.5.2.tgz#71084b72b5ac18bdb3404b9b29db010ba74136e8"
   integrity sha512-KRBp6Cb2BsC/mz1m2oRp79KlEViX/nTZSunRPltXHpxEEEvFg1wQbgGJeJY+TGQHHZCx0F+jskPDwrkEovbvwA==
-
-"@types/feathersjs__errors@latest":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@types/feathersjs__errors/-/feathersjs__errors-3.3.4.tgz#680908907728e15bdfeb846bd08869a80d9bdb6a"
-  integrity sha512-SiMY9oK1gRSuGSFgiIZaogYUY0kqFYGlUR1dKqiHZbXt9RmYaLOdI2/8zmGhhilAKAccalX8d5JRzsOOdXg9QA==
-  dependencies:
-    "@types/express" "*"
 
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
@@ -2561,6 +2549,11 @@
   version "1.19.15"
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.15.tgz#0142b92b52d07c4ba97dd82e7a54a875332942ec"
   integrity sha512-pEDVREIvkyRtzpWlO5nqsUgR/JpLv9+lAzvkERCwoH2jXxl+TmaTNshhL7gjQLhfqgFUzCM6ovmoB1JssTop1A==
+
+"@types/uuid@latest":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
+  integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
 
 "@types/validator@^13.1.3", "@types/validator@latest":
   version "13.1.3"
@@ -6886,7 +6879,7 @@ jsonparse@^1.2.0, jsonparse@^1.3.1:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
-jsonwebtoken@^8.5.1, jsonwebtoken@latest:
+jsonwebtoken@^8.5.1:
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz#00e71e0b8df54c2121a1f26137df2280673bcc0d"
   integrity sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==
@@ -10359,7 +10352,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@8.3.2, uuid@^8.0.0:
+uuid@8.3.2, uuid@^8.0.0, uuid@latest:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
