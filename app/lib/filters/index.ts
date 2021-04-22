@@ -1,5 +1,5 @@
 /**
- * @file Entry Point - Filters
+ * @file Entry Point - Global Filters
  * @module app/lib/filters
  */
 

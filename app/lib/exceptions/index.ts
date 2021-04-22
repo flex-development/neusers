@@ -1,5 +1,5 @@
 /**
- * @file Entry Point - Exceptions
+ * @file Entry Point - Global Exceptions
  * @module app/lib/exceptions
  */
 

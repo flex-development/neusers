@@ -19,6 +19,7 @@ export interface EnvironmentVariables {
   readonly PORT: number
   readonly PREVIEW: boolean
   readonly PROD: boolean
+  readonly SUBDOMAINS: Record<string, Record<'endpoint' | 'repo', string>>
   readonly TEST: boolean
   readonly TITLE: string
   readonly URL: string

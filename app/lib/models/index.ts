@@ -1,9 +1,8 @@
 /**
- * @file Entry Point - Models
+ * @file Entry Point - Global Models
  * @module app/lib/models
  */
 
 export { default as Entity } from './entity.model'
-export { default as SearchParams } from './search-params.model'
 
 /* eslint-disable prettier/prettier */

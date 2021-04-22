@@ -3,12 +3,12 @@ import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
 import { v4 as uuid } from 'uuid'
-import { CONF } from '../../config/configuration'
 import '../../config/database'
 import { ExceptionStatus } from '../enums/exception-status.enum'
 import AppException from '../exceptions/app.exception'
 import type { IEntity as IE } from '../interfaces'
 import type { EntityDTO, OrNever } from '../types'
+import repoPath from '../utils/repoPath.util'
 
 /**
  * @file Global Repository - EntityRepository
@@ -32,11 +32,6 @@ import type { EntityDTO, OrNever } from '../types'
  */
 export default class EntityRepository<E extends IE = IE> extends BFR<E> {
   /**
-   * @property {string} ENV - Node environment
-   */
-  static ENV: string = CONF.NODE_ENV
-
-  /**
    * Instantiates a Firestore repository.
    *
    * The repository path, {@param path}, will be prefixed with the Node
@@ -45,7 +40,7 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
    * @param {string} path - Repository path
    */
   constructor(path: string) {
-    super(`${EntityRepository.ENV}_${path}`)
+    super(repoPath(path))
 
     Object.assign(this, {
       config: {
@@ -72,7 +67,7 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
   // @ts-expect-error need more flexible type definition
   async create(dto: EntityDTO<E>): OrNever<Promise<E>> {
     const $dto = merge(dto, {
-      created_at: new Date().toISOString(),
+      created_at: Date.now(),
       id: uuid(),
       updated_at: null
     })
@@ -142,14 +137,14 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
    *
    * @async
    * @param {string} id - ID of resource to update
-   * @param {EntityDTO<E>} dto - Data to patch entity
+   * @param {Partial<EntityDTO<E>>} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
    * @return {Promise<E>} Promise containing updated entity
    * @throws {AppException}
    */
   async patch(
     id: E['id'],
-    dto: EntityDTO<E>,
+    dto: Partial<EntityDTO<E>>,
     rfields: string[] = []
   ): OrNever<Promise<E>> {
     const entity = await this.get(id)
@@ -160,7 +155,7 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
     // Merge existing data and update `updated_at` timestamp
     const $dto = {
       ...entity,
-      ...merge(omit(dto, $rfields), { updated_at: new Date().toISOString() })
+      ...merge(omit(dto, $rfields), { updated_at: Date.now() })
     }
 
     try {

@@ -39,6 +39,9 @@ export const CONF: EnvironmentVariables = (() => {
     GA_TRACKING_ID,
     NODE_ENV: NODE_ENV.toLowerCase(),
     PORT: JSON.parse(PORT),
+    SUBDOMAINS: {
+      users: { endpoint: 'users', repo: 'users' }
+    },
     TITLE,
     URL: URL.startsWith('http://') ? URL : `https://${URL}`,
     VERCEL: JSON.parse(VERCEL),

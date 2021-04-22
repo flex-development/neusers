@@ -1,7 +1,6 @@
 import { ExceptionStatus } from '@neusers/lib/enums/exception-status.enum'
 import AppException from '@neusers/lib/exceptions/app.exception'
-import type { AppExceptionJSON } from '@neusers/lib/interfaces'
-import SearchParams from '@neusers/lib/models/search-params.model'
+import type { AppExceptionJSON, SearchParams } from '@neusers/lib/interfaces'
 import Algolia from '../../../config/algolia'
 import Subject from '../algolia.repository'
 import MockEntityRepository from '../entity.repository'
@@ -25,11 +24,9 @@ const mockAlgolia = Algolia as jest.Mocked<typeof Algolia>
 describe('app/lib/repositories/AlgoliaRepository', () => {
   const OBJECTS = Object.values(CARS_ROOT).map(object => ({
     ...object,
-    created_at: new Date().toISOString(),
+    created_at: Date.now(),
     updated_at: null
   }))
-
-  let TestSubject = {} as Subject<ICar>
 
   describe('exports', () => {
     it('class by default', () => {
@@ -39,6 +36,8 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
   })
 
   describe('constructor', () => {
+    let TestSubject = {} as Subject<ICar>
+
     beforeEach(() => {
       TestSubject = new Subject<ICar>(indexName)
     })
@@ -197,6 +196,7 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
     const TestSubject = new Subject<ICar>(indexName)
 
     const duplicatesarr = ['foo', 'foo']
+    const timestamp = Date.now()
 
     it('formats params.attributesToRetrieve', () => {
       const options = TestSubject.searchOptions({
@@ -209,10 +209,20 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
       expect(options.attributesToRetrieve).toEqual(expected)
     })
 
-    it('formats params.disableTypoToleranceOnAttributes', () => {
-      const options = TestSubject.searchOptions({
-        disableTypoToleranceOnAttributes: duplicatesarr
-      })
+    it('formats params.created_at_max', () => {
+      const options = TestSubject.searchOptions({ created_at_max: timestamp })
+
+      expect(options.filters).toBe(`created_at < ${timestamp}`)
+    })
+
+    it('formats params.created_at_min', () => {
+      const options = TestSubject.searchOptions({ created_at_min: timestamp })
+
+      expect(options.filters).toBe(`created_at > ${timestamp}`)
+    })
+
+    it('formats params.dttoa', () => {
+      const options = TestSubject.searchOptions({ dttoa: duplicatesarr })
 
       const expected = expect.arrayContaining([duplicatesarr[0]])
 
@@ -241,6 +251,7 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
       const options = TestSubject.searchOptions(params)
 
       expect(options.length).toBe(1)
+      expect(options.offset).toBe(0)
     })
 
     it('formats params.objectID', () => {
@@ -285,20 +296,16 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
       expect(options.query).toBe(params.query.toLowerCase())
     })
 
-    it('formats and merges additional search params', () => {
-      const duplicatesarr2 = ['prop', 'prop']
+    it('formats params.updated_at_max', () => {
+      const options = TestSubject.searchOptions({ updated_at_max: timestamp })
 
-      const params = { attributesToRetrieve: duplicatesarr }
-      const aoptions = { attributesToRetrieve: duplicatesarr2 }
+      expect(options.filters).toBe(`updated_at < ${timestamp}`)
+    })
 
-      const options = TestSubject.searchOptions(params, aoptions)
+    it('formats params.updated_at_min', () => {
+      const options = TestSubject.searchOptions({ updated_at_min: timestamp })
 
-      let expectedarr = DSO.attributesToRetrieve?.concat([duplicatesarr[0]])
-      expectedarr = expectedarr?.concat([duplicatesarr2[1]])
-
-      const expected = expect.arrayContaining(expectedarr || [])
-
-      expect(options.attributesToRetrieve).toEqual(expected)
+      expect(options.filters).toBe(`updated_at > ${timestamp}`)
     })
   })
 })

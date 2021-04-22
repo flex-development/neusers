@@ -8,9 +8,11 @@ import type { NumberToString } from 'simplytyped'
 
 export interface IEntity extends IFirestoreEntity {
   /**
-   * Date and time entity was created (ISO 8601 format).
+   * Date and time entity was created.
+   *
+   * - Format: [Unix Timestamp](https://en.wikipedia.org/wiki/Unix_time)
    */
-  readonly created_at: string
+  readonly created_at: number
 
   /**
    * Unique identifier for the entity.
@@ -18,7 +20,9 @@ export interface IEntity extends IFirestoreEntity {
   readonly id: NumberToString<number> | string
 
   /**
-   * Date and time entity was modified (ISO 8601 format).
+   * Date and time entity was modified.
+   *
+   * - Format: [Unix Timestamp](https://en.wikipedia.org/wiki/Unix_time)
    */
-  readonly updated_at: string | null
+  readonly updated_at: number | null
 }

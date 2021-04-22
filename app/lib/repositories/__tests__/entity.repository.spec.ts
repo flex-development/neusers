@@ -28,7 +28,7 @@ describe('app/lib/repositories/EntityRepository', () => {
 
   const mockEntity = {
     ...entity,
-    created_at: new Date().toISOString(),
+    created_at: Date.now(),
     updated_at: null
   }
 
@@ -166,7 +166,7 @@ describe('app/lib/repositories/EntityRepository', () => {
     })
 
     it('removes readonly fields from dto', async () => {
-      const dto = { ...mockEntity, created_at: '', id: '' }
+      const dto = { ...mockEntity, created_at: Date.now(), id: '' }
 
       await TestSubject.patch(mockEntity.id, dto)
 

@@ -2,10 +2,8 @@ import type { SearchOptions, Settings } from '@algolia/client-search'
 import type { SearchIndex } from 'algoliasearch'
 import clamp from 'lodash/clamp'
 import isEmpty from 'lodash/isEmpty'
-import isPlainObject from 'lodash/isPlainObject'
 import isUndefined from 'lodash/isUndefined'
 import join from 'lodash/join'
-import mergeWith from 'lodash/mergeWith'
 import omit from 'lodash/omit'
 import pick from 'lodash/pick'
 import uniq from 'lodash/uniq'
@@ -14,14 +12,14 @@ import { CONF } from '../../config/configuration'
 import '../../config/database'
 import { ExceptionStatus } from '../enums/exception-status.enum'
 import AppException from '../exceptions/app.exception'
-import type { IEntity as IE } from '../interfaces'
-import SearchParams from '../models/search-params.model'
+import type { IEntity } from '../interfaces'
+import type { SearchParams } from '../interfaces/search-params.interface'
 import type {
   OrNever,
   SearchResponseRepo as SearchResponse,
   WithOID
 } from '../types'
-import Repo from './entity.repository'
+import EntityRepository from './entity.repository'
 
 /**
  * @file Global Repository - AlgoliaRepository
@@ -35,12 +33,16 @@ import Repo from './entity.repository'
  * @see https://www.algolia.com/doc/api-reference/api-parameters/
  * @see https://fireorm.js.org
  *
- * @template TO - Shape of search index object (repository model interface)
+ * @template TO - Shape of search index object (repo model interface)
+ * @template P - Shape of search parameters
  *
  * @class
- * @extends Repo
+ * @extends EntityRepository
  */
-export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
+export default class AlgoliaRepository<
+  TO extends IEntity = IEntity,
+  P extends SearchParams = SearchParams
+> extends EntityRepository<TO> {
   /**
    * @property {SearchOptions} DSO - Default search options
    */
@@ -118,14 +120,12 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
    * Executes a search against the index.
    *
    * @async
-   * @param {SearchParams} [params] - Search index options
+   * @param {P} [params] - Search index options
    * @return {Promise<SearchResponse<TO>>} Promise containing search response
    * @throws {AppException}
    */
-  async findAll(
-    params: SearchParams = {}
-  ): OrNever<Promise<SearchResponse<TO>>> {
-    const { responseFields = [] } = AlgoliaRepository.DSO
+  async findAll(params: P = {} as P): OrNever<Promise<SearchResponse<TO>>> {
+    const responseFields = AlgoliaRepository.DSO.responseFields as string[]
 
     // Format search options
     const options = this.searchOptions(params)
@@ -172,23 +172,18 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
    *
    * @async
    * @param {string} objectID - objectID of resource to retrieve
-   * @param {SearchParams} params - Search index options
-   * @param {string[]} [params.attributesToRetrieve] - List of fields to include
-   * @param {string} [params.userToken] - User identifier
+   * @param {P} params - Search index parameters
    * @return {Promise<Partial<WithOID<TO>>>} Promise containing resource
    * @throws {AppException}
    */
   async findOneById(
     objectID: TO['id'],
-    params: Pick<SearchParams, 'attributesToRetrieve' | 'userToken'> = {}
+    params: P = {} as P
   ): OrNever<Promise<Partial<WithOID<TO>>>> {
     // Check if object exists as entity
     await this.get(objectID)
 
-    // Pick relevant search params
-    const $params = pick(params, ['attributesToRetrieve', 'userToken'])
-
-    return (await this.findAll({ ...pick($params), objectID })).hits[0]
+    return (await this.findAll({ ...params, objectID })).hits[0]
   }
 
   /**
@@ -215,46 +210,50 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
   /**
    * Formats an Algolia search options object.
    *
-   * @see https://www.algolia.com/doc/api-reference/api-parameters/filters/
+   * - MSI = Number.MAX_SAFE_INTEGER
    *
-   * @param {SearchParams} [params] - Search index options
+   * @see https://www.algolia.com/doc/api-reference/api-parameters
+   *
+   * @param {SearchParams} [params] - Search index parameters
    * @param {string[]} [params.attributesToRetrieve] - List of fields to include
+   * @param {number} [params.created_at_max] - Objects created before date
+   * @param {number} [params.created_at_min] - Objects created after date
    * @param {boolean} [params.decompoundQuery] - Enable word segmentation
-   * @param {boolean} [params.disableTypoToleranceOnAttributes] - List of
-   * attributes on to disable typo tolerance
-   * @param {string} [params.filters] - Filter the query with numeric, facet
-   * and/or tag filters
+   * @param {boolean} [params.dttoa] - List of fields to disable typo tolerance
+   * @param {string} [params.filters] - Numeric, facet and/or tag filters
    * @param {number} [params.hitsPerPage] - Number of results per page
-   * @param {number} [params.length] - Result limit (used only with offset)
+   * @param {number} [params.length] - Number of hits to retrieve; [1,1000]
    * @param {string} [params.objectID] - Find object by objectID
-   * @param {number} [params.offset] - Offset of the first result to return
+   * @param {number} [params.offset] - Offset of first hit to return; [1,MSI]
    * @param {string[]} [params.optionalWords] - List of words that should be
    * considered as optional when found in the query
-   * @param {number} [params.page] - Specify the page to retrieve
+   * @param {number} [params.page] - Page to retrieve; [0,MSI]
    * @param {number} [params.query] - Text to search in index
-   * @param {string} [params.userToken] - User identifier
-   * @param {SearchOptions} [aoptions] - Additonal options to merge
+   * @param {number} [params.updated_at_max] - Objects modified before date
+   * @param {number} [params.updated_at_min] - Objects modified after date
+   * @param {string} [params.userToken] - Alphanumeric user identifier; [1,64]
    * @return {SearchOptions} Formatted Algolia search options object
    */
-  searchOptions(
-    params: SearchParams = {},
-    aoptions?: SearchOptions
-  ): SearchOptions {
+  searchOptions(params: SearchParams = {}): SearchOptions {
     const {
       attributesToRetrieve: fields = [],
-      disableTypoToleranceOnAttributes: dTTOA,
+      created_at_max,
+      created_at_min,
+      dttoa,
       filters = '',
       hitsPerPage: hits = null,
       length = null,
       objectID,
-      offset: o = null,
+      offset = null,
       optionalWords,
       page = null,
       query = '',
+      updated_at_max,
+      updated_at_min,
       ...rest
     } = params
 
-    const MAX = Number.MAX_SAFE_INTEGER
+    const MSI = Number.MAX_SAFE_INTEGER
 
     // Update default attributes to retrieve
     let attributesToRetrieve = AlgoliaRepository.DSO.attributesToRetrieve || []
@@ -263,32 +262,36 @@ export default class AlgoliaRepository<TO extends IE = IE> extends Repo<TO> {
     // Initialize search filters array
     const filtersarr: string[] = filters.split(' ')
 
+    // Add created_at_max filter
+    if (created_at_max) filtersarr.push(`created_at < ${created_at_max}`)
+
+    // Add created_at_min filter
+    if (created_at_min) filtersarr.push(`created_at > ${created_at_min}`)
+
     // Add objectID filter
     if (!isEmpty(objectID)) filtersarr.push(`objectID:${objectID}`)
 
-    // Build base options object
-    const options = {
+    // Add created_at_max filter
+    if (updated_at_max) filtersarr.push(`updated_at < ${updated_at_max}`)
+
+    // Add created_at_min filter
+    if (updated_at_min) filtersarr.push(`updated_at > ${updated_at_min}`)
+
+    // Format offset
+    const $o = length && !offset ? 0 : offset
+
+    return {
       ...AlgoliaRepository.DSO,
       ...rest,
       attributesToRetrieve,
-      disableTypoToleranceOnAttributes: dTTOA ? uniq(dTTOA) : undefined,
+      disableTypoToleranceOnAttributes: dttoa ? uniq(dttoa) : undefined,
       filters: join(uniq(filtersarr), ' ').trim(),
-      hitsPerPage: hits ? clamp(JSON.parse(`${hits}`), 1, MAX) : undefined,
-      length: length ? clamp(JSON.parse(`${length}`), 1, MAX) : undefined,
-      offset: !isUndefined(o) ? clamp(JSON.parse(`${o}`), 0, MAX) : undefined,
+      hitsPerPage: hits ? clamp(JSON.parse(`${hits}`), 1, MSI) : undefined,
+      length: length ? clamp(JSON.parse(`${length}`), 1, 1000) : undefined,
+      offset: !isUndefined($o) ? clamp(JSON.parse(`${$o}`), 0, MSI) : undefined,
       optionalWords: optionalWords ? uniq(optionalWords) : undefined,
-      page: page ? clamp(JSON.parse(`${page}`), 0, MAX) : undefined,
+      page: page ? clamp(JSON.parse(`${page}`), 0, MSI) : undefined,
       query: !isEmpty(query) ? query.toLowerCase() : undefined
     }
-
-    // Format and merge options
-    if (isPlainObject(aoptions)) {
-      return mergeWith(options, this.searchOptions(aoptions), (objv, srcv) => {
-        if (Array.isArray(objv)) return objv.concat(srcv)
-        return
-      })
-    }
-
-    return options
   }
 }

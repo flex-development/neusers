@@ -1,5 +1,5 @@
 /**
- * @file Entry Point - Interceptors
+ * @file Entry Point - Global Interceptors
  * @module app/lib/interceptors
  */
 

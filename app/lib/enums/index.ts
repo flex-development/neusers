@@ -1,5 +1,5 @@
 /**
- * @file Entry Point - Enums
+ * @file Entry Point - Global Enums
  * @module app/lib/enums
  */
 

@@ -1,6 +1,6 @@
-import { CONF } from '@neusers/config/configuration'
 import type { IEntity } from '@neusers/lib/interfaces/entity.interface'
 import Entity from '@neusers/lib/models/entity.model'
+import repoPath from '@neusers/lib/utils/repoPath.util'
 import { IsNumber, IsString } from 'class-validator'
 import { Collection } from 'fireorm/lib/src/Decorators/Collection'
 
@@ -17,7 +17,7 @@ export interface ICar extends IEntity {
 
 export const CARS_INDEX_NAME = 'cars'
 
-@Collection(`${CONF.NODE_ENV}_${CARS_INDEX_NAME}`)
+@Collection(repoPath(CARS_INDEX_NAME))
 export class Car extends Entity implements ICar {
   @IsString()
   make: ICar['make']
