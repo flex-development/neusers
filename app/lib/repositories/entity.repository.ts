@@ -1,10 +1,10 @@
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import { BaseFirestoreRepository as BFR } from 'fireorm'
 import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
 import { v4 as uuid } from 'uuid'
 import '../../config/database'
-import { ExceptionStatus } from '../enums/exception-status.enum'
 import AppException from '../exceptions/app.exception'
 import type { IEntity as IE } from '../interfaces'
 import type { EntityDTO, OrNever } from '../types'
@@ -75,16 +75,16 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
     try {
       await super.create($dto as E)
     } catch (error) {
-      let status = ExceptionStatus.INTERNAL_SERVER_ERROR
+      let status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
       let message = error?.message ?? 'Unknown error'
       let data = { ...$dto }
 
       if (Array.isArray(error)) {
-        status = ExceptionStatus.BAD_REQUEST
+        status = ExceptionStatusCode.BAD_REQUEST
         message = `Validation errors: [${error.map(e => e.property)}]`
         data = merge(data, { errors: error })
       } else if (error.message.includes(`document with id`)) {
-        status = ExceptionStatus.BAD_REQUEST
+        status = ExceptionStatusCode.BAD_REQUEST
         message = `Entity with id "${$dto.id}" already exists`
         data = merge(data, { errors: { id: $dto.id } })
       }
@@ -123,7 +123,7 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
       const data = { errors: { id } }
       const message = `Entity with id "${id}" does not exist`
 
-      throw new AppException(ExceptionStatus.NOT_FOUND, message, data)
+      throw new AppException(ExceptionStatusCode.NOT_FOUND, message, data)
     }
 
     return found
@@ -161,14 +161,14 @@ export default class EntityRepository<E extends IE = IE> extends BFR<E> {
     try {
       return await this.update($dto)
     } catch (error) {
-      let status = ExceptionStatus.INTERNAL_SERVER_ERROR
+      let status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
       let message = error?.message ?? 'Unknown error'
 
       /* eslint-disable-next-line sort-keys */
       let data = { id, dto: $dto }
 
       if (Array.isArray(error)) {
-        status = ExceptionStatus.BAD_REQUEST
+        status = ExceptionStatusCode.BAD_REQUEST
         message = `Validation errors: [${error.map(e => e.property)}]`
         data = merge(data, { errors: error })
       }

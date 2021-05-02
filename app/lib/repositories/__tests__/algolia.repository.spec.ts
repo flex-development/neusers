@@ -1,6 +1,7 @@
-import { ExceptionStatus } from '@neusers/lib/enums/exception-status.enum'
-import AppException from '@neusers/lib/exceptions/app.exception'
-import type { AppExceptionJSON, SearchParams } from '@neusers/lib/interfaces'
+import AppException from '@/lib/exceptions/app.exception'
+import type { SearchParams } from '@/lib/interfaces'
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import Algolia from '../../../config/algolia'
 import Subject from '../algolia.repository'
 import MockEntityRepository from '../entity.repository'
@@ -178,9 +179,9 @@ describe('app/lib/repositories/AlgoliaRepository', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.INTERNAL_SERVER_ERROR)
+      expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect(ejson.data).toMatchObject({
         // @ts-expect-error testing
         index_name: TestSubject.index_name,

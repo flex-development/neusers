@@ -3,7 +3,6 @@
  * @module app/lib/enums
  */
 
-export { ExceptionClassName } from './exception-class-name.enum'
-export { ExceptionStatus } from './exception-status.enum'
+export default {}
 
 /* eslint-disable prettier/prettier */

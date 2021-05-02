@@ -6,7 +6,7 @@ import * as pkg from '../package.json'
 import { CONF } from './config/configuration'
 import { AllExceptionsFilter } from './lib/filters'
 import { PageviewInterceptor } from './lib/interceptors'
-import { EnvironmentVariables } from './lib/interfaces'
+import type { EnvironmentVariables } from './lib/interfaces'
 
 /**
  * @file Implementation - useGlobal

@@ -1,5 +1,5 @@
+import type { HttpExceptionJSON } from '@/lib/types'
 import { BadRequestException } from '@nestjs/common/exceptions'
-import type { HttpExceptionJSON } from '@neusers/lib/types'
 
 /**
  * @file Global Test Fixture - BadRequestException

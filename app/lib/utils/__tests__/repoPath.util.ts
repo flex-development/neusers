@@ -1,6 +1,6 @@
-import { ExceptionStatus } from '@neusers/lib/enums'
-import AppException from '@neusers/lib/exceptions/app.exception'
-import type { AppExceptionJSON } from '@neusers/lib/interfaces'
+import AppException from '@/lib/exceptions/app.exception'
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import type { PlainObject } from 'simplytyped'
 import subject from '../repoPath.util'
 
@@ -10,14 +10,14 @@ import subject from '../repoPath.util'
  */
 
 describe('app/lib/utils/repoPath', () => {
-  it('returns database repository path', () => {
+  it('should return database repository path', () => {
     const name = 'objects'
 
     expect(subject(name)).toMatch(new RegExp(`_${name}`))
   })
 
-  describe('throws error', () => {
-    it('empty string', () => {
+  describe('should throw', () => {
+    it('should throw if name is empty string', () => {
       const name = ''
 
       let exception = {} as AppException
@@ -30,13 +30,13 @@ describe('app/lib/utils/repoPath', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.INTERNAL_SERVER_ERROR)
+      expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect((ejson.errors as PlainObject).name).toBe(name)
     })
 
-    it('nullable', () => {
+    it('should throw if name is nullable', () => {
       const name = (undefined as unknown) as string
 
       let exception = {} as AppException
@@ -49,9 +49,9 @@ describe('app/lib/utils/repoPath', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.INTERNAL_SERVER_ERROR)
+      expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect((ejson.errors as PlainObject).name).toBe(null)
     })
   })

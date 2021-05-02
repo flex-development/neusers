@@ -21,7 +21,13 @@
     "noUnusedParameters": false,
     "outDir": "dist",
     "paths": {
-      "@neusers/*": ["app/*"],
+      "@/*": ["app/*"],
+      "@flex-development/exceptions": [
+        "node_modules/@flex-development/exceptions/dist/index"
+      ],
+      "@flex-development/exceptions/*": [
+        "node_modules/@flex-development/exceptions/dist/*"
+      ],
       "@tests/fixtures/*": ["__tests__/__fixtures__/*"],
       "@tests/*": ["__tests__/*"]
     },

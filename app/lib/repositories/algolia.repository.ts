@@ -1,4 +1,5 @@
 import type { SearchOptions, Settings } from '@algolia/client-search'
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import type { SearchIndex } from 'algoliasearch'
 import clamp from 'lodash/clamp'
 import isEmpty from 'lodash/isEmpty'
@@ -10,7 +11,6 @@ import uniq from 'lodash/uniq'
 import Algolia, { SEARCH_INDEX_SETTINGS } from '../../config/algolia'
 import { CONF } from '../../config/configuration'
 import '../../config/database'
-import { ExceptionStatus } from '../enums/exception-status.enum'
 import AppException from '../exceptions/app.exception'
 import type { IEntity } from '../interfaces'
 import type { SearchParams } from '../interfaces/search-params.interface'
@@ -143,7 +143,7 @@ export default class AlgoliaRepository<
       const { message, status = 500 } = err
 
       // Check for missing search index error
-      if (status === ExceptionStatus.NOT_FOUND) {
+      if (status === ExceptionStatusCode.NOT_FOUND) {
         const message_s_pass = message?.toLowerCase().startsWith('index')
         const message_e_pass = message?.toLowerCase().endsWith('does not exist')
 

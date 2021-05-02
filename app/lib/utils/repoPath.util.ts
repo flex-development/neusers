@@ -1,5 +1,5 @@
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import { CONF } from '../../config/configuration'
-import { ExceptionStatus } from '../enums/exception-status.enum'
 import AppException from '../exceptions/app.exception'
 import type { OrNever } from '../types'
 
@@ -19,10 +19,11 @@ import type { OrNever } from '../types'
  */
 const repoPath = (name: string): OrNever<string> => {
   if (typeof name !== 'string' || !name.trim().length) {
+    const code = ExceptionStatusCode.INTERNAL_SERVER_ERROR
     const message = 'Invalid collection name'
     const data = { errors: { name: typeof name === 'undefined' ? null : name } }
 
-    throw new AppException(ExceptionStatus.INTERNAL_SERVER_ERROR, message, data)
+    throw new AppException(code, message, data)
   }
 
   return `${CONF.PREVIEW ? CONF.VERCEL_ENV : CONF.NODE_ENV}_${name}`

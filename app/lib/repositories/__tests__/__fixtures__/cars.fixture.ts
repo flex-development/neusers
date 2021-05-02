@@ -1,6 +1,6 @@
-import type { IEntity } from '@neusers/lib/interfaces/entity.interface'
-import Entity from '@neusers/lib/models/entity.model'
-import repoPath from '@neusers/lib/utils/repoPath.util'
+import type { IEntity } from '@/lib/interfaces/entity.interface'
+import Entity from '@/lib/models/entity.model'
+import repoPath from '@/lib/utils/repoPath.util'
 import { IsNumber, IsString } from 'class-validator'
 import { Collection } from 'fireorm/lib/src/Decorators/Collection'
 

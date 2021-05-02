@@ -1,4 +1,4 @@
-import type { IUser } from '@neusers/subdomains/users/interfaces'
+import type { IUser } from '@/subdomains/users/interfaces'
 
 /**
  * @file Test Fixture - Users

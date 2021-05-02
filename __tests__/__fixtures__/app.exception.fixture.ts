@@ -1,5 +1,5 @@
-import AppException from '@neusers/lib/exceptions/app.exception'
-import type { AppExceptionJSON as IException } from '@neusers/lib/interfaces'
+import AppException from '@/lib/exceptions/app.exception'
+import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 
 /**
  * @file Global Test Fixture - AppException
@@ -7,5 +7,4 @@ import type { AppExceptionJSON as IException } from '@neusers/lib/interfaces'
  */
 
 export const APP_EXCEPTION = new AppException()
-
-export const APP_EXCEPTION_JSON = APP_EXCEPTION.getResponse() as IException
+export const APP_EXCEPTION_JSON = APP_EXCEPTION.getResponse() as ExceptionJSON

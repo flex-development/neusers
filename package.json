@@ -28,6 +28,7 @@
     "start:debug": "yarn start --debug"
   },
   "dependencies": {
+    "@flex-development/exceptions": "1.0.0",
     "@nestjs/common": "next",
     "@nestjs/config": "latest",
     "@nestjs/core": "next",
@@ -87,8 +88,8 @@
     "@types/supertest": "latest",
     "@types/urijs": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
-    "@vercel/node": "latest",
     "@typescript-eslint/parser": "latest",
+    "@vercel/node": "latest",
     "babel-plugin-module-resolver": "latest",
     "babel-plugin-transform-define": "latest",
     "dotenv-cli": "latest",

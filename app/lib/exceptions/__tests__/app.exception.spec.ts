@@ -1,81 +1,92 @@
-import { HttpException as MockHttpException } from '@nestjs/common/exceptions/http.exception'
-import {
-  ExceptionClassName as ClassName,
-  ExceptionStatus as Status
-} from '../../enums'
-import Subject from '../app.exception'
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import { DEM } from '@flex-development/exceptions/exceptions'
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
+import { HttpException } from '@nestjs/common/exceptions/http.exception'
+import TestSubject from '../app.exception'
 
 /**
  * @file Unit Tests - AppException
  * @module app/lib/exceptions/tests/app.exception
  */
 
+jest.mock('@flex-development/exceptions/exceptions/base.exception')
 jest.mock('@nestjs/common/exceptions/http.exception')
 
+const MockHttpException = HttpException as jest.MockedClass<
+  typeof HttpException
+>
+const MockException = Exception as jest.MockedClass<typeof Exception>
+
 describe('app/lib/exceptions/AppException', () => {
+  const datastr = 'Test error message'
+  const data = { test: true }
+
+  const { constructor: MockExceptionConstructor } = MockException.prototype
+  const spy_toJSON = jest.spyOn(MockException.prototype, 'toJSON')
+
+  const ecode = ExceptionStatusCode.INTERNAL_SERVER_ERROR
+  const emessage = DEM
+
   describe('exports', () => {
-    it('class by default', () => {
-      expect(Subject).toBeDefined()
-      expect(Subject.constructor.name).toBe('Function')
+    it('should export class by default', () => {
+      expect(TestSubject).toBeDefined()
+      expect(TestSubject.constructor.name).toBe('Function')
     })
   })
 
   describe('constructor', () => {
-    it('calls HttpException class constructor', () => {
-      new Subject()
+    it('should call HttpException class constructor', () => {
+      new TestSubject()
 
       expect(MockHttpException.prototype.constructor).toBeCalledTimes(1)
+    })
+
+    it('should call Exception constructor with error message object', () => {
+      const edata = { message: datastr }
+
+      new TestSubject(ExceptionStatusCode.INTERNAL_SERVER_ERROR, DEM, datastr)
+
+      expect(MockExceptionConstructor).toBeCalledTimes(1)
+      expect(MockExceptionConstructor).toBeCalledWith(
+        ecode,
+        emessage,
+        edata,
+        undefined
+      )
+    })
+
+    it('should call Exception constructor', () => {
+      new TestSubject()
+
+      expect(MockException.prototype.constructor).toBeCalledTimes(1)
+    })
+
+    it('should override #response property', () => {
+      new TestSubject()
+
+      expect(spy_toJSON).toBeCalledTimes(1)
     })
   })
 
   describe('.createBody', () => {
-    describe('creates AppExceptionJSON object', () => {
-      const epartial = {
-        className: ClassName.INTERNAL_SERVER_ERROR,
-        code: Status.INTERNAL_SERVER_ERROR,
-        message: 'Internal server error',
-        name: 'INTERNAL_SERVER_ERROR'
-      }
+    it('should call Exception constructor with error message object', () => {
+      const edata = { message: datastr }
 
-      it('typeof data === "string"', () => {
-        const data = 'Test error message'
+      TestSubject.createBody(datastr)
 
-        const result = Subject.createBody(data)
+      expect(MockExceptionConstructor).toBeCalledTimes(1)
+      expect(MockExceptionConstructor).toBeCalledWith(ecode, emessage, edata)
 
-        expect(result).toMatchObject({ ...epartial, data: {}, message: data })
-      })
+      expect(spy_toJSON).toBeCalledTimes(1)
+    })
 
-      it('typeof data !== "string"', () => {
-        const data = { test: true }
+    it('should call Exception constructor', () => {
+      TestSubject.createBody(data)
 
-        const result = Subject.createBody(data)
+      expect(MockExceptionConstructor).toBeCalledTimes(1)
+      expect(MockExceptionConstructor).toBeCalledWith(ecode, emessage, data)
 
-        expect(result).toMatchObject({ ...epartial, data })
-      })
-
-      it('typeof data?.errors !== undefined', () => {
-        const data = { errors: [] }
-
-        const result = Subject.createBody(data)
-
-        expect(result).toMatchObject({
-          ...epartial,
-          data: {},
-          errors: data.errors
-        })
-      })
-
-      it('typeof data?.message === "string"', () => {
-        const data = { message: 'Test error message' }
-
-        const result = Subject.createBody(data)
-
-        expect(result).toMatchObject({
-          ...epartial,
-          data: {},
-          message: data.message
-        })
-      })
+      expect(spy_toJSON).toBeCalledTimes(1)
     })
   })
 })

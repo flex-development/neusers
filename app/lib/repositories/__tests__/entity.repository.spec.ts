@@ -1,6 +1,6 @@
-import { ExceptionStatus } from '@neusers/lib/enums/exception-status.enum'
-import AppException from '@neusers/lib/exceptions/app.exception'
-import type { AppExceptionJSON } from '@neusers/lib/interfaces'
+import AppException from '@/lib/exceptions/app.exception'
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import { BaseFirestoreRepository as BFR } from 'fireorm'
 import type { PlainObject } from 'simplytyped'
 import { v4 as uuid } from 'uuid'
@@ -75,9 +75,9 @@ describe('app/lib/repositories/EntityRepository', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.BAD_REQUEST)
+      expect(ejson.code).toBe(ExceptionStatusCode.BAD_REQUEST)
       expect(ejson.data).toMatchObject(entity)
       expect(ejson.errors).toBeArray({ length: VALIDATION_ERRORS.length })
     })
@@ -98,9 +98,9 @@ describe('app/lib/repositories/EntityRepository', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.BAD_REQUEST)
+      expect(ejson.code).toBe(ExceptionStatusCode.BAD_REQUEST)
       expect(typeof (ejson.errors as PlainObject).id === 'string').toBeTruthy()
       expect(ejson.message.startsWith('Entity')).toBeTruthy()
       expect(ejson.message.endsWith('already exists')).toBeTruthy()
@@ -147,9 +147,9 @@ describe('app/lib/repositories/EntityRepository', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.NOT_FOUND)
+      expect(ejson.code).toBe(ExceptionStatusCode.NOT_FOUND)
       expect((ejson.errors as PlainObject).id).toBe(entity.id)
       expect(ejson.message).toMatch(new RegExp(`"${entity.id}" does not exist`))
     })
@@ -192,9 +192,9 @@ describe('app/lib/repositories/EntityRepository', () => {
 
       expect(exception.constructor.name).toBe('AppException')
 
-      const ejson = exception.getResponse() as AppExceptionJSON
+      const ejson = exception.getResponse() as ExceptionJSON
 
-      expect(ejson.code).toBe(ExceptionStatus.BAD_REQUEST)
+      expect(ejson.code).toBe(ExceptionStatusCode.BAD_REQUEST)
       expect({ ...ejson.data.dto, updated_at: null }).toMatchObject(mockEntity)
       expect(ejson.data.id).toBe(mockEntity.id)
       expect(ejson.errors).toBeArray({ length: VALIDATION_ERRORS.length })

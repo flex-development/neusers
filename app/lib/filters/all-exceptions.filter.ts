@@ -1,3 +1,4 @@
+import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
 import { Catch, HttpException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -6,7 +7,6 @@ import type { EventParam } from 'ga-measurement-protocol'
 import merge from 'lodash/merge'
 import type { PlainObject } from 'simplytyped'
 import MeasurementProtocol from '../../config/measurement-protocol'
-import type { AppExceptionJSON } from '../../lib/interfaces'
 import AppException from '../exceptions/app.exception'
 
 /**
@@ -51,7 +51,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     // Get exception response
     let ejson = exception.getResponse() as PlainObject
 
-    // Convert into `AppExceptionJSON` if necessary
+    // Convert into `ExceptionJSON` if necessary
     if (!ejson.className) {
       ejson = AppException.createBody({}, ejson.message, ejson.statusCode)
       ejson.data.stack = exception.stack
@@ -67,7 +67,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     }
 
     // Send error `event` hit
-    await this.track(ejson as AppExceptionJSON, {
+    await this.track(ejson as ExceptionJSON, {
       method: req.method.toUpperCase(),
       path: ejson.data.path,
       ua: req.headers['user-agent']
@@ -84,13 +84,13 @@ export default class AllExceptionsFilter implements ExceptionFilter {
    * Responses will be tracked under the "Error Response" category, and labeled
    * with the error message.
    *
-   * @param {AppExceptionJSON} error - Error to report
+   * @param {ExceptionJSON} error - Error to report
    * @param {Partial<EventParam>} [param] - Additional event parameters
    * @return {Promise<boolean>} Promise containing `true` if event was tracked
    * successfully, `false` otherwise
    */
   async track(
-    error: AppExceptionJSON,
+    error: ExceptionJSON,
     param: Partial<EventParam> = {}
   ): Promise<boolean> {
     const { code: eventValue, message: eventLabel, name: eventAction } = error

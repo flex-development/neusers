@@ -1,12 +1,10 @@
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import { DEM } from '@flex-development/exceptions/exceptions'
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
+import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
+import type { ExceptionErrors } from '@flex-development/exceptions/types'
 import { HttpException } from '@nestjs/common'
-import omit from 'lodash/omit'
 import type { PlainObject } from 'simplytyped'
-import {
-  ExceptionClassName as ClassName,
-  ExceptionStatus as Status
-} from '../enums'
-import type { AppExceptionJSON as IException } from '../interfaces'
-import type { AppExceptionErrors as ExceptionErrors } from '../types'
 
 /**
  * @file Exceptions - AppException
@@ -14,56 +12,58 @@ import type { AppExceptionErrors as ExceptionErrors } from '../types'
  */
 
 /**
- * Defines an API exception.
+ * Defines an API application exception.
  *
  * @class
  * @extends HttpException
  */
 export default class AppException extends HttpException {
   /**
+   * @readonly
+   * @instance
+   * @property {Exception} exception - Underlying exception
+   */
+  readonly exception: Exception
+
+  /**
    * Instantiate an `AppException` Exception.
    *
-   * @param {Status} [code] - HTTP error code
+   * @param {ExceptionStatusCode} [code] - HTTP error code
    * @param {string} [message] - Error message
-   * @param {PlainObject} [data] - Additional error data
+   * @param {PlainObject | string} [data] - Additional error data
    * @param {ExceptionErrors} [data.errors] - Exception errors
    */
   constructor(
-    code: Status = Status.INTERNAL_SERVER_ERROR,
-    message: string = 'Internal server error',
-    data: PlainObject = {}
+    code: ExceptionStatusCode = ExceptionStatusCode.INTERNAL_SERVER_ERROR,
+    message: string = DEM,
+    data: PlainObject | string = {}
   ) {
-    super(AppException.createBody(data, message, code), code)
+    super({}, code)
+
+    // If additional error data is a a string, convert into error message object
+    if (typeof data === 'string') data = { message: data }
+
+    // Initialize underlying exception
+    this.exception = new Exception(code, message, data, this.stack)
+
+    // @ts-expect-error overriding response body
+    this.response = this.exception.toJSON()
   }
 
   /**
    * Generates a JSON object representing an AppException.
    *
-   * @param {PlainObject} [data] - Additional error data
+   * @param {PlainObject | string} [data] - Additional error data
    * @param {string} [message] - Error message
-   * @param {Status} [code] - HTTP error code
-   * @return {IException} JSON object representing an AppException
+   * @param {ExceptionStatusCode} [code] - HTTP error code
+   * @return {ExceptionJSON} JSON object representing an AppException
    */
   public static createBody(
     data: PlainObject | string = {},
-    message: string = 'Internal server error',
-    code: Status = Status.INTERNAL_SERVER_ERROR
-  ): IException {
+    message: string = DEM,
+    code: ExceptionStatusCode = ExceptionStatusCode.INTERNAL_SERVER_ERROR
+  ): ExceptionJSON {
     if (typeof data === 'string') data = { message: data }
-
-    const name = Object.keys(Status).find(key => Status[key] === code) || ''
-
-    /* eslint-disable sort-keys */
-
-    return {
-      name: name as IException['name'],
-      message: typeof data?.message === 'string' ? data.message : message,
-      code,
-      className: ClassName[name],
-      data: omit(data, ['errors', 'message']),
-      errors: data.errors
-    }
-
-    /* eslint-enable sort-keys */
+    return new Exception(code, message, data).toJSON()
   }
 }

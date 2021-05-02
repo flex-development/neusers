@@ -1,6 +1,6 @@
+import type { IEntity } from '@/lib/interfaces/entity.interface'
 import { getMockReq } from '@jest-mock/express'
 import type { CallHandler, ExecutionContext } from '@nestjs/common'
-import type { IEntity } from '@neusers/lib/interfaces/entity.interface'
 import FixtureConfig from '@tests/fixtures/config.fixture'
 import faker from 'faker'
 import URI from 'urijs'
@@ -18,7 +18,7 @@ describe('app/lib/interceptors/PageviewInterceptor', () => {
   const TestSubject = new Subject<IEntity>(FixtureConfig)
 
   describe('exports', () => {
-    it('class by default', () => {
+    it('should class by default', () => {
       expect(Subject).toBeDefined()
       expect(Subject.constructor.name).toBe('Function')
     })
@@ -38,7 +38,7 @@ describe('app/lib/interceptors/PageviewInterceptor', () => {
       url: uri.valueOf()
     })
 
-    it('sends pageview hit', async () => {
+    it('should send pageview hit', async () => {
       const context = { switchToHttp: () => ({ getRequest: () => req }) }
 
       const next: CallHandler<IEntity[]> = {
