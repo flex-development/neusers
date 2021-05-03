@@ -3,7 +3,6 @@
  * @module app/subdomains/users/interfaces
  */
 
-export type { IUser } from './user.interface'
-export type { UsersSearchParams } from './users-search-params.interface'
+export default {}
 
 /* eslint-disable prettier/prettier */

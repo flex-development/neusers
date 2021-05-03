@@ -1,26 +1,26 @@
-import type { IEntity } from '@/lib/interfaces/entity.interface'
+import type { IEntity } from '@flex-development/dreepo/lib/models/entity.model'
 import { getMockReq } from '@jest-mock/express'
 import type { CallHandler, ExecutionContext } from '@nestjs/common'
 import FixtureConfig from '@tests/fixtures/config.fixture'
 import faker from 'faker'
 import URI from 'urijs'
 import MockMeasurementProtocol from '../../../config/measurement-protocol'
-import Subject from '../pageview.interceptor'
+import TestSubject from '../pageview.interceptor'
 
 /**
  * @file Unit Tests - PageviewInterceptor
- * @module app/lib/interceptors/tests/pageview.interceptor
+ * @module app/lib/interceptors/tests/PageviewInterceptor
  */
 
 jest.mock('../../../config/measurement-protocol')
 
-describe('app/lib/interceptors/PageviewInterceptor', () => {
-  const TestSubject = new Subject<IEntity>(FixtureConfig)
+describe('unit:app/lib/interceptors/PageviewInterceptor', () => {
+  const Subject = new TestSubject<IEntity>(FixtureConfig)
 
   describe('exports', () => {
     it('should class by default', () => {
-      expect(Subject).toBeDefined()
-      expect(Subject.constructor.name).toBe('Function')
+      expect(TestSubject).toBeDefined()
+      expect(TestSubject.constructor.name).toBe('Function')
     })
   })
 
@@ -45,7 +45,7 @@ describe('app/lib/interceptors/PageviewInterceptor', () => {
         handle: jest.fn().mockReturnValue(Promise.resolve([]))
       }
 
-      await TestSubject.intercept(context as ExecutionContext, next)
+      await Subject.intercept(context as ExecutionContext, next)
 
       expect(MockMeasurementProtocol.pageview).toBeCalledTimes(1)
       expect(MockMeasurementProtocol.pageview).toBeCalledWith({

@@ -6,7 +6,7 @@ import TestSubject from '../app.exception'
 
 /**
  * @file Unit Tests - AppException
- * @module app/lib/exceptions/tests/app.exception
+ * @module app/lib/exceptions/tests/AppException
  */
 
 jest.mock('@flex-development/exceptions/exceptions/base.exception')
@@ -17,7 +17,7 @@ const MockHttpException = HttpException as jest.MockedClass<
 >
 const MockException = Exception as jest.MockedClass<typeof Exception>
 
-describe('app/lib/exceptions/AppException', () => {
+describe('unit:app/lib/exceptions/AppException', () => {
   const datastr = 'Test error message'
   const data = { test: true }
 

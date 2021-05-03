@@ -1,4 +1,4 @@
-const merge = require('lodash').merge
+const merge = require('lodash.merge')
 const { resolve } = require('path')
 const {
   compilerOptions: { outDir }

@@ -1,22 +1,13 @@
-import { IsAlphanumeric, IsEmail, IsString, MinLength } from 'class-validator'
-import type { IUser } from '../interfaces/user.interface'
+import type { UserEntity } from '../users.types'
 
 /**
  * @file Subdomain DTO - CreateUserDTO
  * @module app/subdomains/users/dto/CreateUser
  */
 
-export default class CreateUserDTO {
-  @IsEmail()
-  email: IUser['email']
-
-  @IsString()
-  first_name: IUser['first_name']
-
-  @IsString()
-  last_name: IUser['last_name']
-
-  @IsAlphanumeric()
-  @MinLength(4)
-  password: IUser['password']
+export interface CreateUserDTO {
+  email: UserEntity['email']
+  first_name: UserEntity['first_name']
+  last_name: UserEntity['last_name']
+  password: UserEntity['password']
 }

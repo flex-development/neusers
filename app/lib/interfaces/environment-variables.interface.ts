@@ -1,3 +1,5 @@
+import type { EnvironmentVariables as DreepoEnvironment } from '@flex-development/dreepo/lib/interfaces'
+
 /**
  * @file Global Interface - EnvironmentVariables
  * @module app/lib/interfaces/EnvironmentVariables
@@ -6,11 +8,9 @@
 /**
  * Shape of object containing environment variables used in this application.
  */
-export interface EnvironmentVariables {
+export interface EnvironmentVariables extends DreepoEnvironment {
   readonly ALGOLIA_APP_ID: string
   readonly ALGOLIA_API_KEY: string
-  readonly FIREBASE_CLIENT_EMAIL: string
-  readonly FIREBASE_PRIVATE_KEY: string
   readonly FIREBASE_PROJECT_ID: string
   readonly GA_ENABLED: boolean
   readonly GA_TRACKING_ID: string

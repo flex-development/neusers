@@ -2,28 +2,28 @@ import AppException from '@/lib/exceptions/app.exception'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import type { PlainObject } from 'simplytyped'
-import subject from '../repoPath.util'
+import testSubject from '../repoPath.util'
 
 /**
  * @file Unit Tests - repoPath
  * @module app/lib/utils/tests/repoPath
  */
 
-describe('app/lib/utils/repoPath', () => {
+describe('unit:app/lib/utils/repoPath', () => {
   it('should return database repository path', () => {
     const name = 'objects'
 
-    expect(subject(name)).toMatch(new RegExp(`_${name}`))
+    expect(testSubject(name)).toMatch(new RegExp(`/${name}`))
   })
 
   describe('should throw', () => {
-    it('should throw if name is empty string', () => {
+    it('should throw if repository name is empty string', () => {
       const name = ''
 
       let exception = {} as AppException
 
       try {
-        subject(name)
+        testSubject(name)
       } catch (error) {
         exception = error
       }
@@ -36,13 +36,13 @@ describe('app/lib/utils/repoPath', () => {
       expect((ejson.errors as PlainObject).name).toBe(name)
     })
 
-    it('should throw if name is nullable', () => {
+    it('should throw if repository name is nullable', () => {
       const name = (undefined as unknown) as string
 
       let exception = {} as AppException
 
       try {
-        subject(name)
+        testSubject(name)
       } catch (error) {
         exception = error
       }

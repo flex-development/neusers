@@ -11,7 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "module": "commonjs",
+    "lib": ["esnext"],
+    "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -22,12 +23,6 @@
     "outDir": "dist",
     "paths": {
       "@/*": ["app/*"],
-      "@flex-development/exceptions": [
-        "node_modules/@flex-development/exceptions/dist/index"
-      ],
-      "@flex-development/exceptions/*": [
-        "node_modules/@flex-development/exceptions/dist/*"
-      ],
       "@tests/fixtures/*": ["__tests__/__fixtures__/*"],
       "@tests/*": ["__tests__/*"]
     },
@@ -40,7 +35,7 @@
     "strictPropertyInitialization": false,
     "suppressImplicitAnyIndexErrors": true,
     "strict": true,
-    "target": "es2017"
+    "target": "es2018"
   },
   "exclude": ["node_modules"]
 }

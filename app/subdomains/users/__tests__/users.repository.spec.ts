@@ -1,46 +1,68 @@
-import MockAlgoliaRepo from '../../../lib/repositories/algolia.repository'
-import { USERS_ROOT } from './__fixtures__/users.fixture'
+import repoPath from '@/lib/utils/repoPath.util'
+import Repository from '@flex-development/dreepo/repositories/repository'
+import { hash } from 'bcryptjs'
+import TestSubject from '../users.repository'
 
 /**
  * @file Unit Tests - UsersRepository
  * @module app/subdomains/users/tests/UsersRepository
  */
 
-jest.mock('../../../config/algolia')
-jest.mock('../../../lib/repositories/algolia.repository')
+jest.mock('@/lib/utils/repoPath.util')
+jest.mock('@flex-development/dreepo/repositories/repository')
 
-describe('app/subdomains/users/UsersRepository', () => {
-  const OBJECTS = Object.values(USERS_ROOT).map(object => ({
-    ...object,
-    created_at: Date.now(),
-    updated_at: null
-  }))
+const MockRepository = Repository as jest.MockedClass<typeof Repository>
+const mockHash = hash as jest.MockedFunction<typeof hash>
+const mockRepoPath = repoPath as jest.MockedFunction<typeof repoPath>
+
+describe('unit:app/subdomains/users/UsersRepository', () => {
+  /**
+   * Returns a test `UsersRepository` instance.
+   *
+   * @return {TestSubject} Test `UsersRepository` instance
+   */
+  const getSubject = (): TestSubject => new TestSubject()
+
+  describe('exports', () => {
+    it('should export class by default', () => {
+      expect(TestSubject).toBeDefined()
+      expect(TestSubject.constructor.name).toBe('Function')
+    })
+  })
+
+  describe('constructor', () => {
+    const { constructor } = MockRepository.prototype
+
+    beforeEach(() => {
+      getSubject()
+    })
+
+    it('should call dreepo Repository class constructor', () => {
+      expect(constructor).toBeCalledTimes(1)
+    })
+
+    it('should call repoPath utility function', () => {
+      expect(mockRepoPath).toBeCalledTimes(1)
+    })
+  })
 
   describe('#create', () => {
-    it.todo('hashes password')
+    it.todo('should hash password')
+
+    it.todo('should throw AppException if error hashing password')
   })
 
   describe('#findByOneEmail', () => {
-    const spy = jest.spyOn(MockAlgoliaRepo.prototype, 'findAll')
-
-    it.todo('returns user entity')
+    it.todo('should return user entity')
 
     describe('throws', () => {
-      it.todo('if user is found and should not exist')
+      it.todo('should throw if user is found and should not exist')
 
-      it.todo('if user is not found and should exist')
+      it.todo('should throw if user is not found and should exist')
     })
   })
 
   describe('#patch', () => {
-    it.todo('hashes updated password')
-  })
-
-  describe('#searchOptions', () => {
-    it.todo('formats params.email')
-
-    it.todo('formats params.first_name')
-
-    it.todo('formats params.last_name')
+    it.todo('should hash updated password')
   })
 })

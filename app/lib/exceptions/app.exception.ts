@@ -8,7 +8,7 @@ import type { PlainObject } from 'simplytyped'
 
 /**
  * @file Exceptions - AppException
- * @module app/lib/exceptions/app.exception
+ * @module app/lib/exceptions/AppException
  */
 
 /**

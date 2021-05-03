@@ -3,6 +3,6 @@
  * @module app/lib/models
  */
 
-export { default as Entity } from './entity.model'
+export default {}
 
 /* eslint-disable prettier/prettier */

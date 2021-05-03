@@ -3,6 +3,7 @@
  * @module app/subdomains/users/models
  */
 
-export { default as User } from './user.model'
+export { User } from './user.model'
+export type { UserEntity, UserQuery } from './user.model'
 
 /* eslint-disable prettier/prettier */

@@ -1,27 +1,36 @@
-import { IsAlphanumeric, IsEmail, IsString, MinLength } from 'class-validator'
-import { Collection } from 'fireorm'
-import { CONF } from '../../../config/configuration'
-import Entity from '../../../lib/models/entity.model'
-import repoPath from '../../../lib/utils/repoPath.util'
-import { IUser } from '../interfaces/user.interface'
+import { Entity } from '@flex-development/dreepo'
+import { String } from 'runtypes'
+import type { UsersRepoValidatorOptsDTO } from '../users.types'
 
 /**
  * @file Subdomain Model - User
- * @module app/subdomains/users/models/User
+ * @module app/subdomains/users/User
  */
 
-@Collection(repoPath(CONF.SUBDOMAINS.users.repo))
-export default class User extends Entity implements IUser {
-  @IsEmail()
-  email: IUser['email']
+export const User = Entity.extend({
+  /**
+   * Unique email address for this user.
+   * Attempting to assign the same email to multiple users returns an error.
+   */
+  email: String,
 
-  @IsString()
-  first_name: IUser['first_name']
+  /**
+   * User's first name.
+   */
+  first_name: String,
 
-  @IsString()
-  last_name: IUser['last_name']
+  /**
+   * User's first name.
+   */
+  last_name: String,
 
-  @IsAlphanumeric()
-  @MinLength(4)
-  password: IUser['password']
+  /**
+   * Hashed password.
+   */
+  password: String
+})
+
+export const UserVopts: UsersRepoValidatorOptsDTO = {
+  enabled: true,
+  model: User
 }

@@ -1,4 +1,4 @@
-import type { PlainObject } from 'simplytyped'
+import dreepoConfig from '@flex-development/dreepo/config/configuration'
 import type { EnvironmentVariables } from '../lib/interfaces'
 
 /**
@@ -10,8 +10,6 @@ import type { EnvironmentVariables } from '../lib/interfaces'
 const {
   ALGOLIA_API_KEY = '',
   ALGOLIA_APP_ID = '',
-  FIREBASE_CLIENT_EMAIL = '',
-  FIREBASE_PRIVATE_KEY = '',
   FIREBASE_PROJECT_ID = '',
   GA_ENABLED,
   GA_TRACKING_ID,
@@ -29,11 +27,10 @@ const {
  * @property {EnvironmentVariables} CONF - Environment variables
  */
 export const CONF: EnvironmentVariables = (() => {
-  const ev: PlainObject = {
+  const ENV: Partial<EnvironmentVariables> = {
+    ...dreepoConfig(),
     ALGOLIA_API_KEY,
     ALGOLIA_APP_ID,
-    FIREBASE_CLIENT_EMAIL,
-    FIREBASE_PRIVATE_KEY: FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     FIREBASE_PROJECT_ID,
     GA_ENABLED: JSON.parse(`${GA_ENABLED || false}`),
     GA_TRACKING_ID,
@@ -50,12 +47,13 @@ export const CONF: EnvironmentVariables = (() => {
     VERCEL_GIT_COMMIT_SHA
   }
 
-  ev.DEV = ev.NODE_ENV === 'development' || ev.VERCEL_ENV === 'development'
-  ev.PREVIEW = ev.VERCEL_ENV === 'preview'
-  ev.PROD = ev.NODE_ENV === 'production' || ev.VERCEL_ENV === 'production'
-  ev.TEST = ev.NODE_ENV === 'test'
-
-  return ev as EnvironmentVariables
+  return {
+    ...ENV,
+    DEV: ENV.NODE_ENV === 'development' || ENV.VERCEL_ENV === 'development',
+    PREVIEW: ENV.VERCEL_ENV === 'preview',
+    PROD: ENV.NODE_ENV === 'production' || ENV.VERCEL_ENV === 'production',
+    TEST: ENV.NODE_ENV === 'test'
+  } as EnvironmentVariables
 })()
 
 /**
