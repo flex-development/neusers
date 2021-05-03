@@ -6,6 +6,7 @@ import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import { hashSync } from 'bcryptjs'
 import faker from 'faker'
 import omit from 'lodash.omit'
+import { PlainObject } from 'simplytyped'
 import type { CreateUserDTO } from '../dto/create-user.dto'
 import TestSubject from '../users.repository'
 import { USERS_MOCK_CACHE as mockCache } from './__fixtures__/users.fixture'
@@ -63,8 +64,6 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
   describe('#create', () => {
     const Subject = getSubject()
 
-    const spy_find = jest.spyOn(Subject, 'find')
-
     const CREATE_USER_DTO: CreateUserDTO = Object.freeze({
       email: faker.internet.exampleEmail(),
       first_name: faker.name.firstName(),
@@ -73,6 +72,8 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
     })
 
     const getCreateUserDTO = () => Object.assign({}, CREATE_USER_DTO)
+
+    const spy_find = jest.spyOn(Subject, 'find')
 
     beforeEach(() => {
       spy_find.mockReturnValue(Subject.cache.collection)
@@ -117,16 +118,85 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
   })
 
   describe('#findOneByEmail', () => {
-    it.todo('should return user entity')
+    const Subject = getSubject()
 
-    describe('throws', () => {
-      it.todo('should throw if user is found and should not exist')
+    const ENTITY = Subject.cache.collection[0]
 
-      it.todo('should throw if user is not found and should exist')
+    const FAKE_EMAIL = faker.internet.exampleEmail()
+    const SHOULD_NOT_EXIST = false
+
+    const spy_find = jest.spyOn(Subject, 'find')
+
+    it('should return null if user is not found and should not exist', () => {
+      spy_find.mockReturnValueOnce([])
+
+      const entity = Subject.findOneByEmail(FAKE_EMAIL, {}, SHOULD_NOT_EXIST)
+
+      expect(entity).toBe(null)
+    })
+
+    it('should return user if found and should exist', () => {
+      spy_find.mockReturnValueOnce(Subject.cache.collection)
+
+      const entity = Subject.findOneByEmail(ENTITY.email)
+
+      expect(entity).toMatchObject(ENTITY)
+    })
+
+    describe('should throw', () => {
+      it('should throw if user is found and should not exist', () => {
+        spy_find.mockReturnValueOnce(Subject.cache.collection)
+
+        const emessage = `User with email "${ENTITY.email}" already exists`
+
+        let exception = {} as AppException
+
+        try {
+          Subject.findOneByEmail(ENTITY.email, undefined, SHOULD_NOT_EXIST)
+        } catch (error) {
+          exception = error
+        }
+
+        const ejson = exception.getResponse() as ExceptionJSON
+
+        expect(ejson.code).toBe(ExceptionStatusCode.CONFLICT)
+        expect(ejson.data).toMatchObject({
+          exists: SHOULD_NOT_EXIST,
+          params: {}
+        })
+        expect((ejson.errors as PlainObject).email).toBe(ENTITY.email)
+        expect(ejson.message).toBe(emessage)
+      })
+
+      it('should throw if user is not found and should exist', () => {
+        spy_find.mockReturnValueOnce([])
+
+        const email = faker.internet.exampleEmail()
+        const emessage = `User with email "${email}" does not exist`
+
+        let exception = {} as AppException
+
+        try {
+          Subject.findOneByEmail(email)
+        } catch (error) {
+          exception = error
+        }
+
+        const ejson = exception.getResponse() as ExceptionJSON
+
+        expect(ejson.code).toBe(ExceptionStatusCode.NOT_FOUND)
+        expect(ejson.data).toMatchObject({ exists: true, params: {} })
+        expect((ejson.errors as PlainObject).email).toBe(email)
+        expect(ejson.message).toBe(emessage)
+      })
     })
   })
 
   describe('#patch', () => {
-    it.todo('should hash updated password')
+    it.todo('should check if user with dto.email exists')
+
+    it.todo('should hash updated password if non-empty string')
+
+    it.todo('should throw AppException if error hashing password')
   })
 })

@@ -62,7 +62,7 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
    * @param {string} [email] - Email address of user to find
    * @param {UserQuery} [params] - Users repository query parameters
    * @param {boolean} [exists] - If `true`, throw error if user does exist;
-   * othwerwise throw error if user with exists
+   * othwerwise throw error if user exists
    * @return {PartialOr<UserEntity> | null} User or null
    * @throws {AppException}
    */
@@ -75,7 +75,7 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
     const user = users[0] && users[0]?.email === email ? users[0] : null
 
     if (!user && exists) {
-      const data = { errors: { email } }
+      const data = { errors: { email }, exists, params }
       const message = `User with email "${email}" does not exist`
 
       throw new AppException(ExceptionStatusCode.NOT_FOUND, message, data)
@@ -83,9 +83,9 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
 
     if (user && !exists) {
       const message = `User with email "${email}" already exists`
-      const data = { errors: { email } }
+      const data = { errors: { email }, exists, params }
 
-      throw new AppException(ExceptionStatusCode.BAD_REQUEST, message, data)
+      throw new AppException(ExceptionStatusCode.CONFLICT, message, data)
     }
 
     return user
