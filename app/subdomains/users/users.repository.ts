@@ -1,7 +1,7 @@
 import { Repository } from '@flex-development/dreepo'
 import type { OrNever, PartialOr } from '@flex-development/dreepo/lib/types'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
-import { hash } from 'bcryptjs'
+import { hashSync } from 'bcryptjs'
 import { CONF } from '../../config/configuration'
 import AppException from '../../lib/exceptions/app.exception'
 import repoPath from '../../lib/utils/repoPath.util'
@@ -44,8 +44,8 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
 
     try {
       // Hash user's password (if missing, AppException will be thrown)
-      if (typeof dto.password === 'string' && dto.password.trim().length) {
-        dto.password = await hash(dto.password, 10)
+      if (typeof dto.password === 'string' && !!dto.password.trim().length) {
+        dto.password = hashSync(dto.password, 10)
       }
     } catch (error) {
       const status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
@@ -120,7 +120,7 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
     // Update user's password
     if (typeof dto?.password === 'string' && dto.password.trim().length) {
       try {
-        dto.password = await hash(dto.password, 10)
+        dto.password = hashSync(dto.password, 10)
       } catch (error) {
         const status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
         throw new AppException(status, error.message, dto)
