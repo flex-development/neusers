@@ -1,5 +1,5 @@
+import type { UserEntity } from '@/subdomains/users/users.types'
 import type { RepoRoot } from '@flex-development/dreepo/lib/types'
-import type { UserEntity } from '../../users.types'
 import ROOT from './users-root.fixture.json'
 
 /**

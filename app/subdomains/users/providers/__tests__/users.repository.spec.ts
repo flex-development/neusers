@@ -7,14 +7,19 @@ import { hashSync } from 'bcryptjs'
 import faker from 'faker'
 import omit from 'lodash.omit'
 import { PlainObject } from 'simplytyped'
-import type { CreateUserDTO } from '../dto/create-user.dto'
-import type { PatchUserDTO } from '../dto/patch-user.dto'
 import TestSubject from '../users.repository'
+import {
+  CREATE_USER_DTO,
+  getCreateUserDTO,
+  getPatchUserDTO,
+  PATCH_USER_DTO_EMAIL,
+  PATCH_USER_DTO_PASSWORD
+} from './__fixtures__/dto.fixture'
 import { USERS_MOCK_CACHE as mockCache } from './__fixtures__/users.fixture'
 
 /**
  * @file Unit Tests - UsersRepository
- * @module app/subdomains/users/tests/UsersRepository
+ * @module app/subdomains/users/providers/tests/UsersRepository
  */
 
 jest.mock('@/lib/utils/repoPath.util')
@@ -24,20 +29,11 @@ const MockRepository = Repository as jest.MockedClass<typeof Repository>
 const mockHashSync = hashSync as jest.MockedFunction<typeof hashSync>
 const mockRepoPath = repoPath as jest.MockedFunction<typeof repoPath>
 
-describe('unit:app/subdomains/users/UsersRepository', () => {
-  /**
-   * Returns a test `UsersRepository` instance.
-   *
-   * @return {TestSubject} Test `UsersRepository` instance
-   */
-  const getSubject = (): TestSubject => {
-    const Subject = new TestSubject()
+describe('unit:app/subdomains/users/providers/UsersRepository', () => {
+  const Subject = new TestSubject()
 
-    // @ts-expect-error mocking cache
-    Subject.cache = Object.assign({}, mockCache)
-
-    return Subject
-  }
+  // @ts-expect-error mocking cache
+  Subject.cache = Object.assign({}, mockCache)
 
   describe('exports', () => {
     it('should export class by default', () => {
@@ -50,7 +46,7 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
     const { constructor } = MockRepository.prototype
 
     beforeEach(() => {
-      getSubject()
+      new TestSubject()
     })
 
     it('should call dreepo Repository class constructor', () => {
@@ -63,17 +59,6 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
   })
 
   describe('#create', () => {
-    const Subject = getSubject()
-
-    const CREATE_USER_DTO: CreateUserDTO = Object.freeze({
-      email: faker.internet.exampleEmail(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      password: faker.internet.password()
-    })
-
-    const getCreateUserDTO = () => Object.assign({}, CREATE_USER_DTO)
-
     const spy_find = jest.spyOn(Subject, 'find')
 
     beforeEach(() => {
@@ -119,8 +104,6 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
   })
 
   describe('#findOneByEmail', () => {
-    const Subject = getSubject()
-
     const ENTITY = Subject.cache.collection[0]
 
     const FAKE_EMAIL = faker.internet.exampleEmail()
@@ -194,8 +177,6 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
   })
 
   describe('#patch', () => {
-    const Subject = getSubject()
-
     const ENTITY = Subject.cache.collection[1]
 
     const spy_find = jest.spyOn(Subject, 'find')
@@ -205,23 +186,22 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
     })
 
     it('should check if user with dto.email exists', async () => {
-      const spy_findOneByEmail = jest.spyOn(Subject, 'findOneByEmail')
+      const { email } = PATCH_USER_DTO_EMAIL
 
-      const dto: PatchUserDTO = { email: faker.internet.exampleEmail() }
+      const spy_findOneByEmail = jest.spyOn(Subject, 'findOneByEmail')
 
       spy_findOneByEmail.mockReturnValueOnce(ENTITY)
 
-      await Subject.patch(ENTITY.id, dto)
+      await Subject.patch(ENTITY.id, getPatchUserDTO('email'))
 
       expect(spy_findOneByEmail).toBeCalledTimes(1)
-      expect(spy_findOneByEmail.mock.calls[0][0]).toBe(dto.email)
+      expect(spy_findOneByEmail.mock.calls[0][0]).toBe(email)
     })
 
     it('should hash updated password if non-empty string', async () => {
-      const password = faker.internet.password()
-      const dto: PatchUserDTO = { password }
+      const { password } = PATCH_USER_DTO_PASSWORD
 
-      await Subject.patch(ENTITY.id, dto)
+      await Subject.patch(ENTITY.id, getPatchUserDTO('password'))
 
       expect(mockHashSync).toBeCalledTimes(1)
       expect(mockHashSync.mock.calls[0][0]).toBe(password)
@@ -232,7 +212,7 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
         throw new Error('Test hashSync patch error')
       })
 
-      const dto: PatchUserDTO = { password: 'password' }
+      const dto = { password: 'password' }
 
       let exception = {} as AppException
 

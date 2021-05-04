@@ -3,8 +3,8 @@ import isStrongPassword from 'validator/lib/isStrongPassword'
 import type { ConstraintResultCustom } from '../../../lib/types'
 
 /**
- * @file Implementation - passwordConstraint
- * @module app/subdomains/users/utils/passwordConstraint
+ * @file Implementation - strongPasswordConstraint
+ * @module app/subdomains/users/utils/strongPasswordConstraint
  * @see https://github.com/pelotom/runtypes#constraint-checking
  * @see https://github.com/validatorjs/validator.js
  */
@@ -16,7 +16,7 @@ import type { ConstraintResultCustom } from '../../../lib/types'
  * @param {validator.strongPasswordOptions} [options] - Validation options
  * @return {ConstraintResultCustom} `true` if non-empty string or error message
  */
-const passwordConstraint = (
+const strongPasswordConstraint = (
   value: any,
   options?: validator.strongPasswordOptions
 ): ConstraintResultCustom => {
@@ -27,4 +27,4 @@ const passwordConstraint = (
   return password || 'Weak password'
 }
 
-export default passwordConstraint
+export default strongPasswordConstraint

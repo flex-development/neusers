@@ -1,5 +1,5 @@
 /**
- * @file Entry Point - Interfaces
+ * @file Entry Point - Users Subdomain Interfaces
  * @module app/subdomains/users/interfaces
  */
 

@@ -1,21 +1,23 @@
 import { Repository } from '@flex-development/dreepo'
 import type { OrNever, PartialOr } from '@flex-development/dreepo/lib/types'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import { Injectable } from '@nestjs/common'
 import { hashSync } from 'bcryptjs'
-import { CONF } from '../../config/configuration'
-import AppException from '../../lib/exceptions/app.exception'
-import repoPath from '../../lib/utils/repoPath.util'
-import type { CreateUserDTO } from './dto/create-user.dto'
-import type { PatchUserDTO } from './dto/patch-user.dto'
-import { UserVopts } from './models/user.model'
-import type { UserEntity, UserQuery } from './users.types'
+import { CONF } from '../../../config/configuration'
+import AppException from '../../../lib/exceptions/app.exception'
+import repoPath from '../../../lib/utils/repoPath.util'
+import type { CreateUserDTO } from '../dto/create-user.dto'
+import type { PatchUserDTO } from '../dto/patch-user.dto'
+import { UserVopts } from '../models/user.model'
+import type { UserEntity as User, UserQuery as Query } from '../users.types'
 
 /**
- * @file Subdomain Repository - UsersRepository
- * @module app/subdomains/users/repo
+ * @file Subdomain Providers - UsersRepository
+ * @module app/subdomains/users/providers/UsersRepository
  */
 
-export class UsersRepository extends Repository<UserEntity, UserQuery> {
+@Injectable()
+export class UsersRepository extends Repository<User, Query> {
   /**
    * Instantiates a new `UsersRepository`.
    */
@@ -26,8 +28,8 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
   /**
    * Creates a new user.
    *
-   * Throws a `400 BAD_REQUEST` if a user with email address {@param dto.email}
-   * already exists.
+   * Throws a `409 CONFLICT` error if a user with the email {@param dto.email}
+   * or id {@param dto.id} already exists.
    *
    * @async
    * @param {CreateUserDTO} dto - Data to create new user
@@ -35,10 +37,10 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
    * @param {string} dto.first_name - User's first name
    * @param {string} dto.last_name - User's last name
    * @param {string} dto.password - Alphanumeric password, at least 4 characters
-   * @return {Promise<UserEntity>} Promise containing new user
+   * @return {Promise<User>} Promise containing new user
    * @throws {AppException}
    */
-  async create(dto: CreateUserDTO): OrNever<Promise<UserEntity>> {
+  async create(dto: CreateUserDTO): OrNever<Promise<User>> {
     // Check if user with same email address already exists
     this.findOneByEmail(dto.email || '', {}, false)
 
@@ -60,17 +62,17 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
    *
    * @async
    * @param {string} [email] - Email address of user to find
-   * @param {UserQuery} [params] - Users repository query parameters
+   * @param {Query} [params] - Users repository query parameters
    * @param {boolean} [exists] - If `true`, throw error if user does exist;
    * othwerwise throw error if user exists
-   * @return {PartialOr<UserEntity> | null} User or null
+   * @return {PartialOr<User> | null} User or null
    * @throws {AppException}
    */
   findOneByEmail(
-    email: UserEntity['email'] = '',
-    params: UserQuery = {},
+    email: User['email'] = '',
+    params: Query = {},
     exists: boolean = true
-  ): PartialOr<UserEntity> | null {
+  ): PartialOr<User> | null {
     const users = this.find({ ...params, email })
     const user = users[0] && users[0]?.email === email ? users[0] : null
 
@@ -93,25 +95,24 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
 
   /**
    * Partially updates a user.
+   *
    * The user's `created_at` and `id` properties cannot be patched.
    *
-   * Throws a `400 BAD_REQUEST` if {@param dto.email} is a valid email address
-   * and a user with same email address already exists.
-   *
-   * Throws a `404 NOT_FOUND` error if the entity isn't found.
+   * Throws a `409 CONFLICT` error if a user with the email {@param dto.email}
+   * already exists. Throws a `404 NOT_FOUND` error if the user isn't found.
    *
    * @async
    * @param {string} id - ID of user to update
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
-   * @return {Promise<UserEntity>} Promise containing updated user
+   * @return {Promise<User>} Promise containing updated user
    * @throws {AppException}
    */
   async patch(
-    id: UserEntity['id'],
+    id: User['id'],
     dto: PatchUserDTO,
     rfields: string[] = []
-  ): OrNever<Promise<UserEntity>> {
+  ): OrNever<Promise<User>> {
     // If valid email, check if user with same email address already exists
     if (typeof dto?.email === 'string') {
       this.findOneByEmail(dto.email, {}, false)

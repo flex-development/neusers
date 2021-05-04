@@ -1,3 +1,4 @@
+import type { EntityDTO } from '@flex-development/dreepo/lib/dto/entity.dto'
 import type { UserEntity } from '../users.types'
 
 /**
@@ -5,7 +6,7 @@ import type { UserEntity } from '../users.types'
  * @module app/subdomains/users/dto/CreateUser
  */
 
-export interface CreateUserDTO {
+export interface CreateUserDTO extends EntityDTO<UserEntity> {
   email: UserEntity['email']
   first_name: UserEntity['first_name']
   last_name: UserEntity['last_name']
