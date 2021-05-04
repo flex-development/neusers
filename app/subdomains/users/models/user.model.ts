@@ -1,8 +1,8 @@
 import { Entity } from '@flex-development/dreepo'
-import { String } from 'runtypes'
 import { Email } from '../../../lib/models'
 import NonEmptyString from '../../../lib/models/nes.model'
 import type { UsersRepoValidatorOptsDTO } from '../users.types'
+import Password from './password.model'
 
 /**
  * @file Subdomain Model - User
@@ -29,7 +29,7 @@ export const User = Entity.extend({
   /**
    * Hashed password.
    */
-  password: String
+  password: Password
 })
 
 export const UserVopts: UsersRepoValidatorOptsDTO = {
