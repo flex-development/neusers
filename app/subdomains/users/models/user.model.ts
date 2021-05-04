@@ -20,7 +20,7 @@ export const User = Entity.extend({
   first_name: String,
 
   /**
-   * User's first name.
+   * User's last name.
    */
   last_name: String,
 
