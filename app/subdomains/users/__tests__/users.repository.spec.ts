@@ -8,6 +8,7 @@ import faker from 'faker'
 import omit from 'lodash.omit'
 import { PlainObject } from 'simplytyped'
 import type { CreateUserDTO } from '../dto/create-user.dto'
+import type { PatchUserDTO } from '../dto/patch-user.dto'
 import TestSubject from '../users.repository'
 import { USERS_MOCK_CACHE as mockCache } from './__fixtures__/users.fixture'
 
@@ -90,7 +91,7 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
       expect(spy_findOneByEmail.mock.calls[0][0]).toBe(CREATE_USER_DTO.email)
     })
 
-    it('should hash password', async () => {
+    it('should hash password if non-empty string', async () => {
       await Subject.create(getCreateUserDTO())
 
       expect(mockHashSync).toBeCalledTimes(1)
@@ -99,7 +100,7 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
 
     it('should throw AppException if error hashing password', async () => {
       mockHashSync.mockImplementationOnce(() => {
-        throw new Error('Test hashSync error')
+        throw new Error('Test hashSync create error')
       })
 
       let exception = {} as AppException
@@ -193,10 +194,58 @@ describe('unit:app/subdomains/users/UsersRepository', () => {
   })
 
   describe('#patch', () => {
-    it.todo('should check if user with dto.email exists')
+    const Subject = getSubject()
 
-    it.todo('should hash updated password if non-empty string')
+    const ENTITY = Subject.cache.collection[1]
 
-    it.todo('should throw AppException if error hashing password')
+    const spy_find = jest.spyOn(Subject, 'find')
+
+    beforeEach(() => {
+      spy_find.mockReturnValue(Subject.cache.collection)
+    })
+
+    it('should check if user with dto.email exists', async () => {
+      const spy_findOneByEmail = jest.spyOn(Subject, 'findOneByEmail')
+
+      const dto: PatchUserDTO = { email: faker.internet.exampleEmail() }
+
+      spy_findOneByEmail.mockReturnValueOnce(ENTITY)
+
+      await Subject.patch(ENTITY.id, dto)
+
+      expect(spy_findOneByEmail).toBeCalledTimes(1)
+      expect(spy_findOneByEmail.mock.calls[0][0]).toBe(dto.email)
+    })
+
+    it('should hash updated password if non-empty string', async () => {
+      const password = faker.internet.password()
+      const dto: PatchUserDTO = { password }
+
+      await Subject.patch(ENTITY.id, dto)
+
+      expect(mockHashSync).toBeCalledTimes(1)
+      expect(mockHashSync.mock.calls[0][0]).toBe(password)
+    })
+
+    it('should throw AppException if error hashing password', async () => {
+      mockHashSync.mockImplementationOnce(() => {
+        throw new Error('Test hashSync patch error')
+      })
+
+      const dto: PatchUserDTO = { password: 'password' }
+
+      let exception = {} as AppException
+
+      try {
+        await Subject.patch(ENTITY.id, dto)
+      } catch (error) {
+        exception = error
+      }
+
+      const ejson = exception.getResponse() as ExceptionJSON
+
+      expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
+      expect(ejson.data).toMatchObject(omit(dto, 'password'))
+    })
   })
 })

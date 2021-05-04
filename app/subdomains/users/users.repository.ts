@@ -110,7 +110,7 @@ export class UsersRepository extends Repository<UserEntity, UserQuery> {
   async patch(
     id: UserEntity['id'],
     dto: PatchUserDTO,
-    rfields: []
+    rfields: string[] = []
   ): OrNever<Promise<UserEntity>> {
     // If valid email, check if user with same email address already exists
     if (typeof dto?.email === 'string') {
