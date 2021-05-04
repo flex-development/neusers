@@ -3,6 +3,6 @@
  * @module app/lib/models
  */
 
-export default {}
+export { default as Email } from './email.model'
 
 /* eslint-disable prettier/prettier */

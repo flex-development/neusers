@@ -1,5 +1,6 @@
 import { Entity } from '@flex-development/dreepo'
 import { String } from 'runtypes'
+import { Email } from '../../../lib/models'
 import type { UsersRepoValidatorOptsDTO } from '../users.types'
 
 /**
@@ -12,7 +13,7 @@ export const User = Entity.extend({
    * Unique email address for this user.
    * Attempting to assign the same email to multiple users returns an error.
    */
-  email: String,
+  email: Email,
 
   /**
    * User's first name.
