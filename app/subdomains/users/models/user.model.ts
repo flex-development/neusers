@@ -1,6 +1,7 @@
 import { Entity } from '@flex-development/dreepo'
 import { String } from 'runtypes'
 import { Email } from '../../../lib/models'
+import NonEmptyString from '../../../lib/models/nes.model'
 import type { UsersRepoValidatorOptsDTO } from '../users.types'
 
 /**
@@ -18,12 +19,12 @@ export const User = Entity.extend({
   /**
    * User's first name.
    */
-  first_name: String,
+  first_name: NonEmptyString,
 
   /**
    * User's last name.
    */
-  last_name: String,
+  last_name: NonEmptyString,
 
   /**
    * Hashed password.

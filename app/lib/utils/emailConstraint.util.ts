@@ -1,4 +1,3 @@
-import { isType } from 'type-plus'
 import type { IsEmailOptions } from 'validator/lib/isEmail'
 import isEmail from 'validator/lib/isEmail'
 import type { ConstraintResultCustom } from '../types'
@@ -7,6 +6,7 @@ import type { ConstraintResultCustom } from '../types'
  * @file Implementation - emailConstraint
  * @module app/lib/utils/emailConstraint
  * @see https://github.com/pelotom/runtypes#constraint-checking
+ * @see https://github.com/validatorjs/validator.js
  */
 
 /**
@@ -20,17 +20,8 @@ const emailConstraint = (
   value: any,
   options?: IsEmailOptions
 ): ConstraintResultCustom => {
-  const email = isEmail(typeof value === 'string' ? value : '')
-
-  if (email) return email
-
-  let message = `${email} is not a valid email address`
-
-  if (isType<IsEmailOptions>(options as any)) {
-    message += `; options: ${JSON.stringify(options)}`
-  }
-
-  return message
+  const email = isEmail(typeof value === 'string' ? value : '', options)
+  return email || `${email} is not a valid email address`
 }
 
 export default emailConstraint

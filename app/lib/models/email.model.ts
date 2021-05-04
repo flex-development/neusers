@@ -7,4 +7,4 @@ import emailConstraint from '../utils/emailConstraint.util'
  * @see https://github.com/pelotom/runtypes#constraint-checking
  */
 
-export default String.withConstraint(emailConstraint)
+export default String.withConstraint(emailConstraint, { name: 'Email' })
