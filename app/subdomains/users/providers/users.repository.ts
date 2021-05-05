@@ -60,8 +60,8 @@ export class UsersRepository
         dto.password = hashSync(dto.password, 10)
       }
     } catch (error) {
-      const status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
-      throw new Exception(status, error.message, dto)
+      const code = ExceptionStatusCode.INTERNAL_SERVER_ERROR
+      throw new Exception(code, error.message, dto)
     }
 
     return await super.create(dto)
@@ -133,8 +133,8 @@ export class UsersRepository
       try {
         dto.password = hashSync(dto.password, 10)
       } catch (error) {
-        const status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
-        throw new Exception(status, error.message, dto)
+        const code = ExceptionStatusCode.INTERNAL_SERVER_ERROR
+        throw new Exception(code, error.message, dto)
       }
     }
 

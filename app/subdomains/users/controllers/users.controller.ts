@@ -11,9 +11,11 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
-  Patch,
   Post,
+  Put,
   Query
 } from '@nestjs/common'
 import omit from 'lodash.omit'
@@ -50,6 +52,7 @@ export default class UsersController {
    * @param {string} dto.password - Alphanumeric password, at least 4 characters
    * @return {Promise<User>} Promise containing new user
    */
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(@Body() dto: CreateUserDTO): Promise<User> {
     return await this.users.create(dto)
@@ -64,11 +67,13 @@ export default class UsersController {
    *
    * @async
    * @param {string} id - UID of user to find
-   * @return {Promise<string>} Promise containing UID of deleted user
+   * @return {Promise<void>} Empty promise when user is deleted
    */
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':user')
-  async delete(@Param('user') id: User['id']): Promise<User['id']> {
-    return (await this.users.delete(id, true))[0]
+  async delete(@Param('user') id: User['id']): Promise<void> {
+    await this.users.delete(id, true)
+    return
   }
 
   /**
@@ -83,6 +88,7 @@ export default class UsersController {
    * @param {Projection<User>} [query.projection] - Projection operators
    * @return {Promise<PartialOr<User>[]>} Promise containing search results
    */
+  @HttpCode(HttpStatus.OK)
   @Get()
   async find(@Query() query: UserQuery = {}): Promise<Partial<User>[]> {
     // ! Remove Vercel query parameter `path`
@@ -102,6 +108,7 @@ export default class UsersController {
    * @param {UserQuery} [query] - Query parameters
    * @return {Promise<PartialOr<User>>} Promise containing user data
    */
+  @HttpCode(HttpStatus.OK)
   @Get(':user')
   async findOne(
     @Param('user') user: User['email'] | User['id'],
@@ -127,7 +134,8 @@ export default class UsersController {
    * @param {string[]} [rfields] - Additional readonly fields
    * @return {Promise<User>} Promise containing updated user
    */
-  @Patch(':user')
+  @HttpCode(HttpStatus.OK)
+  @Put(':user')
   async patch(
     @Param('user') id: User['id'],
     @Body() dto: PatchUserDTO,
@@ -146,6 +154,7 @@ export default class UsersController {
    * @param {OneOrMany<CreateUserDTO | PatchUserDTO>} dto - Users to upsert
    * @return {Promise<User[]>} Promise with new or updated users
    */
+  @HttpCode(HttpStatus.OK)
   @Post('/upsert')
   async upsert(
     @Body() dto: OneOrMany<CreateUserDTO | PatchUserDTO>
