@@ -1,7 +1,7 @@
 import type { OrNever } from '@flex-development/dreepo/lib/types'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import { CONF } from '../../config/configuration'
-import AppException from '../exceptions/app.exception'
 
 /**
  * @file Implementation - repoPath
@@ -17,7 +17,7 @@ import AppException from '../exceptions/app.exception'
  *
  * @param {string} name - Collection name
  * @return {OrNever<string>} Database repository path
- * @throws {AppException}
+ * @throws {Exception}
  */
 const repoPath = (name: string): OrNever<string> => {
   if (typeof name !== 'string' || !name.trim().length) {
@@ -25,7 +25,7 @@ const repoPath = (name: string): OrNever<string> => {
     const message = 'Invalid repository path'
     const data = { errors: { name: typeof name === 'undefined' ? null : name } }
 
-    throw new AppException(code, message, data)
+    throw new Exception(code, message, data)
   }
 
   return `${CONF.PREVIEW ? CONF.VERCEL_ENV : CONF.NODE_ENV}/${name}`

@@ -1,8 +1,7 @@
-import { AppException } from '@/lib/exceptions'
 import repoPath from '@/lib/utils/repoPath.util'
 import Repository from '@flex-development/dreepo/repositories/repository'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
-import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import { hashSync } from 'bcryptjs'
 import faker from 'faker'
 import omit from 'lodash.omit'
@@ -83,12 +82,12 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
       expect(mockHashSync.mock.calls[0][0]).toBe(CREATE_USER_DTO.password)
     })
 
-    it('should throw AppException if error hashing password', async () => {
+    it('should throw Exception if error hashing password', async () => {
       mockHashSync.mockImplementationOnce(() => {
         throw new Error('Test hashSync create error')
       })
 
-      let exception = {} as AppException
+      let exception = {} as Exception
 
       try {
         await Subject.create(getCreateUserDTO())
@@ -96,7 +95,7 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
         exception = error
       }
 
-      const ejson = exception.getResponse() as ExceptionJSON
+      const ejson = exception.toJSON()
 
       expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect(ejson.data).toMatchObject(omit(CREATE_USER_DTO, 'password'))
@@ -133,7 +132,7 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
 
         const emessage = `User with email "${ENTITY.email}" already exists`
 
-        let exception = {} as AppException
+        let exception = {} as Exception
 
         try {
           Subject.findOneByEmail(ENTITY.email, undefined, SHOULD_NOT_EXIST)
@@ -141,7 +140,7 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
           exception = error
         }
 
-        const ejson = exception.getResponse() as ExceptionJSON
+        const ejson = exception.toJSON()
 
         expect(ejson.code).toBe(ExceptionStatusCode.CONFLICT)
         expect(ejson.data).toMatchObject({
@@ -158,7 +157,7 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
         const email = faker.internet.exampleEmail()
         const emessage = `User with email "${email}" does not exist`
 
-        let exception = {} as AppException
+        let exception = {} as Exception
 
         try {
           Subject.findOneByEmail(email)
@@ -166,7 +165,7 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
           exception = error
         }
 
-        const ejson = exception.getResponse() as ExceptionJSON
+        const ejson = exception.toJSON()
 
         expect(ejson.code).toBe(ExceptionStatusCode.NOT_FOUND)
         expect(ejson.data).toMatchObject({ exists: true, params: {} })
@@ -207,14 +206,14 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
       expect(mockHashSync.mock.calls[0][0]).toBe(password)
     })
 
-    it('should throw AppException if error hashing password', async () => {
+    it('should throw Exception if error hashing password', async () => {
       mockHashSync.mockImplementationOnce(() => {
         throw new Error('Test hashSync patch error')
       })
 
       const dto = { password: 'password' }
 
-      let exception = {} as AppException
+      let exception = {} as Exception
 
       try {
         await Subject.patch(ENTITY.id, dto)
@@ -222,7 +221,7 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
         exception = error
       }
 
-      const ejson = exception.getResponse() as ExceptionJSON
+      const ejson = exception.toJSON()
 
       expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect(ejson.data).toMatchObject(omit(dto, 'password'))

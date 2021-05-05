@@ -1,15 +1,7 @@
-import AppException from '@/lib/exceptions/app.exception'
 import { getMockReq, getMockRes } from '@jest-mock/express'
 import type { ArgumentsHost } from '@nestjs/common'
-import {
-  APP_EXCEPTION,
-  APP_EXCEPTION_JSON
-} from '@tests/fixtures/app.exception.fixture'
-import {
-  BAD_REQUEST,
-  BAD_REQUEST_JSON
-} from '@tests/fixtures/bad-request.exception.fixture'
 import FixtureConfig from '@tests/fixtures/config.fixture'
+import { EXCEPTION_JSON } from '@tests/fixtures/exception.fixture'
 import faker from 'faker'
 import URI from 'urijs'
 import MockMeasurementProtocol from '../../../config/measurement-protocol'
@@ -52,44 +44,22 @@ describe('unit:app/lib/filters/AllExceptionsFilter', () => {
       switchToHttp: () => ({ getRequest: () => req, getResponse: () => res })
     } as ArgumentsHost
 
-    const spyCreateBody = jest.spyOn(AppException, 'createBody')
-    const spyTrack = jest.spyOn(Subject, 'track')
+    it.todo('should handle Exception')
 
-    it('should handle AppException', async () => {
-      await Subject.catch(APP_EXCEPTION, mockHost)
-
-      // Expect that error isn't converted into AppException
-      expect(spyCreateBody).not.toBeCalled()
-
-      // Expect error `event` hit to be sent
-      expect(spyTrack).toBeCalledTimes(1)
-    })
-
-    it('should handle HttpException', async () => {
-      const { message, statusCode } = BAD_REQUEST_JSON
-
-      await Subject.catch(BAD_REQUEST, mockHost)
-
-      // Expect that error converted into AppException
-      expect(spyCreateBody).toBeCalledTimes(1)
-      expect(spyCreateBody).toBeCalledWith({}, message, statusCode)
-
-      // Expect error `event` hit to be sent
-      expect(spyTrack).toBeCalledTimes(1)
-    })
+    it.todo('should handle HttpException')
   })
 
   describe('#track', () => {
     it('should send error event hit', async () => {
-      await Subject.track(APP_EXCEPTION_JSON)
+      await Subject.track(EXCEPTION_JSON)
 
       expect(MockMeasurementProtocol.event).toBeCalledTimes(1)
       expect(MockMeasurementProtocol.event).toBeCalledWith({
-        error: JSON.stringify(APP_EXCEPTION_JSON),
-        eventAction: APP_EXCEPTION_JSON.name,
+        error: JSON.stringify(EXCEPTION_JSON),
+        eventAction: EXCEPTION_JSON.name,
         eventCategory: 'Error Response',
-        eventLabel: APP_EXCEPTION_JSON.message,
-        eventValue: APP_EXCEPTION_JSON.code
+        eventLabel: EXCEPTION_JSON.message,
+        eventValue: EXCEPTION_JSON.code
       })
     })
   })

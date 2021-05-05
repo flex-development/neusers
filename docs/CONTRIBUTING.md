@@ -103,6 +103,7 @@ Commit messages should be one of the following types:
 - `style`: Changes that do not affect the meaning of the code
 - `test`: Adding missing tests or correcting existing tests
 - `wip`: Working on changes, but you need to go to bed :wink:
+  - i.e: feature implemented, but not tested
 
 For example:
 

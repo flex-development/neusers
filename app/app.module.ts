@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import type { ConfigModuleOptions } from '@nestjs/config'
 import { ConfigModule } from '@nestjs/config'
 import configuration from './config/configuration'
+import { UsersModule } from './subdomains'
 
 /**
  * @file Root Application Module
@@ -16,7 +17,7 @@ const configModuleOptions: ConfigModuleOptions = {
   load: [configuration]
 }
 
-@Module({ imports: [ConfigModule.forRoot(configModuleOptions)] })
+@Module({ imports: [ConfigModule.forRoot(configModuleOptions), UsersModule] })
 export default class AppModule {
   //
 }

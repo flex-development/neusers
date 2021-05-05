@@ -6,22 +6,30 @@ import type {
   ProjectionCriteria as Projection,
   ProjectStage
 } from '@flex-development/dreepo/lib/types'
-import { Injectable } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query
+} from '@nestjs/common'
 import omit from 'lodash.omit'
-import isEmail from 'validator/lib/isEmail'
 import type { CreateUserDTO } from '../dto/create-user.dto'
 import type { PatchUserDTO } from '../dto/patch-user.dto'
-import type { UserEntity as User, UserQuery as Query } from '../users.types'
-import UsersRepository from './users.repository'
+import UsersService from '../providers/users.service'
+import type { UserEntity as User, UserQuery } from '../users.types'
 
 /**
- * @file Subdomain Providers - UsersService
- * @module app/subdomains/users/providers/UsersService
+ * @file Subdomain Controller - UsersController
+ * @module app/subdomains/users/controllers/UsersController
  */
 
-@Injectable()
-export default class UsersService {
-  constructor(readonly repo: UsersRepository) {}
+@Controller('users')
+export default class UsersController {
+  constructor(private users: UsersService) {}
 
   /**
    * Creates a new user.
@@ -39,46 +47,46 @@ export default class UsersService {
    * @param {string} dto.email - User's email address
    * @param {string} dto.first_name - User's first name
    * @param {string} dto.last_name - User's last name
-   * @param {string} dto.password - Alphanumeric password, at least 8 characters
+   * @param {string} dto.password - Alphanumeric password, at least 4 characters
    * @return {Promise<User>} Promise containing new user
    */
-  async create(dto: CreateUserDTO): Promise<User> {
-    return await this.repo.create(dto)
+  @Post()
+  async create(@Body() dto: CreateUserDTO): Promise<User> {
+    return await this.users.create(dto)
   }
 
   /**
-   * Deletes a single user or group of users.
+   * Deletes a user.
    *
-   * If {@param should_exist} is `true`, an error will be thrown if the entity
-   * or one of the entities doesn't exist.
+   * Throws a `404` error if the user is not found.
+   *
+   * @todo Authenticate user
    *
    * @async
-   * @param {OneOrMany<string>} id - User ID or array of user IDs
-   * @param {boolean} [should_exist] - Throw if any users don't exist
-   * @return {Promise<string[]>} Promise with array of deleted entity IDs
+   * @param {string} id - UID of user to find
+   * @return {Promise<string>} Promise containing UID of deleted user
    */
-  async delete(
-    id: OneOrMany<User['id']>,
-    should_exist: boolean = false
-  ): Promise<typeof id> {
-    return await this.repo.delete(id, should_exist)
+  @Delete(':user')
+  async delete(@Param('user') id: User['id']): Promise<User['id']> {
+    return (await this.users.delete(id, true))[0]
   }
 
   /**
    * Queries the users database.
    *
    * @async
-   * @param {Query} [query] - Query parameters
+   * @param {UserQuery} [query] - Query parameters
    * @param {number} [query.$limit] - Limit number of results
    * @param {ProjectStage<User>} [query.$project] - Fields to include
    * @param {number} [query.$skip] - Skips the first n entities
    * @param {Record<EntityPath<User>, SortOrder>} [query.$sort] - Sorting rules
    * @param {Projection<User>} [query.projection] - Projection operators
-   * @return {Promise<Partial<User>[]>} Promise containing search results
+   * @return {Promise<PartialOr<User>[]>} Promise containing search results
    */
-  async find(query: Query = {}): Promise<Partial<User>[]> {
-    const users = this.repo.find(query)
-    return users.length ? users.map(u => omit(u, ['password'])) : users
+  @Get()
+  async find(@Query() query: UserQuery = {}): Promise<Partial<User>[]> {
+    // ! Remove Vercel query parameter `path`
+    return this.users.find(omit(query, ['path']))
   }
 
   /**
@@ -86,14 +94,21 @@ export default class UsersService {
    *
    * Throws an error if the user isn't found.
    *
+   * @todo Authenticate user
+   * @todo Remove sensitive data if user isn't authenticated
+   *
    * @async
    * @param {string} user - UID or email address of user to find
-   * @param {Query} [query] - Query parameters
+   * @param {UserQuery} [query] - Query parameters
    * @return {Promise<PartialOr<User>>} Promise containing user data
    */
-  async findOne(user: string, query: Query = {}): Promise<PartialOr<User>> {
-    if (!isEmail(user)) return this.repo.findOneOrFail(user, query)
-    return this.repo.findOneByEmail(user, query) as User
+  @Get(':user')
+  async findOne(
+    @Param('user') user: User['email'] | User['id'],
+    @Query() query: UserQuery = {}
+  ): Promise<PartialOr<User>> {
+    // ! Remove Vercel query parameter `path`
+    return await this.users.findOne(user, omit(query, ['path']))
   }
 
   /**
@@ -104,18 +119,21 @@ export default class UsersService {
    * Throws a `404` error if the user is not found, or a `400` error if a user
    * with the same email already exists.
    *
+   * @todo Authenticate user
+   *
    * @async
    * @param {string} id - ID of user to update
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
    * @return {Promise<User>} Promise containing updated user
    */
+  @Patch(':user')
   async patch(
-    id: User['id'],
-    dto: PatchUserDTO,
-    rfields: string[] = []
+    @Param('user') id: User['id'],
+    @Body() dto: PatchUserDTO,
+    @Query('rfields') rfields: string[] = []
   ): Promise<User> {
-    return await this.repo.patch(id, dto, rfields)
+    return await this.users.patch(id, dto, rfields)
   }
 
   /**
@@ -128,7 +146,10 @@ export default class UsersService {
    * @param {OneOrMany<CreateUserDTO | PatchUserDTO>} dto - Users to upsert
    * @return {Promise<User[]>} Promise with new or updated users
    */
-  async upsert(dto: OneOrMany<CreateUserDTO | PatchUserDTO>): Promise<User[]> {
-    return await this.repo.save(dto)
+  @Post('/upsert')
+  async upsert(
+    @Body() dto: OneOrMany<CreateUserDTO | PatchUserDTO>
+  ): Promise<User[]> {
+    return await this.users.upsert(dto)
   }
 }

@@ -1,10 +1,11 @@
 import { Repository } from '@flex-development/dreepo'
 import type { OrNever, PartialOr } from '@flex-development/dreepo/lib/types'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
+import type { OnModuleInit } from '@nestjs/common'
 import { Injectable } from '@nestjs/common'
 import { hashSync } from 'bcryptjs'
 import { CONF } from '../../../config/configuration'
-import AppException from '../../../lib/exceptions/app.exception'
 import repoPath from '../../../lib/utils/repoPath.util'
 import type { CreateUserDTO } from '../dto/create-user.dto'
 import type { PatchUserDTO } from '../dto/patch-user.dto'
@@ -17,12 +18,21 @@ import type { UserEntity as User, UserQuery as Query } from '../users.types'
  */
 
 @Injectable()
-export class UsersRepository extends Repository<User, Query> {
-  /**
-   * Instantiates a new `UsersRepository`.
-   */
+export class UsersRepository
+  extends Repository<User, Query>
+  implements OnModuleInit {
   constructor() {
     super(repoPath(CONF.SUBDOMAINS.users.repo), UserVopts)
+  }
+
+  /**
+   * Initializes the repository cache.
+   *
+   * @return {Promise<void>} Empty promise when initialization is complete
+   */
+  async onModuleInit(): Promise<void> {
+    await this.refreshCache()
+    return
   }
 
   /**
@@ -36,22 +46,22 @@ export class UsersRepository extends Repository<User, Query> {
    * @param {string} dto.email - User's email address
    * @param {string} dto.first_name - User's first name
    * @param {string} dto.last_name - User's last name
-   * @param {string} dto.password - Alphanumeric password, at least 4 characters
+   * @param {string} dto.password - Alphanumeric password, at least 8 characters
    * @return {Promise<User>} Promise containing new user
-   * @throws {AppException}
+   * @throws {Exception}
    */
   async create(dto: CreateUserDTO): OrNever<Promise<User>> {
     // Check if user with same email address already exists
     this.findOneByEmail(dto.email || '', {}, false)
 
     try {
-      // Hash user's password (if missing, AppException will be thrown)
+      // Hash user's password (if missing, Exception will be thrown)
       if (typeof dto.password === 'string' && !!dto.password.trim().length) {
         dto.password = hashSync(dto.password, 10)
       }
     } catch (error) {
       const status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
-      throw new AppException(status, error.message, dto)
+      throw new Exception(status, error.message, dto)
     }
 
     return await super.create(dto)
@@ -66,7 +76,7 @@ export class UsersRepository extends Repository<User, Query> {
    * @param {boolean} [exists] - If `true`, throw error if user does exist;
    * othwerwise throw error if user exists
    * @return {PartialOr<User> | null} User or null
-   * @throws {AppException}
+   * @throws {Exception}
    */
   findOneByEmail(
     email: User['email'] = '',
@@ -80,14 +90,14 @@ export class UsersRepository extends Repository<User, Query> {
       const data = { errors: { email }, exists, params }
       const message = `User with email "${email}" does not exist`
 
-      throw new AppException(ExceptionStatusCode.NOT_FOUND, message, data)
+      throw new Exception(ExceptionStatusCode.NOT_FOUND, message, data)
     }
 
     if (user && !exists) {
       const message = `User with email "${email}" already exists`
       const data = { errors: { email }, exists, params }
 
-      throw new AppException(ExceptionStatusCode.CONFLICT, message, data)
+      throw new Exception(ExceptionStatusCode.CONFLICT, message, data)
     }
 
     return user
@@ -106,7 +116,7 @@ export class UsersRepository extends Repository<User, Query> {
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
    * @return {Promise<User>} Promise containing updated user
-   * @throws {AppException}
+   * @throws {Exception}
    */
   async patch(
     id: User['id'],
@@ -124,7 +134,7 @@ export class UsersRepository extends Repository<User, Query> {
         dto.password = hashSync(dto.password, 10)
       } catch (error) {
         const status = ExceptionStatusCode.INTERNAL_SERVER_ERROR
-        throw new AppException(status, error.message, dto)
+        throw new Exception(status, error.message, dto)
       }
     }
 

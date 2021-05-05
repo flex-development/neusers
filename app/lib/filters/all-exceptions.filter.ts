@@ -1,3 +1,4 @@
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
 import { Catch, HttpException } from '@nestjs/common'
@@ -7,7 +8,6 @@ import type { EventParam } from 'ga-measurement-protocol'
 import merge from 'lodash.merge'
 import type { PlainObject } from 'simplytyped'
 import MeasurementProtocol from '../../config/measurement-protocol'
-import AppException from '../exceptions/app.exception'
 
 /**
  * @file Filters - AllExceptionsFilter
@@ -28,19 +28,19 @@ export default class AllExceptionsFilter implements ExceptionFilter {
   }
 
   /**
-   * Handles an `AppException`.
+   * Handles an `Exception` or `HttpException`.
    *
    * The exception will be timestamped, and in `development` environments, the
    * exception stack will be available.
    *
    * @todo Log error before sending error `event` hit
    *
-   * @param {AppException | HttpException} exception - Exception being handled
+   * @param {Exception | HttpException} e - Exception to handle
    * @param {ArgumentsHost} host - Args for in-flight request
    * @return {Promise<void>} Empty promise when complete
    */
   async catch(
-    exception: AppException | HttpException,
+    e: Exception | HttpException,
     host: ArgumentsHost
   ): Promise<void> {
     // Get HTTP request and response objects
@@ -48,13 +48,18 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>()
     const res = ctx.getResponse<Response>()
 
+    // Get function to get exception as JSON
+    const jsonFN = e.constructor.name === 'Exception' ? 'toJSON' : 'getResponse'
+
     // Get exception response
-    let ejson = exception.getResponse() as PlainObject
+    let ejson = e[jsonFN]() as PlainObject
 
     // Convert into `ExceptionJSON` if necessary
     if (!ejson.className) {
-      ejson = AppException.createBody({}, ejson.message, ejson.statusCode)
-      ejson.data.stack = exception.stack
+      const { message, statusCode } = ejson
+
+      ejson = new Exception(statusCode, message, {}, e.stack).toJSON()
+      ejson.data.stack = e.stack
     }
 
     // Attach additional error data

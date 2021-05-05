@@ -59,6 +59,7 @@ module.exports = {
     '@typescript-eslint/no-namespace': 0,
     '@typescript-eslint/no-use-before-define': 0,
     '@typescript-eslint/no-useless-constructor': 1,
+    '@typescript-eslint/no-var-requires': 1,
     eqeqeq: 1,
     'jsdoc/check-indentation': 1,
     'jsdoc/check-line-alignment': 1,
@@ -66,7 +67,7 @@ module.exports = {
     'jsdoc/no-undefined-types': [
       1,
       {
-        definedTypes: ['AppException']
+        definedTypes: ['Exception']
       }
     ],
     'jsdoc/require-hyphen-before-param-description': 1,

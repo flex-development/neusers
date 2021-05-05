@@ -1,6 +1,5 @@
-import AppException from '@/lib/exceptions/app.exception'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
-import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import type { PlainObject } from 'simplytyped'
 import testSubject from '../repoPath.util'
 
@@ -20,7 +19,7 @@ describe('unit:app/lib/utils/repoPath', () => {
     it('should throw if repository name is empty string', () => {
       const name = ''
 
-      let exception = {} as AppException
+      let exception = {} as Exception
 
       try {
         testSubject(name)
@@ -28,9 +27,9 @@ describe('unit:app/lib/utils/repoPath', () => {
         exception = error
       }
 
-      expect(exception.constructor.name).toBe('AppException')
+      expect(exception.constructor.name).toBe('Exception')
 
-      const ejson = exception.getResponse() as ExceptionJSON
+      const ejson = exception.toJSON()
 
       expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect((ejson.errors as PlainObject).name).toBe(name)
@@ -39,7 +38,7 @@ describe('unit:app/lib/utils/repoPath', () => {
     it('should throw if repository name is nullable', () => {
       const name = (undefined as unknown) as string
 
-      let exception = {} as AppException
+      let exception = {} as Exception
 
       try {
         testSubject(name)
@@ -47,9 +46,9 @@ describe('unit:app/lib/utils/repoPath', () => {
         exception = error
       }
 
-      expect(exception.constructor.name).toBe('AppException')
+      expect(exception.constructor.name).toBe('Exception')
 
-      const ejson = exception.getResponse() as ExceptionJSON
+      const ejson = exception.toJSON()
 
       expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect((ejson.errors as PlainObject).name).toBe(null)

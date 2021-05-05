@@ -79,7 +79,7 @@
   # Adding missing tests or correcting existing tests
   test = "!f() { git ac \"test: $@\"; }; f"
 
-  # Work in progress
+  # Work in progress (i.e feature implemented, but not tested)
   wip = "!f() { git ac \"wip: $@\"; }; f"
 
 # Git Flow Aliases
