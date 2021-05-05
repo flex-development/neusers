@@ -1,7 +1,10 @@
+import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import { getMockReq, getMockRes } from '@jest-mock/express'
 import type { ArgumentsHost } from '@nestjs/common'
+import { HttpException } from '@nestjs/common'
+import { BAD_REQUEST } from '@tests/fixtures/bad-request.exception.fixture'
 import FixtureConfig from '@tests/fixtures/config.fixture'
-import { EXCEPTION_JSON } from '@tests/fixtures/exception.fixture'
+import { EXCEPTION, EXCEPTION_JSON } from '@tests/fixtures/exception.fixture'
 import faker from 'faker'
 import URI from 'urijs'
 import MockMeasurementProtocol from '../../../config/measurement-protocol'
@@ -44,9 +47,30 @@ describe('unit:app/lib/filters/AllExceptionsFilter', () => {
       switchToHttp: () => ({ getRequest: () => req, getResponse: () => res })
     } as ArgumentsHost
 
-    it.todo('should handle Exception')
+    const spy_toJSON = jest.spyOn(Exception.prototype, 'toJSON')
 
-    it.todo('should handle HttpException')
+    it('should handle Exception', async () => {
+      await Subject.catch(EXCEPTION, mockHost)
+
+      expect(spy_toJSON).toBeCalledTimes(1)
+    })
+
+    it('should handle HttpException', async () => {
+      const spy_getResponse = jest.spyOn(HttpException.prototype, 'getResponse')
+
+      await Subject.catch(BAD_REQUEST, mockHost)
+
+      expect(spy_getResponse).toBeCalledTimes(1)
+      expect(spy_toJSON).toBeCalledTimes(1)
+    })
+
+    it('should call #track', async () => {
+      const spy_track = jest.spyOn(Subject, 'track')
+
+      await Subject.catch(EXCEPTION, mockHost)
+
+      expect(spy_track).toBeCalledTimes(1)
+    })
   })
 
   describe('#track', () => {

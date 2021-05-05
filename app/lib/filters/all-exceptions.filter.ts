@@ -36,7 +36,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
    * @todo Log error before sending error `event` hit
    *
    * @param {Exception | HttpException} e - Exception to handle
-   * @param {ArgumentsHost} host - Args for in-flight request
+   * @param {ArgumentsHost} host - Arguments for in-flight request
    * @return {Promise<void>} Empty promise when complete
    */
   async catch(

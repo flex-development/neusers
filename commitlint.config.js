@@ -82,6 +82,7 @@ module.exports = {
      */
     'scope-enum': () => {
       const APP = resolve(__dirname, 'app')
+      const LIB = resolve(APP, 'lib')
       const SUBDOMAINS = resolve(APP, 'subdomains')
 
       const directories = (basePath, arr) => {
@@ -93,9 +94,10 @@ module.exports = {
       }
 
       const app = directories(APP, readdirSync(APP))
+      const lib = directories(LIB, readdirSync(LIB))
       const subdomains = directories(SUBDOMAINS, readdirSync(SUBDOMAINS))
 
-      return [2, 'always', [...app, ...subdomains, 'types']]
+      return [2, 'always', [...app, ...lib, ...subdomains, 'types']]
     }
   }
 }
