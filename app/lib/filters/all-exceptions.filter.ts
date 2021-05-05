@@ -8,6 +8,7 @@ import type { EventParam } from 'ga-measurement-protocol'
 import merge from 'lodash.merge'
 import type { PlainObject } from 'simplytyped'
 import MeasurementProtocol from '../../config/measurement-protocol'
+import type { EnvironmentVariables } from '../interfaces'
 
 /**
  * @file Filters - AllExceptionsFilter
@@ -18,14 +19,7 @@ import MeasurementProtocol from '../../config/measurement-protocol'
 export default class AllExceptionsFilter implements ExceptionFilter {
   private readonly GAMP: typeof MeasurementProtocol = MeasurementProtocol
 
-  /**
-   * Instantiates a new `AllExceptionsFilter`.
-   *
-   * @param {ConfigService} config - App configuration service
-   */
-  constructor(private readonly config: ConfigService) {
-    this.config = config
-  }
+  constructor(readonly config: ConfigService<EnvironmentVariables>) {}
 
   /**
    * Handles an `Exception` or `HttpException`.

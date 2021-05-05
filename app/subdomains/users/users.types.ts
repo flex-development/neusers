@@ -1,4 +1,6 @@
+import { InterceptorResponse } from '@/lib/types'
 import type {
+  PartialOr,
   QueryParams,
   RepoValidatorOptsDTO
 } from '@flex-development/dreepo/lib/types'
@@ -9,6 +11,11 @@ import { User } from './models/user.model'
  * @file Subdomain Type Definitions
  * @module app/subdomains/users/types
  */
+
+/**
+ * Types of payloads streamed through the `AuthInterceptor`.
+ */
+export type AuthInterceptorResponse = InterceptorResponse<PartialOr<UserEntity>>
 
 /**
  * Object representing a decoded Basic Authorization header.

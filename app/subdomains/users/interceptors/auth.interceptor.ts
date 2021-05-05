@@ -7,17 +7,31 @@ import type {
 import { Injectable } from '@nestjs/common'
 import type { Request } from 'express'
 import type { Observable } from 'rxjs'
-import type { InterceptorResponse as Response } from '../../../lib/types'
 import AuthService from '../providers/auth.service'
+import type { AuthInterceptorResponse } from '../users.types'
 
 /**
  * @file Subdomain Interceptor - AuthInterceptor
  * @module app/subdomains/users/interceptors/AuthInterceptor
  */
 
+/**
+ * User authentication interceptor.
+ *
+ * Write operations, such as `DELETE` or `PUT` required users to be logged in.
+ * Requests for individual user resouces will **NOT** include any sensitive data
+ * if the user is not logged in.
+ *
+ * @template T - Payload type
+ *
+ * References:
+ *
+ * - [Interceptors](https://docs.nestjs.com/interceptors)
+ */
 @Injectable()
-export default class AuthInterceptor<T>
-  implements NestInterceptor<T, Response<T>> {
+export default class AuthInterceptor<
+  T extends AuthInterceptorResponse = AuthInterceptorResponse
+> implements NestInterceptor<T, T> {
   constructor(readonly auth: AuthService) {}
 
   /**
@@ -30,15 +44,15 @@ export default class AuthInterceptor<T>
    * @async
    * @param {ExecutionContext} context - Object providing methods to access the
    * route handler and class about to be invoked
-   * @param {CallHandler} next - Provides access to an `Observable` representing
-   * the response stream from the route handler
-   * @return {Promise<Observable<Response<T>>>} Promise containg handler res
+   * @param {CallHandler<T>} next - Provides access to an `Observable`
+   * representing the response stream from the route handler
+   * @return {Promise<Observable<T>>} Promise containg handler res
    * @throws {Exception}
    */
   async intercept(
     context: ExecutionContext,
-    next: CallHandler
-  ): Promise<Observable<Response<T>>> {
+    next: CallHandler<T>
+  ): Promise<Observable<T>> {
     // Get request object
     const req = context.switchToHttp().getRequest<Request>()
 

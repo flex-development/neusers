@@ -1,12 +1,8 @@
 import type { INestApplication } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as pkg from '../package.json'
 import { CONF } from './config/configuration'
-import { AllExceptionsFilter } from './lib/filters'
-import { PageviewInterceptor } from './lib/interceptors'
-import type { EnvironmentVariables } from './lib/interfaces'
 
 /**
  * @file Implementation - useGlobal
@@ -27,13 +23,6 @@ export type App = INestApplication | NestExpressApplication
  * @return {Promise<App>} Promise containing app with globals initialized
  */
 const useGlobal = async (app: App): Promise<typeof app> => {
-  // Instantiate new Config service
-  const Config = new ConfigService<EnvironmentVariables>(CONF)
-
-  // Add global filters and interceptors
-  app.useGlobalFilters(new AllExceptionsFilter(Config))
-  app.useGlobalInterceptors(new PageviewInterceptor(Config))
-
   // Initialize OpenAPI document builder
   const builder = new DocumentBuilder()
 

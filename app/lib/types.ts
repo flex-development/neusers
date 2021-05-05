@@ -32,4 +32,4 @@ export type ConstraintResultCustom = true | string
 /**
  * Type of value wrapped by inteceptor observables.
  */
-export type InterceptorResponse<T = PlainObject> = OneOrMany<T>
+export type InterceptorResponse<T = PlainObject> = OneOrMany<T> | void

@@ -1,9 +1,8 @@
 import type { IEntity } from '@flex-development/dreepo/lib/models/entity.model'
-import { getMockReq } from '@jest-mock/express'
-import type { CallHandler, ExecutionContext } from '@nestjs/common'
 import FixtureConfig from '@tests/fixtures/config.fixture'
+import { REQ_GET } from '@tests/fixtures/req-get.fixture'
+import { getMockCallHandler, getMockExecutionContext } from '@tests/utils'
 import faker from 'faker'
-import URI from 'urijs'
 import MockMeasurementProtocol from '../../../config/measurement-protocol'
 import TestSubject from '../pageview.interceptor'
 
@@ -15,39 +14,25 @@ import TestSubject from '../pageview.interceptor'
 jest.mock('../../../config/measurement-protocol')
 
 describe('unit:app/lib/interceptors/PageviewInterceptor', () => {
-  const Subject = new TestSubject<IEntity>(FixtureConfig)
+  const Subject = new TestSubject(FixtureConfig)
 
   describe('#intercept', () => {
-    const uri = new URI('/users?path=users')
-
-    const req = getMockReq({
-      headers: {
-        host: faker.internet.domainName(),
-        'user-agent': faker.internet.userAgent(),
-        'x-forwarded-for': faker.internet.ip()
-      },
-      method: 'get',
-      path: uri.path(),
-      url: uri.valueOf()
-    })
-
     it('should send pageview hit', async () => {
-      const context = { switchToHttp: () => ({ getRequest: () => req }) }
+      const ENTITY = { created_at: Date.now(), id: faker.datatype.uuid() }
 
-      const next: CallHandler<IEntity[]> = {
-        handle: jest.fn().mockReturnValue(Promise.resolve([]))
-      }
+      const mockExecutionContext = getMockExecutionContext(REQ_GET)
+      const mockCallHandler = getMockCallHandler<IEntity>(ENTITY)
 
-      await Subject.intercept(context as ExecutionContext, next)
+      await Subject.intercept(mockExecutionContext, mockCallHandler)
 
       expect(MockMeasurementProtocol.pageview).toBeCalledTimes(1)
       expect(MockMeasurementProtocol.pageview).toBeCalledWith({
-        dl: req.url,
-        documentHost: req.headers.host,
-        documentPath: req.path,
+        dl: REQ_GET.url,
+        documentHost: REQ_GET.headers.host,
+        documentPath: REQ_GET.path,
         ds: 'api',
-        ip: req.headers['x-forwarded-for'],
-        ua: req.headers['user-agent'],
+        ip: REQ_GET.headers['x-forwarded-for'],
+        ua: REQ_GET.headers['user-agent'],
         'vercel-branch': process.env.VERCEL_GIT_COMMIT_REF,
         'vercel-commit': process.env.VERCEL_GIT_COMMIT_SHA,
         'vercel-env': process.env.VERCEL_ENV

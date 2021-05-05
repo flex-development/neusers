@@ -1,3 +1,4 @@
+import AppModule from '@/app.module'
 import { USERS_MOCK_CACHE } from '@/subdomains/users/providers/__tests__/__fixtures__/users.fixture'
 import UsersModule from '@/subdomains/users/users.module'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
@@ -18,7 +19,7 @@ describe('unit:app/subdomains/users/providers/AuthService', () => {
 
   beforeAll(async () => {
     const moduleRef = await createTestingModule({
-      imports: [UsersModule],
+      imports: [AppModule, UsersModule],
       providers: [AuthService]
     })
 

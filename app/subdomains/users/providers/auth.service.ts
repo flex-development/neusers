@@ -1,8 +1,10 @@
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { compareSync } from 'bcryptjs'
 import omit from 'lodash.omit'
+import type { EnvironmentVariables } from '../../../lib/interfaces'
 import type { BasicAuthDecoded, UserEntity as User } from '../users.types'
 import UsersService from './users.service'
 
@@ -13,7 +15,10 @@ import UsersService from './users.service'
 
 @Injectable()
 export default class AuthService {
-  constructor(readonly users: UsersService) {}
+  constructor(
+    readonly config: ConfigService<EnvironmentVariables>,
+    readonly users: UsersService
+  ) {}
 
   /**
    * Decodes a Basic Authorization header.
@@ -67,7 +72,7 @@ export default class AuthService {
 
       // If comparison fails, check if passwords are equal
       // ! Needed for envs where password hashing is disabled / mocked
-      match = password === user.password
+      if (!this.config.get<boolean>('PROD')) match = password === user.password
 
       if (!match) throw new Error('Incorrect password')
     } catch (error) {

@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
 import { Observable } from 'rxjs'
 import MeasurementProtocol from '../../config/measurement-protocol'
+import type { EnvironmentVariables } from '../interfaces'
 import type { InterceptorResponse as Response } from '../types'
 
 /**
@@ -16,18 +17,10 @@ import type { InterceptorResponse as Response } from '../types'
  */
 
 @Injectable()
-export default class PageviewInterceptor<T>
-  implements NestInterceptor<T, Response<T>> {
+export default class PageviewInterceptor implements NestInterceptor {
   private readonly GAMP: typeof MeasurementProtocol = MeasurementProtocol
 
-  /**
-   * Instantiates a new `AllExceptionsFilter`.
-   *
-   * @param {ConfigService} config - App configuration service
-   */
-  constructor(private readonly config: ConfigService) {
-    this.config = config
-  }
+  constructor(readonly config: ConfigService<EnvironmentVariables>) {}
 
   /**
    * Sends a `pageview` hit to Google Analytics.
@@ -36,14 +29,14 @@ export default class PageviewInterceptor<T>
    *
    * @param {ExecutionContext} context - Object providing methods to access the
    * route handler and class about to be invoked
-   * @param {CallHandler} next - Provides access to an `Observable` representing
-   * the response stream from the route handler
-   * @return {Promise<Observable<Response<T>>>} Promise containg handler res
+   * @param {CallHandler} next - Provides access to an `Observable`
+   * representing the response stream from the route handler
+   * @return {Promise<Observable<Response>>} Promise containg handler res
    */
   async intercept(
     context: ExecutionContext,
     next: CallHandler
-  ): Promise<Observable<Response<T>>> {
+  ): Promise<Observable<Response>> {
     const { headers, path, url } = context.switchToHttp().getRequest<Request>()
 
     // Send hit to Google Analytics
