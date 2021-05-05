@@ -34,13 +34,6 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
   // @ts-expect-error mocking cache
   Subject.cache = Object.assign({}, mockCache)
 
-  describe('exports', () => {
-    it('should export class by default', () => {
-      expect(TestSubject).toBeDefined()
-      expect(TestSubject.constructor.name).toBe('Function')
-    })
-  })
-
   describe('constructor', () => {
     const { constructor } = MockRepository.prototype
 

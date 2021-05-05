@@ -20,13 +20,6 @@ jest.mock('../../../config/measurement-protocol')
 describe('unit:app/lib/filters/AllExceptionsFilter', () => {
   const Subject = new TestSubject(FixtureConfig)
 
-  describe('exports', () => {
-    it('should export class by default', () => {
-      expect(TestSubject).toBeDefined()
-      expect(TestSubject.constructor.name).toBe('Function')
-    })
-  })
-
   describe('#catch', () => {
     const uri = new URI('/users?path=users')
 

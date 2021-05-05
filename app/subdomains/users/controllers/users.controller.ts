@@ -14,13 +14,16 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   Post,
   Put,
-  Query
+  Query,
+  UseInterceptors
 } from '@nestjs/common'
 import omit from 'lodash.omit'
 import type { CreateUserDTO } from '../dto/create-user.dto'
 import type { PatchUserDTO } from '../dto/patch-user.dto'
+import AuthInterceptor from '../interceptors/auth.interceptor'
 import UsersService from '../providers/users.service'
 import type { UserEntity as User, UserQuery } from '../users.types'
 
@@ -63,14 +66,13 @@ export default class UsersController {
    *
    * Throws a `404` error if the user is not found.
    *
-   * @todo Authenticate user
-   *
    * @async
    * @param {string} id - UID of user to find
    * @return {Promise<void>} Empty promise when user is deleted
    */
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':user')
+  @UseInterceptors(AuthInterceptor)
   async delete(@Param('user') id: User['id']): Promise<void> {
     await this.users.delete(id, true)
     return
@@ -100,22 +102,25 @@ export default class UsersController {
    *
    * Throws an error if the user isn't found.
    *
-   * @todo Authenticate user
-   * @todo Remove sensitive data if user isn't authenticated
-   *
    * @async
    * @param {string} user - UID or email address of user to find
+   * @param {boolean} [authorized] - Boolean indicating is user is logged in
    * @param {UserQuery} [query] - Query parameters
    * @return {Promise<PartialOr<User>>} Promise containing user data
    */
   @HttpCode(HttpStatus.OK)
   @Get(':user')
+  @UseInterceptors(AuthInterceptor)
   async findOne(
     @Param('user') user: User['email'] | User['id'],
+    @Param('authorized', ParseBoolPipe) authorized: boolean = false,
     @Query() query: UserQuery = {}
   ): Promise<PartialOr<User>> {
     // ! Remove Vercel query parameter `path`
-    return await this.users.findOne(user, omit(query, ['path']))
+    const found = await this.users.findOne(user, omit(query, ['path']))
+
+    // ! If user is found and not logged in, remove sensitive data
+    return authorized ? found : omit(found, ['password'])
   }
 
   /**
@@ -126,9 +131,8 @@ export default class UsersController {
    * Throws a `404` error if the user is not found, or a `400` error if a user
    * with the same email already exists.
    *
-   * @todo Authenticate user
-   *
    * @async
+   *
    * @param {string} id - ID of user to update
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
@@ -136,12 +140,13 @@ export default class UsersController {
    */
   @HttpCode(HttpStatus.OK)
   @Put(':user')
+  @UseInterceptors(AuthInterceptor)
   async patch(
     @Param('user') id: User['id'],
     @Body() dto: PatchUserDTO,
     @Query('rfields') rfields: string[] = []
   ): Promise<User> {
-    return await this.users.patch(id, dto, rfields)
+    return await this.users.patch(id, dto, JSON.parse(`${rfields}`))
   }
 
   /**

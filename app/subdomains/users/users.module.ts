@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import UsersController from './controllers/users.controller'
-import { UsersRepository, UsersService } from './providers'
+import { AuthService, UsersRepository, UsersService } from './providers'
 
 /**
  * @file Subdomain Module - UsersModule
@@ -10,6 +10,6 @@ import { UsersRepository, UsersService } from './providers'
 @Module({
   controllers: [UsersController],
   exports: [UsersService],
-  providers: [UsersRepository, UsersService]
+  providers: [AuthService, UsersRepository, UsersService]
 })
 export default class UsersModule {}

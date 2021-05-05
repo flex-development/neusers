@@ -17,13 +17,6 @@ jest.mock('../../../config/measurement-protocol')
 describe('unit:app/lib/interceptors/PageviewInterceptor', () => {
   const Subject = new TestSubject<IEntity>(FixtureConfig)
 
-  describe('exports', () => {
-    it('should class by default', () => {
-      expect(TestSubject).toBeDefined()
-      expect(TestSubject.constructor.name).toBe('Function')
-    })
-  })
-
   describe('#intercept', () => {
     const uri = new URI('/users?path=users')
 

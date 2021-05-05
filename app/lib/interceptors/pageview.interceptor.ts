@@ -7,15 +7,13 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
 import { Observable } from 'rxjs'
-import type { PlainObject } from 'simplytyped'
 import MeasurementProtocol from '../../config/measurement-protocol'
+import type { InterceptorResponse as Response } from '../types'
 
 /**
  * @file Interceptors - PageviewInterceptor
  * @module app/lib/interceptors/Pageview
  */
-
-export type Response<T = PlainObject> = T | T[]
 
 @Injectable()
 export default class PageviewInterceptor<T>

@@ -1,4 +1,4 @@
-import { isType } from 'type-plus'
+import isPlainObject from 'lodash.isplainobject'
 import type { IsLengthOptions } from 'validator/lib/isLength'
 import isLength from 'validator/lib/isLength'
 import type { ConstraintResultCustom } from '../types'
@@ -26,7 +26,7 @@ const nonEmptyStringContraint = (
   const _value = (typeof value === 'string' ? value : '').trim()
 
   const nes = isLength(_value, {
-    ...(isType<IsLengthOptions>(options as any) ? options : {}),
+    ...(isPlainObject(options) ? options : {}),
     min: 1
   })
 

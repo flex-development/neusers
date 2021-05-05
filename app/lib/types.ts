@@ -1,4 +1,6 @@
+import type { OneOrMany } from '@flex-development/dreepo/lib/types-global'
 import { ExceptionStatusCode } from '@flex-development/exceptions'
+import type { PlainObject } from 'simplytyped'
 
 /**
  * @file Global Type Definitions
@@ -26,3 +28,8 @@ export type ConstraintResult = boolean | string
  * - https://github.com/pelotom/runtypes#constraint-checking
  */
 export type ConstraintResultCustom = true | string
+
+/**
+ * Type of value wrapped by inteceptor observables.
+ */
+export type InterceptorResponse<T = PlainObject> = OneOrMany<T>

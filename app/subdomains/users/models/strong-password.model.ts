@@ -1,4 +1,5 @@
 import { String } from 'runtypes'
+import type { ConstraintResultCustom } from '../../../lib/types'
 import strongPasswordConstraint from '../utils/passwordConstraint.util'
 
 /**
@@ -6,6 +7,14 @@ import strongPasswordConstraint from '../utils/passwordConstraint.util'
  * @module app/subdomains/users/Password
  */
 
-export default String.withConstraint(strongPasswordConstraint, {
-  name: 'StrongPassword'
-})
+/**
+ * Returns `true` if {@param value} is a strong password.
+ *
+ * @param {any} value - Value to test against constraint
+ * @return {ConstraintResultCustom} `true` if non-empty string or error message
+ */
+const constraint = (value: any): ConstraintResultCustom => {
+  return strongPasswordConstraint(value, { minSymbols: 0 })
+}
+
+export default String.withConstraint(constraint, { name: 'StrongPassword' })

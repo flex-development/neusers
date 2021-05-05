@@ -39,6 +39,7 @@
     "@types/lodash.clamp": "latest",
     "@types/lodash.join": "latest",
     "bcryptjs": "latest",
+    "class-transformer": "latest",
     "class-validator": "latest",
     "create-vercel-http-server-handler": "latest",
     "ga-measurement-protocol": "latest",
@@ -51,7 +52,6 @@
     "ts-node": "latest",
     "tsconfig-paths": "latest",
     "tslib": "latest",
-    "type-plus": "latest",
     "typescript": "4.3.0-dev.20210306"
   },
   "devDependencies": {
@@ -99,6 +99,7 @@
     "querystring": "latest",
     "supertest": "latest",
     "ts-jest": "27.0.0-next.9",
+    "type-plus": "latest",
     "yarn": "latest"
   },
   "private": true,

@@ -11,6 +11,14 @@ import { User } from './models/user.model'
  */
 
 /**
+ * Object representing a decoded Basic Authorization header.
+ */
+export type BasicAuthDecoded = {
+  email: UserEntity['email']
+  password: UserEntity['password']
+}
+
+/**
  * User database entity.
  */
 export type UserEntity = Static<typeof User>

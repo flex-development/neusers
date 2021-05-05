@@ -6,13 +6,14 @@ import { createTestingModule } from '@tests/utils'
 import faker from 'faker'
 import type { PlainObject } from 'simplytyped'
 import AuthService from '../auth.service'
+import AUTHORIZATION_HEADER from './__fixtures__/authorization.fixture'
 
 /**
  * @file Unit Tests - AuthService
- * @module app/subdomains/auth/providers/tests/AuthService
+ * @module app/subdomains/users/providers/tests/AuthService
  */
 
-describe('unit:app/subdomains/auth/providers/AuthService', () => {
+describe('unit:app/subdomains/users/providers/AuthService', () => {
   let TestSubject: AuthService
 
   beforeAll(async () => {
@@ -27,6 +28,37 @@ describe('unit:app/subdomains/auth/providers/AuthService', () => {
   beforeEach(() => {
     // @ts-expect-error mocking repository cache
     TestSubject.users.repo.cache = Object.assign({}, USERS_MOCK_CACHE)
+  })
+
+  describe('#decodeBasicAuth', () => {
+    it('should return BasicAuthDecoded object if authorization header', () => {
+      const auth = TestSubject.decodeBasicAuth(AUTHORIZATION_HEADER)
+
+      expect(typeof auth.email === 'string').toBeTruthy()
+      expect(typeof auth.password === 'string').toBeTruthy()
+    })
+
+    it('should return BasicAuthDecoded object if random string', () => {
+      const auth = TestSubject.decodeBasicAuth('RANDOM_STRING')
+
+      expect(typeof auth.email === 'string').toBeTruthy()
+      expect(typeof auth.password === 'string').toBeTruthy()
+    })
+
+    it('should throw Exception if error occurs', () => {
+      const authorization = ([] as unknown) as string
+
+      let exception = {} as Exception
+
+      try {
+        TestSubject.decodeBasicAuth(authorization)
+      } catch (error) {
+        exception = error
+      }
+
+      expect(exception.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
+      expect(exception.data).toMatchObject({ authorization })
+    })
   })
 
   describe('#login', () => {
