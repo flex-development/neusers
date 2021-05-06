@@ -20,19 +20,34 @@ import {
   Query,
   UseInterceptors
 } from '@nestjs/common'
+import {
+  ApiBadGatewayResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger'
 import omit from 'lodash.omit'
-import type { CreateUserDTO } from '../dto/create-user.dto'
-import type { PatchUserDTO } from '../dto/patch-user.dto'
+import CreateUserDTO from '../dto/create-user.dto'
+import PatchUserDTO from '../dto/patch-user.dto'
 import AuthInterceptor from '../interceptors/auth.interceptor'
+import { IUser } from '../interfaces/user.interface'
+import User from '../models/user.model'
 import UsersService from '../providers/users.service'
-import type { UserEntity as User, UserQuery } from '../users.types'
+import type { UserQuery } from '../users.types'
 
 /**
- * @file Subdomain Controller - UsersController
+ * @file Users Subdomain Controller - UsersController
  * @module app/subdomains/users/controllers/UsersController
  */
 
 @Controller('users')
+@ApiTags('users')
 export default class UsersController {
   constructor(private users: UsersService) {}
 
@@ -53,11 +68,15 @@ export default class UsersController {
    * @param {string} dto.first_name - User's first name
    * @param {string} dto.last_name - User's last name
    * @param {string} dto.password - Alphanumeric password, at least 4 characters
-   * @return {Promise<User>} Promise containing new user
+   * @return {Promise<IUser>} Promise containing new user
    */
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async create(@Body() dto: CreateUserDTO): Promise<User> {
+  @ApiCreatedResponse({ description: 'Created new user', type: User })
+  @ApiConflictResponse({ description: 'User with email or id already exists' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  async create(@Body() dto: CreateUserDTO): Promise<IUser> {
     return await this.users.create(dto)
   }
 
@@ -71,9 +90,13 @@ export default class UsersController {
    * @return {Promise<void>} Empty promise when user is deleted
    */
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':user')
   @UseInterceptors(AuthInterceptor)
-  async delete(@Param('user') id: User['id']): Promise<void> {
+  @Delete(':user')
+  @ApiNoContentResponse({ description: 'Deleted user' })
+  @ApiUnauthorizedResponse({ description: 'User not logged in' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  async delete(@Param('user') id: IUser['id']): Promise<void> {
     await this.users.delete(id, true)
     return
   }
@@ -84,15 +107,18 @@ export default class UsersController {
    * @async
    * @param {UserQuery} [query] - Query parameters
    * @param {number} [query.$limit] - Limit number of results
-   * @param {ProjectStage<User>} [query.$project] - Fields to include
+   * @param {ProjectStage<IUser>} [query.$project] - Fields to include
    * @param {number} [query.$skip] - Skips the first n entities
-   * @param {Record<EntityPath<User>, SortOrder>} [query.$sort] - Sorting rules
-   * @param {Projection<User>} [query.projection] - Projection operators
-   * @return {Promise<PartialOr<User>[]>} Promise containing search results
+   * @param {Record<EntityPath<IUser>, SortOrder>} [query.$sort] - Sorting rules
+   * @param {Projection<IUser>} [query.projection] - Projection operators
+   * @return {Promise<PartialOr<IUser>[]>} Promise containing results
    */
   @HttpCode(HttpStatus.OK)
   @Get()
-  async find(@Query() query: UserQuery = {}): Promise<Partial<User>[]> {
+  @ApiOkResponse({ description: 'Successfully queried database' })
+  @ApiBadRequestResponse({ description: 'Error executing query' })
+  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  async find(@Query() query: UserQuery = {}): Promise<Partial<IUser>[]> {
     // ! Remove Vercel query parameter `path`
     return this.users.find(omit(query, ['path']))
   }
@@ -106,16 +132,20 @@ export default class UsersController {
    * @param {string} user - UID or email address of user to find
    * @param {boolean} [authorized] - Boolean indicating is user is logged in
    * @param {UserQuery} [query] - Query parameters
-   * @return {Promise<PartialOr<User>>} Promise containing user data
+   * @return {Promise<PartialOr<IUser>>} Promise containing user data
    */
   @HttpCode(HttpStatus.OK)
-  @Get(':user')
   @UseInterceptors(AuthInterceptor)
+  @Get(':user')
+  @ApiOkResponse({ description: 'Found user by ID or email address' })
+  @ApiBadRequestResponse({ description: 'Error executing query' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async findOne(
-    @Param('user') user: User['email'] | User['id'],
+    @Param('user') user: IUser['email'] | IUser['id'],
     @Param('authorized', ParseBoolPipe) authorized: boolean = false,
     @Query() query: UserQuery = {}
-  ): Promise<PartialOr<User>> {
+  ): Promise<PartialOr<IUser>> {
     // ! Remove Vercel query parameter `path`
     const found = await this.users.findOne(user, omit(query, ['path']))
 
@@ -128,24 +158,29 @@ export default class UsersController {
    *
    * The user's `created_at` and `id` properties cannot be patched.
    *
-   * Throws a `404` error if the user is not found, or a `400` error if a user
-   * with the same email already exists.
+   * Throws a `404 NOT_FOUND` error if the user is not found.
+   * Throws a `409 CONFLICT` error if a user with the same email already exists.
    *
    * @async
-   *
    * @param {string} id - ID of user to update
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
-   * @return {Promise<User>} Promise containing updated user
+   * @return {Promise<IUser>} Promise containing updated user
    */
   @HttpCode(HttpStatus.OK)
-  @Put(':user')
   @UseInterceptors(AuthInterceptor)
+  @Put(':user')
+  @ApiOkResponse({ description: 'Successfully updated user', type: User })
+  @ApiBadRequestResponse({ description: 'Schema validation error' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiConflictResponse({ description: 'User with email already exists' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async patch(
-    @Param('user') id: User['id'],
+    @Param('user') id: IUser['id'],
     @Body() dto: PatchUserDTO,
     @Query('rfields') rfields: string[] = []
-  ): Promise<User> {
+  ): Promise<IUser> {
     return await this.users.patch(id, dto, JSON.parse(`${rfields}`))
   }
 
@@ -157,13 +192,19 @@ export default class UsersController {
    *
    * @async
    * @param {OneOrMany<CreateUserDTO | PatchUserDTO>} dto - Users to upsert
-   * @return {Promise<User[]>} Promise with new or updated users
+   * @return {Promise<IUser[]>} Promise with new or updated users
    */
   @HttpCode(HttpStatus.OK)
   @Post('/upsert')
+  @ApiOkResponse({ description: 'Upserted user or group of users' })
+  @ApiBadRequestResponse({ description: 'Schema validation error' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiConflictResponse({ description: 'User with email already exists' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async upsert(
     @Body() dto: OneOrMany<CreateUserDTO | PatchUserDTO>
-  ): Promise<User[]> {
+  ): Promise<IUser[]> {
     return await this.users.upsert(dto)
   }
 }

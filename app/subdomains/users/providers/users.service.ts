@@ -9,13 +9,13 @@ import type {
 import { Injectable } from '@nestjs/common'
 import omit from 'lodash.omit'
 import isEmail from 'validator/lib/isEmail'
-import type { CreateUserDTO } from '../dto/create-user.dto'
-import type { PatchUserDTO } from '../dto/patch-user.dto'
+import CreateUserDTO from '../dto/create-user.dto'
+import PatchUserDTO from '../dto/patch-user.dto'
 import type { UserEntity as User, UserQuery as Query } from '../users.types'
 import UsersRepository from './users.repository'
 
 /**
- * @file Subdomain Providers - UsersService
+ * @file Users Subdomain Providers - UsersService
  * @module app/subdomains/users/providers/UsersService
  */
 

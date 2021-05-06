@@ -3,6 +3,6 @@
  * @module app/subdomains/users/interfaces
  */
 
-export default {}
+export type { IUser } from './user.interface'
 
 /* eslint-disable prettier/prettier */

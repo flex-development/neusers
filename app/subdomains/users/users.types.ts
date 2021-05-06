@@ -1,14 +1,14 @@
-import { InterceptorResponse } from '@/lib/types'
 import type {
   PartialOr,
   QueryParams,
   RepoValidatorOptsDTO
 } from '@flex-development/dreepo/lib/types'
 import { Static } from 'runtypes'
-import { User } from './models/user.model'
+import type { InterceptorResponse } from '../../lib/types'
+import { UserEntityModel } from './models/user.model'
 
 /**
- * @file Subdomain Type Definitions
+ * @file Users Subdomain Type Definitions
  * @module app/subdomains/users/types
  */
 
@@ -28,7 +28,7 @@ export type BasicAuthDecoded = {
 /**
  * User database entity.
  */
-export type UserEntity = Static<typeof User>
+export type UserEntity = Static<typeof UserEntityModel>
 
 /**
  * Query parameters accepted by the `UsersRepository`.

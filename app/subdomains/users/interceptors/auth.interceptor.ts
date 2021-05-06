@@ -11,7 +11,7 @@ import AuthService from '../providers/auth.service'
 import type { AuthInterceptorResponse } from '../users.types'
 
 /**
- * @file Subdomain Interceptor - AuthInterceptor
+ * @file Users Subdomain Interceptor - AuthInterceptor
  * @module app/subdomains/users/interceptors/AuthInterceptor
  */
 

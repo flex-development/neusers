@@ -9,7 +9,7 @@ import type { BasicAuthDecoded, UserEntity as User } from '../users.types'
 import UsersService from './users.service'
 
 /**
- * @file Subdomain Providers - AuthService
+ * @file Users Subdomain Providers - AuthService
  * @module app/subdomains/users/providers/AuthService
  */
 

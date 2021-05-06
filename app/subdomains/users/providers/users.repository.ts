@@ -7,13 +7,13 @@ import { Injectable } from '@nestjs/common'
 import { hashSync } from 'bcryptjs'
 import { CONF } from '../../../config/configuration'
 import repoPath from '../../../lib/utils/repoPath.util'
-import type { CreateUserDTO } from '../dto/create-user.dto'
-import type { PatchUserDTO } from '../dto/patch-user.dto'
+import CreateUserDTO from '../dto/create-user.dto'
+import PatchUserDTO from '../dto/patch-user.dto'
 import { UserVopts } from '../models/user.model'
 import type { UserEntity as User, UserQuery as Query } from '../users.types'
 
 /**
- * @file Subdomain Providers - UsersRepository
+ * @file Users Subdomain Providers - UsersRepository
  * @module app/subdomains/users/providers/UsersRepository
  */
 

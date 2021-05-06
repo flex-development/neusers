@@ -3,7 +3,7 @@ import type { ConstraintResultCustom } from '../../../lib/types'
 import strongPasswordConstraint from '../utils/passwordConstraint.util'
 
 /**
- * @file Subdomain Model - Password
+ * @file Users Subdomain Model - Password
  * @module app/subdomains/users/Password
  */
 

@@ -3,7 +3,7 @@ import UsersController from './controllers/users.controller'
 import { AuthService, UsersRepository, UsersService } from './providers'
 
 /**
- * @file Subdomain Module - UsersModule
+ * @file Users Subdomain Module - UsersModule
  * @module app/subdomains/users/module
  */
 

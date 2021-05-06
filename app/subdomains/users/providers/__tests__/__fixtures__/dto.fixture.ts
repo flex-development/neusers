@@ -1,5 +1,5 @@
-import type { CreateUserDTO } from '@/subdomains/users/dto/create-user.dto'
-import type { PatchUserDTO } from '@/subdomains/users/dto/patch-user.dto'
+import CreateUserDTO from '@/subdomains/users/dto/create-user.dto'
+import PatchUserDTO from '@/subdomains/users/dto/patch-user.dto'
 import faker from 'faker'
 
 /**
