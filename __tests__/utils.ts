@@ -1,4 +1,7 @@
+import DBCONNS from '@/config/database'
 import type { InterceptorResponse } from '@/lib/types'
+import { IUser } from '@/subdomains/users/interfaces'
+import type { EmptyObject, RepoRoot } from '@flex-development/dreepo'
 import { getMockReq } from '@jest-mock/express'
 import type { MockRequest } from '@jest-mock/express/dist/src/request'
 import type {
@@ -13,6 +16,17 @@ import { Test } from '@nestjs/testing'
  * @file Testing Utilities
  * @module tests/utils
  */
+
+/**
+ * Clears the data from the `UsersRepository`.
+ *
+ * @async
+ * @return {Promise<void>} Empty promise when complete
+ */
+export const clearUsersRepository = async (): Promise<void> => {
+  await DBCONNS.users.send<EmptyObject>({ data: {}, method: 'put' })
+  return
+}
 
 /**
  * Returns a NestJS testing module.
@@ -58,4 +72,20 @@ export const getMockExecutionContext = (
   const context = { switchToHttp: () => ({ getRequest: () => mockRequest }) }
 
   return context as ExecutionContext
+}
+
+/**
+ * Loads data into the root of the `UsersRepository`.
+ *
+ * @template E - Entity
+ *
+ * @async
+ * @param {RepoRoot<E>} data - Repository root data
+ * @return {Promise<void>} Empty promise when complete
+ */
+export async function loadUsersRepository(
+  data: RepoRoot<IUser>
+): Promise<void> {
+  await DBCONNS.users.send<RepoRoot<IUser>>({ data, method: 'put' })
+  return
 }
