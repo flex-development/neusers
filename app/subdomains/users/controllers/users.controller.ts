@@ -1,6 +1,5 @@
 import type {
   EntityPath,
-  OneOrMany,
   PartialOr,
   ProjectionCriteria as Projection,
   ProjectStage
@@ -222,42 +221,5 @@ export default class UsersController {
     @Query('rfields') rfields: string[] = []
   ): Promise<IUser> {
     return await this.users.patch(id, dto, JSON.parse(`${rfields}`))
-  }
-
-  /**
-   * Creates or updates a single user or array of users.
-   *
-   * If any users already exist, their entry will be patched. If any users don't
-   * exist, they'll be inserted into the database.
-   *
-   * @async
-   * @param {OneOrMany<CreateUserDTO | PatchUserDTO>} dto - Users to upsert
-   * @return {Promise<IUser[]>} Promise with new or updated users
-   */
-  @HttpCode(HttpStatus.OK)
-  @Post('/upsert')
-  @ApiOkResponse({
-    description: 'Upserted user or group of users',
-    isArray: true,
-    type: User
-  })
-  @ApiBadRequestResponse({
-    description: 'Schema validation error',
-    type: ExceptionJSON
-  })
-  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
-  @ApiConflictResponse({
-    description: 'User with email already exists',
-    type: ExceptionJSON
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
-    type: ExceptionJSON
-  })
-  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
-  async upsert(
-    @Body() dto: OneOrMany<CreateUserDTO | PatchUserDTO>
-  ): Promise<IUser[]> {
-    return await this.users.upsert(dto)
   }
 }

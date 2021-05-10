@@ -102,21 +102,4 @@ describe('unit:app/subdomains/users/providers/UsersService', () => {
       expect(spy_repo_patch).toBeCalledTimes(1)
     })
   })
-
-  describe('#upsert', () => {
-    it('should call #repo.save', async () => {
-      const dto_create = getCreateUserDTO()
-
-      const dto_patch = {
-        ...getPatchUserDTO('email'),
-        id: TestSubject.repo.cache.collection[0].id
-      }
-
-      const spy_repo_save = jest.spyOn(TestSubject.repo, 'save')
-
-      await TestSubject.upsert([dto_create, dto_patch])
-
-      expect(spy_repo_save).toBeCalledTimes(1)
-    })
-  })
 })

@@ -117,18 +117,4 @@ export default class UsersService {
   ): Promise<IUser> {
     return await this.repo.patch(id, dto, rfields)
   }
-
-  /**
-   * Creates or updates a single user or array of users.
-   *
-   * If any users already exist, their entry will be patched. If any users don't
-   * exist, they'll be inserted into the database.
-   *
-   * @async
-   * @param {OneOrMany<CreateUserDTO | PatchUserDTO>} dto - Users to upsert
-   * @return {Promise<IUser[]>} Promise with new or updated users
-   */
-  async upsert(dto: OneOrMany<CreateUserDTO | PatchUserDTO>): Promise<IUser[]> {
-    return await this.repo.save(dto)
-  }
 }
