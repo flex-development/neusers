@@ -1,7 +1,6 @@
 import AppModule from '@/app.module'
 import UsersModule from '@/subdomains/users/users.module'
-import type { IEntity } from '@flex-development/dreepo'
-import { PartialOr } from '@flex-development/dreepo/lib/types-global'
+import type { IEntity, PartialOr } from '@flex-development/dreepo'
 import {
   createTestingModule,
   getMockCallHandler,

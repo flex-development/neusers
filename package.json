@@ -28,7 +28,7 @@
     "start:debug": "yarn start --debug"
   },
   "dependencies": {
-    "@flex-development/dreepo": "1.1.0",
+    "@flex-development/dreepo": "3.0.0",
     "@nestjs/common": "next",
     "@nestjs/config": "latest",
     "@nestjs/core": "next",
@@ -39,13 +39,10 @@
     "@types/lodash.clamp": "latest",
     "@types/lodash.join": "latest",
     "bcryptjs": "latest",
-    "class-transformer": "latest",
-    "class-validator": "latest",
     "create-vercel-http-server-handler": "latest",
     "ga-measurement-protocol": "latest",
     "lodash.clamp": "latest",
     "lodash.join": "latest",
-    "reflect-metadata": "latest",
     "rxjs": "next",
     "simplytyped": "latest",
     "ts-loader": "latest",
@@ -76,6 +73,7 @@
     "@types/faker": "latest",
     "@types/jest": "latest",
     "@types/supertest": "latest",
+    "@types/urijs": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "@vercel/node": "latest",
@@ -100,6 +98,7 @@
     "supertest": "latest",
     "ts-jest": "27.0.0-next.9",
     "type-plus": "latest",
+    "urijs": "latest",
     "yarn": "latest"
   },
   "private": true,

@@ -1,4 +1,4 @@
-import type { OrNever } from '@flex-development/dreepo/lib/types'
+import type { OrNever } from '@flex-development/dreepo'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import { CONF } from '../../config/configuration'

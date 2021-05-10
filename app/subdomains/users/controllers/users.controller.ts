@@ -1,11 +1,11 @@
-import { SortOrder } from '@flex-development/dreepo/lib/enums'
 import type {
   EntityPath,
   OneOrMany,
   PartialOr,
   ProjectionCriteria as Projection,
   ProjectStage
-} from '@flex-development/dreepo/lib/types'
+} from '@flex-development/dreepo'
+import { SortOrder } from '@flex-development/dreepo'
 import {
   Body,
   Controller,
@@ -33,10 +33,11 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger'
 import omit from 'lodash.omit'
-import CreateUserDTO from '../dto/create-user.dto'
-import PatchUserDTO from '../dto/patch-user.dto'
+import ExceptionJSON from '../../../lib/models/exeception-json.model'
+import { CreateUserDTO, PatchUserDTO } from '../dto'
 import AuthInterceptor from '../interceptors/auth.interceptor'
-import { IUser } from '../interfaces/user.interface'
+import type { IUser } from '../interfaces'
+import PartialUser from '../models/user-partial.model'
 import User from '../models/user.model'
 import UsersService from '../providers/users.service'
 import type { UserQuery } from '../users.types'
@@ -73,8 +74,18 @@ export default class UsersController {
   @HttpCode(HttpStatus.CREATED)
   @Post()
   @ApiCreatedResponse({ description: 'Created new user', type: User })
-  @ApiConflictResponse({ description: 'User with email or id already exists' })
-  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiBadRequestResponse({
+    description: 'Schema validation error',
+    type: ExceptionJSON
+  })
+  @ApiConflictResponse({
+    description: 'User with email or id already exists',
+    type: ExceptionJSON
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    type: ExceptionJSON
+  })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async create(@Body() dto: CreateUserDTO): Promise<IUser> {
     return await this.users.create(dto)
@@ -93,8 +104,15 @@ export default class UsersController {
   @UseInterceptors(AuthInterceptor)
   @Delete(':user')
   @ApiNoContentResponse({ description: 'Deleted user' })
-  @ApiUnauthorizedResponse({ description: 'User not logged in' })
-  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiUnauthorizedResponse({
+    description: 'User not logged in',
+    type: ExceptionJSON
+  })
+  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    type: ExceptionJSON
+  })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async delete(@Param('user') id: IUser['id']): Promise<void> {
     await this.users.delete(id, true)
@@ -115,8 +133,15 @@ export default class UsersController {
    */
   @HttpCode(HttpStatus.OK)
   @Get()
-  @ApiOkResponse({ description: 'Successfully queried database' })
-  @ApiBadRequestResponse({ description: 'Error executing query' })
+  @ApiOkResponse({
+    description: 'Successfully queried database',
+    isArray: true,
+    type: PartialUser
+  })
+  @ApiBadRequestResponse({
+    description: 'Error executing query',
+    type: ExceptionJSON
+  })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async find(@Query() query: UserQuery = {}): Promise<Partial<IUser>[]> {
     // ! Remove Vercel query parameter `path`
@@ -137,9 +162,15 @@ export default class UsersController {
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(AuthInterceptor)
   @Get(':user')
-  @ApiOkResponse({ description: 'Found user by ID or email address' })
-  @ApiBadRequestResponse({ description: 'Error executing query' })
-  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiOkResponse({
+    description: 'Found user by ID or email address',
+    type: PartialUser
+  })
+  @ApiBadRequestResponse({
+    description: 'Error executing query',
+    type: ExceptionJSON
+  })
+  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async findOne(
     @Param('user') user: IUser['email'] | IUser['id'],
@@ -171,10 +202,19 @@ export default class UsersController {
   @UseInterceptors(AuthInterceptor)
   @Put(':user')
   @ApiOkResponse({ description: 'Successfully updated user', type: User })
-  @ApiBadRequestResponse({ description: 'Schema validation error' })
-  @ApiNotFoundResponse({ description: 'User not found' })
-  @ApiConflictResponse({ description: 'User with email already exists' })
-  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiBadRequestResponse({
+    description: 'Schema validation error',
+    type: ExceptionJSON
+  })
+  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
+  @ApiConflictResponse({
+    description: 'User with email already exists',
+    type: ExceptionJSON
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    type: ExceptionJSON
+  })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async patch(
     @Param('user') id: IUser['id'],
@@ -196,11 +236,24 @@ export default class UsersController {
    */
   @HttpCode(HttpStatus.OK)
   @Post('/upsert')
-  @ApiOkResponse({ description: 'Upserted user or group of users' })
-  @ApiBadRequestResponse({ description: 'Schema validation error' })
-  @ApiNotFoundResponse({ description: 'User not found' })
-  @ApiConflictResponse({ description: 'User with email already exists' })
-  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @ApiOkResponse({
+    description: 'Upserted user or group of users',
+    isArray: true,
+    type: User
+  })
+  @ApiBadRequestResponse({
+    description: 'Schema validation error',
+    type: ExceptionJSON
+  })
+  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
+  @ApiConflictResponse({
+    description: 'User with email already exists',
+    type: ExceptionJSON
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    type: ExceptionJSON
+  })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
   async upsert(
     @Body() dto: OneOrMany<CreateUserDTO | PatchUserDTO>

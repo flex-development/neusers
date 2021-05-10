@@ -1,4 +1,3 @@
-import dreepoConfig from '@flex-development/dreepo/config/configuration'
 import type { EnvironmentVariables } from '../lib/interfaces'
 
 /**
@@ -10,6 +9,9 @@ import type { EnvironmentVariables } from '../lib/interfaces'
 const {
   ALGOLIA_API_KEY = '',
   ALGOLIA_APP_ID = '',
+  FIREBASE_CLIENT_EMAIL = '',
+  FIREBASE_DATABASE_URL = '',
+  FIREBASE_PRIVATE_KEY = '',
   FIREBASE_PROJECT_ID = '',
   GA_ENABLED,
   GA_TRACKING_ID,
@@ -28,16 +30,22 @@ const {
  */
 export const CONF: EnvironmentVariables = (() => {
   const ENV: Partial<EnvironmentVariables> = {
-    ...dreepoConfig(),
     ALGOLIA_API_KEY,
     ALGOLIA_APP_ID,
+    FIREBASE_CLIENT_EMAIL,
+    FIREBASE_DATABASE_URL,
+    FIREBASE_PRIVATE_KEY,
     FIREBASE_PROJECT_ID,
     GA_ENABLED: JSON.parse(`${GA_ENABLED || false}`),
     GA_TRACKING_ID,
     NODE_ENV: NODE_ENV.toLowerCase(),
     PORT: JSON.parse(PORT),
     SUBDOMAINS: {
-      users: { endpoint: 'users', repo: 'users' }
+      users: {
+        db: FIREBASE_DATABASE_URL,
+        endpoint: 'users',
+        repo: 'users'
+      }
     },
     TITLE,
     URL: URL.startsWith('http://') ? URL : `https://${URL}`,

@@ -56,20 +56,27 @@ export default class AllExceptionsFilter implements ExceptionFilter {
       ejson.data.stack = e.stack
     }
 
-    // Attach additional error data
-    ejson.data.path = req.path
-    ejson.data.timestamp = new Date().toISOString()
-    ejson.data.vercel = {
-      branch: this.config.get<string>('VERCEL_GIT_COMMIT_REF') || '',
-      commit: this.config.get<string>('VERCEL_GIT_COMMIT_SHA') || '',
-      env: this.config.get<string>('VERCEL_ENV') || ''
+    // Attach additional error data under `details` key
+    ejson.data.details = {
+      timestamp: new Date().toISOString(),
+      /* eslint-disable-next-line sort-keys */
+      req: {
+        headers: req.headers,
+        method: req.method.toUpperCase(),
+        path: req.path
+      },
+      vercel: {
+        branch: this.config.get<string>('VERCEL_GIT_COMMIT_REF') || '',
+        commit: this.config.get<string>('VERCEL_GIT_COMMIT_SHA') || '',
+        env: this.config.get<string>('VERCEL_ENV') || ''
+      }
     }
 
     // Send error `event` hit
     await this.track(ejson as ExceptionJSON, {
-      method: req.method.toUpperCase(),
-      path: ejson.data.path,
-      ua: req.headers['user-agent']
+      method: ejson.data.details.req.method,
+      path: ejson.data.details.path,
+      ua: ejson.data.details.req.headers['user-agent']
     })
 
     // Send error response to client

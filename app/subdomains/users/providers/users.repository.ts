@@ -1,16 +1,15 @@
+import type { OrNever, PartialOr } from '@flex-development/dreepo'
 import { Repository } from '@flex-development/dreepo'
-import type { OrNever, PartialOr } from '@flex-development/dreepo/lib/types'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import type { OnModuleInit } from '@nestjs/common'
 import { Injectable } from '@nestjs/common'
 import { hashSync } from 'bcryptjs'
-import { CONF } from '../../../config/configuration'
-import repoPath from '../../../lib/utils/repoPath.util'
-import CreateUserDTO from '../dto/create-user.dto'
-import PatchUserDTO from '../dto/patch-user.dto'
-import { UserVopts } from '../models/user.model'
-import type { UserEntity as User, UserQuery as Query } from '../users.types'
+import DBCONNS from '../../../config/database'
+import { CreateUserDTO, PatchUserDTO } from '../dto'
+import type { IUser } from '../interfaces'
+import User from '../models/user.model'
+import type { UserQuery as Query } from '../users.types'
 
 /**
  * @file Users Subdomain Providers - UsersRepository
@@ -19,10 +18,10 @@ import type { UserEntity as User, UserQuery as Query } from '../users.types'
 
 @Injectable()
 export class UsersRepository
-  extends Repository<User, Query>
+  extends Repository<IUser, Query>
   implements OnModuleInit {
   constructor() {
-    super(repoPath(CONF.SUBDOMAINS.users.repo), UserVopts)
+    super(DBCONNS.users, User)
   }
 
   /**
@@ -47,10 +46,10 @@ export class UsersRepository
    * @param {string} dto.first_name - User's first name
    * @param {string} dto.last_name - User's last name
    * @param {string} dto.password - Alphanumeric password, at least 8 characters
-   * @return {Promise<User>} Promise containing new user
+   * @return {Promise<IUser>} Promise containing new user
    * @throws {Exception}
    */
-  async create(dto: CreateUserDTO): OrNever<Promise<User>> {
+  async create(dto: CreateUserDTO): OrNever<Promise<IUser>> {
     // Check if user with same email address already exists
     this.findOneByEmail(dto.email || '', {}, false)
 
@@ -75,14 +74,14 @@ export class UsersRepository
    * @param {Query} [params] - Users repository query parameters
    * @param {boolean} [exists] - If `true`, throw error if user does exist;
    * othwerwise throw error if user exists
-   * @return {PartialOr<User> | null} User or null
+   * @return {PartialOr<IUser> | null} User or null
    * @throws {Exception}
    */
   findOneByEmail(
-    email: User['email'] = '',
+    email: IUser['email'] = '',
     params: Query = {},
     exists: boolean = true
-  ): PartialOr<User> | null {
+  ): PartialOr<IUser> | null {
     const users = this.find({ ...params, email })
     const user = users[0] && users[0]?.email === email ? users[0] : null
 
@@ -115,14 +114,14 @@ export class UsersRepository
    * @param {string} id - ID of user to update
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
-   * @return {Promise<User>} Promise containing updated user
+   * @return {Promise<IUser>} Promise containing updated user
    * @throws {Exception}
    */
   async patch(
-    id: User['id'],
+    id: IUser['id'],
     dto: PatchUserDTO,
     rfields: string[] = []
-  ): OrNever<Promise<User>> {
+  ): OrNever<Promise<IUser>> {
     // If valid email, check if user with same email address already exists
     if (typeof dto?.email === 'string') {
       this.findOneByEmail(dto.email, {}, false)

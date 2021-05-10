@@ -1,11 +1,6 @@
-import type {
-  PartialOr,
-  QueryParams,
-  RepoValidatorOptsDTO
-} from '@flex-development/dreepo/lib/types'
-import { Static } from 'runtypes'
+import type { PartialOr, QueryParams } from '@flex-development/dreepo'
 import type { InterceptorResponse } from '../../lib/types'
-import { UserEntityModel } from './models/user.model'
+import type { IUser } from './interfaces'
 
 /**
  * @file Users Subdomain Type Definitions
@@ -15,27 +10,17 @@ import { UserEntityModel } from './models/user.model'
 /**
  * Types of payloads streamed through the `AuthInterceptor`.
  */
-export type AuthInterceptorResponse = InterceptorResponse<PartialOr<UserEntity>>
+export type AuthInterceptorResponse = InterceptorResponse<PartialOr<IUser>>
 
 /**
  * Object representing a decoded Basic Authorization header.
  */
 export type BasicAuthDecoded = {
-  email: UserEntity['email']
-  password: UserEntity['password']
+  email: IUser['email']
+  password: IUser['password']
 }
-
-/**
- * User database entity.
- */
-export type UserEntity = Static<typeof UserEntityModel>
 
 /**
  * Query parameters accepted by the `UsersRepository`.
  */
-export type UserQuery = QueryParams<UserEntity>
-
-/**
- * Validator options DTO accepted by the `UsersRepository`.
- */
-export type UsersRepoValidatorOptsDTO = RepoValidatorOptsDTO<UserEntity>
+export type UserQuery = QueryParams<IUser>

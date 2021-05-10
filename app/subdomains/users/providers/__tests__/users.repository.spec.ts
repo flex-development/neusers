@@ -1,4 +1,3 @@
-import repoPath from '@/lib/utils/repoPath.util'
 import Repository from '@flex-development/dreepo/repositories/repository'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
@@ -21,12 +20,10 @@ import { USERS_MOCK_CACHE as mockCache } from './__fixtures__/users.fixture'
  * @module app/subdomains/users/providers/tests/UsersRepository
  */
 
-jest.mock('@/lib/utils/repoPath.util')
 jest.mock('@flex-development/dreepo/repositories/repository')
 
 const MockRepository = Repository as jest.MockedClass<typeof Repository>
 const mockHashSync = hashSync as jest.MockedFunction<typeof hashSync>
-const mockRepoPath = repoPath as jest.MockedFunction<typeof repoPath>
 
 describe('unit:app/subdomains/users/providers/UsersRepository', () => {
   const Subject = new TestSubject()
@@ -43,10 +40,6 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
 
     it('should call dreepo Repository class constructor', () => {
       expect(constructor).toBeCalledTimes(1)
-    })
-
-    it('should call repoPath utility function', () => {
-      expect(mockRepoPath).toBeCalledTimes(1)
     })
   })
 

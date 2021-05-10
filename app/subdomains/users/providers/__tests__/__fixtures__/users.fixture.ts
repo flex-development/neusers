@@ -1,5 +1,5 @@
-import type { UserEntity } from '@/subdomains/users/users.types'
-import type { RepoRoot } from '@flex-development/dreepo/lib/types'
+import type { IUser } from '@/subdomains/users/interfaces'
+import type { RepoRoot } from '@flex-development/dreepo'
 import ROOT from './users-root.fixture.json'
 
 /**
@@ -7,8 +7,8 @@ import ROOT from './users-root.fixture.json'
  * @module app/subdomains/users/tests/fixtures/users.fixture
  */
 
-export const USERS_ROOT: Readonly<RepoRoot<UserEntity>> = Object.freeze(ROOT)
-export const USERS: UserEntity[] = Object.values(USERS_ROOT)
+export const USERS_ROOT: Readonly<RepoRoot<IUser>> = Object.freeze(ROOT)
+export const USERS: IUser[] = Object.values(USERS_ROOT)
 
 export const USERS_MOCK_CACHE_EMPTY = Object.freeze({
   collection: Object.freeze([]),

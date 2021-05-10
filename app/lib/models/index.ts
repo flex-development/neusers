@@ -3,8 +3,6 @@
  * @module app/lib/models
  */
 
-export { default as Email } from './email.model'
-export { default as Entity } from './entity.model'
-export { default as NonEmptyString } from './nes.model'
+export { default as ExceptionJSON } from './exeception-json.model'
 
 /* eslint-disable prettier/prettier */

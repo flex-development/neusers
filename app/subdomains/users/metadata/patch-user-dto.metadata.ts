@@ -1,7 +1,7 @@
-import type { EntityDTO } from '@flex-development/dreepo/lib/dto/entity.dto'
+import type { EntityDTO } from '@flex-development/dreepo'
 import merge from 'lodash.merge'
 import type { EntitySchemaMetadata } from '../../../lib/types'
-import type { UserEntity } from '../users.types'
+import type { IUser } from '../interfaces'
 import UserMeta from './user.metadata'
 
 /**
@@ -9,7 +9,7 @@ import UserMeta from './user.metadata'
  * @module app/subdomains/users/metadata/PatchUserDTO
  */
 
-const metadata: EntitySchemaMetadata<EntityDTO<UserEntity>> = merge(UserMeta, {
+const metadata: EntitySchemaMetadata<EntityDTO<IUser>> = merge(UserMeta, {
   created_at: {
     required: false
   },

@@ -3,6 +3,6 @@
  * @module app/subdomains/users/utils
  */
 
-export { default as strongPasswordConstraint } from './passwordConstraint.util'
+export default {}
 
 /* eslint-disable prettier/prettier */

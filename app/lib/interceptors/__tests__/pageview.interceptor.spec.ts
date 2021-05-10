@@ -1,4 +1,4 @@
-import type { IEntity } from '@flex-development/dreepo/lib/models/entity.model'
+import type { IEntity } from '@flex-development/dreepo'
 import FixtureConfig from '@tests/fixtures/config.fixture'
 import { REQ_GET } from '@tests/fixtures/req-get.fixture'
 import { getMockCallHandler, getMockExecutionContext } from '@tests/utils'

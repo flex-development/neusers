@@ -25,13 +25,15 @@ NestJS Users System
 - [NestJS][1] - Framework for building Node.js server-side applications
 - [Vercel][2] - Hosting platform for serverless functions
 - [bcryptjs][3] - JavaScript password hashing library
-- [create-vercel-http-server-handler][4] - Deploy NestJS app as a single
+- [dreepo][4] - Repository Pattern implementation for Firebase Realtime Database
+- [create-vercel-http-server-handler][5] - Deploy NestJS app as a single
   Serverless Function
-- [ga-measurement-protocol][5] - Google Analytics Measurement Protocol
+- [ga-measurement-protocol][6] - Google Analytics Measurement Protocol
   TypeScript library
 
 [1]: https://docs.nestjs.com/
 [2]: https://vercel.com/docs/serverless-functions/introduction
 [3]: https://github.com/dcodeIO/bcrypt.js
-[4]: https://github.com/jlarmstrongiv/create-vercel-http-server-handler
-[5]: https://github.com/wusuopu/ts-ga-measurement-protocol
+[4]: https://github.com/flex-development/dreepo/tree/v2.0.0
+[5]: https://github.com/jlarmstrongiv/create-vercel-http-server-handler
+[6]: https://github.com/wusuopu/ts-ga-measurement-protocol

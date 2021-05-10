@@ -1,4 +1,4 @@
-import type { IEntity } from '../../../lib/interfaces'
+import type { IEntity } from '@flex-development/dreepo'
 
 /**
  * @file Users Subdomain Interface - IUser

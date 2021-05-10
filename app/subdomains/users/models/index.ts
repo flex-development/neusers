@@ -3,7 +3,7 @@
  * @module app/subdomains/users/models
  */
 
-export { default as StrongPassword } from './strong-password.model'
-export { User } from './user.model'
+export { default as PartialUser } from './user-partial.model'
+export { default as User } from './user.model'
 
 /* eslint-disable prettier/prettier */

@@ -1,17 +1,17 @@
-import { SortOrder } from '@flex-development/dreepo/lib/enums'
 import type {
   EntityPath,
   OneOrMany,
   PartialOr,
   ProjectionCriteria as Projection,
   ProjectStage
-} from '@flex-development/dreepo/lib/types'
+} from '@flex-development/dreepo'
+import { SortOrder } from '@flex-development/dreepo'
 import { Injectable } from '@nestjs/common'
 import omit from 'lodash.omit'
 import isEmail from 'validator/lib/isEmail'
-import CreateUserDTO from '../dto/create-user.dto'
-import PatchUserDTO from '../dto/patch-user.dto'
-import type { UserEntity as User, UserQuery as Query } from '../users.types'
+import { CreateUserDTO, PatchUserDTO } from '../dto'
+import type { IUser } from '../interfaces'
+import type { UserQuery as Query } from '../users.types'
 import UsersRepository from './users.repository'
 
 /**
@@ -40,9 +40,9 @@ export default class UsersService {
    * @param {string} dto.first_name - User's first name
    * @param {string} dto.last_name - User's last name
    * @param {string} dto.password - Alphanumeric password, at least 8 characters
-   * @return {Promise<User>} Promise containing new user
+   * @return {Promise<IUser>} Promise containing new user
    */
-  async create(dto: CreateUserDTO): Promise<User> {
+  async create(dto: CreateUserDTO): Promise<IUser> {
     return await this.repo.create(dto)
   }
 
@@ -58,7 +58,7 @@ export default class UsersService {
    * @return {Promise<string[]>} Promise with array of deleted entity IDs
    */
   async delete(
-    id: OneOrMany<User['id']>,
+    id: OneOrMany<IUser['id']>,
     should_exist: boolean = false
   ): Promise<typeof id> {
     return await this.repo.delete(id, should_exist)
@@ -70,13 +70,13 @@ export default class UsersService {
    * @async
    * @param {Query} [query] - Query parameters
    * @param {number} [query.$limit] - Limit number of results
-   * @param {ProjectStage<User>} [query.$project] - Fields to include
+   * @param {ProjectStage<IUser>} [query.$project] - Fields to include
    * @param {number} [query.$skip] - Skips the first n entities
-   * @param {Record<EntityPath<User>, SortOrder>} [query.$sort] - Sorting rules
-   * @param {Projection<User>} [query.projection] - Projection operators
-   * @return {Promise<Partial<User>[]>} Promise containing search results
+   * @param {Record<EntityPath<IUser>, SortOrder>} [query.$sort] - Sorting rules
+   * @param {Projection<IUser>} [query.projection] - Projection operators
+   * @return {Promise<Partial<IUser>[]>} Promise containing search results
    */
-  async find(query: Query = {}): Promise<Partial<User>[]> {
+  async find(query: Query = {}): Promise<Partial<IUser>[]> {
     const users = this.repo.find(query)
     return users.length ? users.map(u => omit(u, ['password'])) : users
   }
@@ -89,11 +89,11 @@ export default class UsersService {
    * @async
    * @param {string} user - UID or email address of user to find
    * @param {Query} [query] - Query parameters
-   * @return {Promise<PartialOr<User>>} Promise containing user data
+   * @return {Promise<PartialOr<IUser>>} Promise containing user data
    */
-  async findOne(user: string, query: Query = {}): Promise<PartialOr<User>> {
+  async findOne(user: string, query: Query = {}): Promise<PartialOr<IUser>> {
     if (!isEmail(user)) return this.repo.findOneOrFail(user, query)
-    return this.repo.findOneByEmail(user, query) as User
+    return this.repo.findOneByEmail(user, query) as IUser
   }
 
   /**
@@ -108,13 +108,13 @@ export default class UsersService {
    * @param {string} id - ID of user to update
    * @param {PatchUserDTO} dto - Data to patch entity
    * @param {string[]} [rfields] - Additional readonly fields
-   * @return {Promise<User>} Promise containing updated user
+   * @return {Promise<IUser>} Promise containing updated user
    */
   async patch(
-    id: User['id'],
+    id: IUser['id'],
     dto: PatchUserDTO,
     rfields: string[] = []
-  ): Promise<User> {
+  ): Promise<IUser> {
     return await this.repo.patch(id, dto, rfields)
   }
 
@@ -126,9 +126,9 @@ export default class UsersService {
    *
    * @async
    * @param {OneOrMany<CreateUserDTO | PatchUserDTO>} dto - Users to upsert
-   * @return {Promise<User[]>} Promise with new or updated users
+   * @return {Promise<IUser[]>} Promise with new or updated users
    */
-  async upsert(dto: OneOrMany<CreateUserDTO | PatchUserDTO>): Promise<User[]> {
+  async upsert(dto: OneOrMany<CreateUserDTO | PatchUserDTO>): Promise<IUser[]> {
     return await this.repo.save(dto)
   }
 }

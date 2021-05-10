@@ -5,7 +5,8 @@ import { ConfigService } from '@nestjs/config'
 import { compareSync } from 'bcryptjs'
 import omit from 'lodash.omit'
 import type { EnvironmentVariables } from '../../../lib/interfaces'
-import type { BasicAuthDecoded, UserEntity as User } from '../users.types'
+import type { IUser } from '../interfaces'
+import type { BasicAuthDecoded } from '../users.types'
 import UsersService from './users.service'
 
 /**
@@ -56,15 +57,15 @@ export default class AuthService {
    * @async
    * @param {string} email - User's email address
    * @param {string} password - User's password
-   * @return {Promise<Partial<User>>} User data (without password)
+   * @return {Promise<Partial<IUser>>} User data (without password)
    * @throws {Exception}
    */
   async login(
-    email: User['email'],
-    password: User['password']
-  ): Promise<Partial<User>> {
+    email: IUser['email'],
+    password: IUser['password']
+  ): Promise<Partial<IUser>> {
     // Check if user exists
-    const user = (await this.users.findOne(email)) as User
+    const user = (await this.users.findOne(email)) as IUser
 
     try {
       // Compare passwords
