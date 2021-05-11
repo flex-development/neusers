@@ -1,8 +1,8 @@
+import { getCreateUserDTO, getPatchUserDTO } from '@tests/fixtures/dto.fixture'
+import { USERS_MOCK_CACHE as mockCache } from '@tests/fixtures/users.fixture'
 import { createTestingModule } from '@tests/utils'
 import UsersRepository from '../users.repository'
 import UsersService from '../users.service'
-import { getCreateUserDTO, getPatchUserDTO } from './__fixtures__/dto.fixture'
-import { USERS_MOCK_CACHE as mockCache } from './__fixtures__/users.fixture'
 
 /**
  * @file Unit Tests - UsersService

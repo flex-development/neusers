@@ -3,14 +3,14 @@ import {
   ExceptionStatusCode
 } from '@flex-development/exceptions/enums'
 import type { ExceptionJSON } from '@flex-development/exceptions/interfaces'
-import type { EntitySchemaMetadata } from '../types'
+import type { SchemaMetadata } from '../types'
 
 /**
  * @file Schema Metadata - ExceptionJSON
  * @module app/lib/metadata/ExceptionJSON
  */
 
-const metadata: EntitySchemaMetadata<ExceptionJSON> = {
+const metadata: SchemaMetadata<ExceptionJSON> = {
   className: {
     description: 'CSS class name',
     enum: [ExceptionClassName],

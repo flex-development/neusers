@@ -3,8 +3,8 @@ import type { RepoRoot } from '@flex-development/dreepo'
 import ROOT from './users-root.fixture.json'
 
 /**
- * @file Test Fixture - Users
- * @module app/subdomains/users/tests/fixtures/users.fixture
+ * @file Global Test Fixture - Users
+ * @module tests/fixtures/users.fixture
  */
 
 export const USERS_ROOT: Readonly<RepoRoot<IUser>> = Object.freeze(ROOT)

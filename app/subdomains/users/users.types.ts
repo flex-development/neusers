@@ -23,4 +23,4 @@ export type BasicAuthDecoded = {
 /**
  * Query parameters accepted by the `UsersRepository`.
  */
-export type UserQuery = QueryParams<IUser>
+export type UserQueryParams = QueryParams<IUser>

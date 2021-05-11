@@ -1,19 +1,19 @@
 import Repository from '@flex-development/dreepo/repositories/repository'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
-import { hashSync } from 'bcryptjs'
-import faker from 'faker'
-import omit from 'lodash.omit'
-import { PlainObject } from 'simplytyped'
-import TestSubject from '../users.repository'
 import {
   CREATE_USER_DTO,
   getCreateUserDTO,
   getPatchUserDTO,
   PATCH_USER_DTO_EMAIL,
   PATCH_USER_DTO_PASSWORD
-} from './__fixtures__/dto.fixture'
-import { USERS_MOCK_CACHE as mockCache } from './__fixtures__/users.fixture'
+} from '@tests/fixtures/dto.fixture'
+import { USERS_MOCK_CACHE as mockCache } from '@tests/fixtures/users.fixture'
+import { hashSync } from 'bcryptjs'
+import faker from 'faker'
+import omit from 'lodash.omit'
+import { PlainObject } from 'simplytyped'
+import TestSubject from '../users.repository'
 
 /**
  * @file Unit Tests - UsersRepository

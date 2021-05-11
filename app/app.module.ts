@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common'
 import type { ConfigModuleOptions } from '@nestjs/config'
 import { ConfigModule } from '@nestjs/config'
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core'
 import configuration from './config/configuration'
 import { AllExceptionsFilter } from './lib/filters'
 import { PageviewInterceptor } from './lib/interceptors'
+import { ParseQueryPipe } from './lib/pipes'
 import { UsersModule } from './subdomains'
 
 /**
@@ -24,7 +25,8 @@ const configModuleOptions: ConfigModuleOptions = {
   imports: [ConfigModule.forRoot(configModuleOptions), UsersModule],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
-    { provide: APP_INTERCEPTOR, useClass: PageviewInterceptor }
+    { provide: APP_INTERCEPTOR, useClass: PageviewInterceptor },
+    { provide: APP_PIPE, useClass: ParseQueryPipe }
   ]
 })
 export default class AppModule {}

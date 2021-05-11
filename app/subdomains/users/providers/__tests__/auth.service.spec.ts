@@ -1,13 +1,13 @@
 import AppModule from '@/app.module'
-import { USERS_MOCK_CACHE } from '@/subdomains/users/providers/__tests__/__fixtures__/users.fixture'
 import UsersModule from '@/subdomains/users/users.module'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
+import AUTHORIZATION_HEADER from '@tests/fixtures/authorization.fixture'
+import { USERS_MOCK_CACHE } from '@tests/fixtures/users.fixture'
 import { createTestingModule } from '@tests/utils'
 import faker from 'faker'
 import type { PlainObject } from 'simplytyped'
 import AuthService from '../auth.service'
-import AUTHORIZATION_HEADER from './__fixtures__/authorization.fixture'
 
 /**
  * @file Unit Tests - AuthService

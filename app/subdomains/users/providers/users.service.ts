@@ -11,7 +11,7 @@ import omit from 'lodash.omit'
 import isEmail from 'validator/lib/isEmail'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
 import type { IUser } from '../interfaces'
-import type { UserQuery as Query } from '../users.types'
+import type { UserQueryParams as Query } from '../users.types'
 import UsersRepository from './users.repository'
 
 /**

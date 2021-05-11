@@ -9,7 +9,7 @@ import DBCONNS from '../../../config/database'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
 import type { IUser } from '../interfaces'
 import User from '../models/user.model'
-import type { UserQuery as Query } from '../users.types'
+import type { UserQueryParams as Query } from '../users.types'
 
 /**
  * @file Users Subdomain Providers - UsersRepository

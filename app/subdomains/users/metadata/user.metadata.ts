@@ -1,4 +1,4 @@
-import type { EntitySchemaMetadata } from '../../../lib/types'
+import type { SchemaMetadata } from '../../../lib'
 import type { IUser } from '../interfaces'
 
 /**
@@ -6,7 +6,7 @@ import type { IUser } from '../interfaces'
  * @module app/subdomains/users/metadata/User
  */
 
-const metadata: EntitySchemaMetadata<IUser> = {
+const metadata: SchemaMetadata<IUser> = {
   created_at: {
     description: 'Date and time entity was created',
     type: 'number'

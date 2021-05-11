@@ -1,6 +1,7 @@
 import AppModule from '@/app.module'
 import UsersModule from '@/subdomains/users/users.module'
 import type { IEntity, PartialOr } from '@flex-development/dreepo'
+import { USERS_MOCK_CACHE } from '@tests/fixtures/users.fixture'
 import {
   createTestingModule,
   getMockCallHandler,
@@ -8,7 +9,6 @@ import {
 } from '@tests/utils'
 import omit from 'lodash.omit'
 import { AuthService } from '../../providers'
-import { USERS_MOCK_CACHE } from '../../providers/__tests__/__fixtures__/users.fixture'
 import AuthInterceptor from '../auth.interceptor'
 import { AUTH_REQ, AUTH_REQ_USER } from './__fixtures__/req-auth.fixture'
 

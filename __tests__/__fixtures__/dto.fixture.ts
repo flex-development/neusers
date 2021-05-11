@@ -3,8 +3,8 @@ import PatchUserDTO from '@/subdomains/users/dto/patch-user.dto'
 import faker from 'faker'
 
 /**
- * @file Test Fixture - Users Subdomain DTOs
- * @module app/subdomains/users/tests/fixtures/dto.fixture
+ * @file Global Test Fixture - Users Subdomain DTOs
+ * @module tests/fixtures/dto.fixture
  */
 
 const STRONG_PASSWORD = 'Strongpassword1234678'

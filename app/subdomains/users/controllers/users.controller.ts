@@ -33,14 +33,13 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger'
 import omit from 'lodash.omit'
-import ExceptionJSON from '../../../lib/models/exeception-json.model'
+import { ExceptionJSON } from '../../../lib'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
-import AuthInterceptor from '../interceptors/auth.interceptor'
+import { AuthInterceptor } from '../interceptors'
 import type { IUser } from '../interfaces'
-import PartialUser from '../models/user-partial.model'
-import User from '../models/user.model'
-import UsersService from '../providers/users.service'
-import type { UserQuery } from '../users.types'
+import { PartialUser, User } from '../models'
+import { UsersService } from '../providers'
+import type { UserQueryParams } from '../users.types'
 
 /**
  * @file Users Subdomain Controller - UsersController
@@ -122,7 +121,7 @@ export default class UsersController {
    * Queries the users database.
    *
    * @async
-   * @param {UserQuery} [query] - Query parameters
+   * @param {UserQueryParams} [query] - Query parameters
    * @param {number} [query.$limit] - Limit number of results
    * @param {ProjectStage<IUser>} [query.$project] - Fields to include
    * @param {number} [query.$skip] - Skips the first n entities
@@ -142,9 +141,8 @@ export default class UsersController {
     type: ExceptionJSON
   })
   @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
-  async find(@Query() query: UserQuery = {}): Promise<Partial<IUser>[]> {
-    // ! Remove Vercel query parameter `path`
-    return this.users.find(omit(query, ['path']))
+  async find(@Query() query: UserQueryParams = {}): Promise<Partial<IUser>[]> {
+    return this.users.find(query)
   }
 
   /**
@@ -155,7 +153,7 @@ export default class UsersController {
    * @async
    * @param {string} user - UID or email address of user to find
    * @param {boolean} [authorized] - Boolean indicating is user is logged in
-   * @param {UserQuery} [query] - Query parameters
+   * @param {UserQueryParams} [query] - Query parameters
    * @return {Promise<PartialOr<IUser>>} Promise containing user data
    */
   @HttpCode(HttpStatus.OK)
@@ -174,10 +172,9 @@ export default class UsersController {
   async findOne(
     @Param('user') user: IUser['email'] | IUser['id'],
     @Param('authorized', ParseBoolPipe) authorized: boolean = false,
-    @Query() query: UserQuery = {}
+    @Query() query: UserQueryParams = {}
   ): Promise<PartialOr<IUser>> {
-    // ! Remove Vercel query parameter `path`
-    const found = await this.users.findOne(user, omit(query, ['path']))
+    const found = await this.users.findOne(user, query)
 
     // ! If user is found and not logged in, remove sensitive data
     return authorized ? found : omit(found, ['password'])
