@@ -17,6 +17,3 @@ jest.setTimeout(vercelconfig.functions['api/*.ts'].maxDuration * 1000)
 
 // Add custom matchers
 expect.extend(matchers)
-
-// Set Firestore Emulator host
-process.env.FIRESTORE_EMULATOR_HOST = 'localhost:9000'

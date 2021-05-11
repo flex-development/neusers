@@ -1,31 +1,63 @@
 import DBCONNS from '@/config/database'
 import type { InterceptorResponse } from '@/lib/types'
-import { IUser } from '@/subdomains/users/interfaces'
-import type { EmptyObject, RepoRoot } from '@flex-development/dreepo'
+import type { IUser } from '@/subdomains/users/interfaces'
+import type {
+  EmptyObject,
+  NumberString,
+  RepoRoot
+} from '@flex-development/dreepo'
 import { getMockReq } from '@jest-mock/express'
 import type { MockRequest } from '@jest-mock/express/dist/src/request'
 import type {
   CallHandler,
   ExecutionContext,
+  INestApplication,
   ModuleMetadata
 } from '@nestjs/common'
 import type { TestingModule } from '@nestjs/testing'
 import { Test } from '@nestjs/testing'
+import type { VercelRequestQuery as Query } from '@vercel/node'
+import merge from 'lodash/merge'
+import qs from 'querystring'
+import type { PlainObject } from 'simplytyped'
 
 /**
  * @file Testing Utilities
  * @module tests/utils
  */
 
+type INestApplicationTest = {
+  app: INestApplication
+  moduleRef: TestingModule
+}
+
+export const USERS_REPO_TEST_PATH = 'test/users'
+
 /**
- * Clears the data from the `UsersRepository`.
+ * Returns a NestJS test app and module reference.
+ *
+ * - https://docs.nestjs.com/fundamentals/testing#end-to-end-testing
  *
  * @async
- * @return {Promise<void>} Empty promise when complete
+ * @param {ModuleMetadata} metadata - Module metadata
+ * @param {any} overrideProvider - Test provider
+ * @param {any} value - Test provider value
+ * @return {Promise<INestApplicationTest>} Promise containing NestJS test app
+ * and module reference
  */
-export const clearUsersRepository = async (): Promise<void> => {
-  await DBCONNS.users.send<EmptyObject>({ data: {}, method: 'put' })
-  return
+export const createTestNestApp = async (
+  metadata: ModuleMetadata,
+  overrideProvider: any,
+  value: any
+): Promise<INestApplicationTest> => {
+  const moduleRef = await Test.createTestingModule(metadata)
+    .overrideProvider(overrideProvider)
+    .useValue(value)
+    .compile()
+
+  const app = moduleRef.createNestApplication()
+
+  return { app, moduleRef }
 }
 
 /**
@@ -41,6 +73,20 @@ export const createTestingModule = async (
   metadata: ModuleMetadata
 ): Promise<TestingModule> => {
   return await Test.createTestingModule(metadata).compile()
+}
+
+/**
+ * Clears the data from the `UsersRepository`.
+ *
+ * @async
+ * @return {Promise<void>} Empty promise when complete
+ */
+export const clearUsersRepository = async (): Promise<void> => {
+  const path = USERS_REPO_TEST_PATH
+
+  await DBCONNS.users.request<EmptyObject>(path, { data: {}, method: 'put' })
+
+  return
 }
 
 /**
@@ -86,6 +132,32 @@ export const getMockExecutionContext = (
 export async function loadUsersRepository(
   data: RepoRoot<IUser>
 ): Promise<void> {
-  await DBCONNS.users.send<RepoRoot<IUser>>({ data, method: 'put' })
+  const path = USERS_REPO_TEST_PATH
+
+  await DBCONNS.users.request<RepoRoot<IUser>>(path, { data, method: 'put' })
+
   return
+}
+
+/**
+ * Generates a URL path with optional query parameters.
+ *
+ * @param {Query | PlainObject | NumberString} [poq] - URL path or query params
+ * @param {Query | PlainObject} [query] - Query parameters
+ * @return {string} Test URL path with stringified query params
+ */
+export const testURLPath = (
+  poq?: Query | PlainObject | NumberString,
+  query?: Query | PlainObject
+): string => {
+  if (!poq || typeof poq === 'number' || typeof poq === 'string') {
+    const querystring = query ? `?${qs.stringify(query)}` : ''
+
+    poq = `${poq}`
+    if (poq[0] === '/') poq = poq.substring(1, poq.length)
+
+    return `/${poq || ''}${querystring}`
+  }
+
+  return `/?${qs.stringify(merge(poq, query))}`
 }

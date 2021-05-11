@@ -1,5 +1,4 @@
 import { RepoDBConnection as Connection } from '@flex-development/dreepo'
-import rpath from '../lib/utils/repoPath.util'
 import { CONF } from './configuration'
 
 /**
@@ -19,7 +18,7 @@ const {
 const { users } = SUBDOMAINS
 
 const DBCONNS: Record<RepoDBConnectionKey, Connection> = {
-  users: new Connection(rpath(users.repo), users.db, client_email, private_key)
+  users: new Connection(users.repo, users.db, client_email, private_key)
 }
 
 export default DBCONNS

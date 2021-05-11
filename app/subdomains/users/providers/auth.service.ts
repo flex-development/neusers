@@ -73,7 +73,9 @@ export default class AuthService {
 
       // If comparison fails, check if passwords are equal
       // ! Needed for envs where password hashing is disabled / mocked
-      if (!this.config.get<boolean>('PROD')) match = password === user.password
+      if (!match && !this.config.get<boolean>('PROD')) {
+        match = password === user.password
+      }
 
       if (!match) throw new Error('Incorrect password')
     } catch (error) {

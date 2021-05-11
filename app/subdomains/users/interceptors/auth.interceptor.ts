@@ -1,3 +1,4 @@
+import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
 import type {
   CallHandler,
@@ -66,13 +67,20 @@ export default class AuthInterceptor<
       // Attempt to login in users
       await this.auth.login(email, password)
     } catch (error) {
-      const exception = error as Exception
+      let exception = error as Exception
 
       // Add boolean indiciating that user is unauthorized
       req.params.authorized = 'false'
 
       // Allow `GET` requests to success even if unauthorized
       if (method.toUpperCase() === 'GET') return next.handle()
+
+      exception = new Exception(
+        ExceptionStatusCode.UNAUTHORIZED,
+        email?.length ? exception.message : 'User login required',
+        { ...exception.data, errors: exception.errors },
+        exception.stack
+      )
 
       throw exception
     }

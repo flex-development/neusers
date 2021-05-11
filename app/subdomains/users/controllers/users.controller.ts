@@ -13,6 +13,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseArrayPipe,
   ParseBoolPipe,
   Post,
   Put,
@@ -107,7 +108,6 @@ export default class UsersController {
     description: 'User not logged in',
     type: ExceptionJSON
   })
-  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
   @ApiInternalServerErrorResponse({
     description: 'Internal server error',
     type: ExceptionJSON
@@ -205,7 +205,6 @@ export default class UsersController {
     description: 'Schema validation error',
     type: ExceptionJSON
   })
-  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
   @ApiConflictResponse({
     description: 'User with email already exists',
     type: ExceptionJSON
@@ -218,8 +217,9 @@ export default class UsersController {
   async patch(
     @Param('user') id: IUser['id'],
     @Body() dto: PatchUserDTO,
-    @Query('rfields') rfields: string[] = []
+    @Query('rfields', new ParseArrayPipe({ items: String, optional: true }))
+    rfields: string[] = []
   ): Promise<IUser> {
-    return await this.users.patch(id, dto, JSON.parse(`${rfields}`))
+    return await this.users.patch(id, dto, rfields)
   }
 }
