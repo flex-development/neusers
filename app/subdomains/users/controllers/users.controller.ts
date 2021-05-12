@@ -11,7 +11,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   ParseArrayPipe,
   ParseBoolPipe,
@@ -33,23 +32,24 @@ import {
   ApiUnauthorizedResponse
 } from '@nestjs/swagger'
 import omit from 'lodash.omit'
-import { ExceptionJSON } from '../../../lib'
+import { OPENAPI_GLOBALS } from '../../../lib'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
 import { AuthInterceptor } from '../interceptors'
-import type { IUser } from '../interfaces'
-import { PartialUser, User } from '../models'
+import type { IUser, IUsersController } from '../interfaces'
 import { UsersService } from '../providers'
+import openapi from '../users.openapi'
 import type { UserQueryParams } from '../users.types'
 
 /**
  * @file Users Subdomain Controller - UsersController
  * @module app/subdomains/users/controllers/UsersController
+ * @see https://docs.nestjs.com/openapi/types-and-parameters#extra-models
  */
 
-@Controller('users')
-@ApiTags('users')
-export default class UsersController {
-  constructor(private users: UsersService) {}
+@Controller(openapi.controller)
+@ApiTags(...openapi.tags)
+export default class UsersController implements IUsersController {
+  constructor(readonly users: UsersService) {}
 
   /**
    * Creates a new user.
@@ -70,22 +70,13 @@ export default class UsersController {
    * @param {string} dto.password - Alphanumeric password, at least 4 characters
    * @return {Promise<IUser>} Promise containing new user
    */
-  @HttpCode(HttpStatus.CREATED)
   @Post()
-  @ApiCreatedResponse({ description: 'Created new user', type: User })
-  @ApiBadRequestResponse({
-    description: 'Schema validation error',
-    type: ExceptionJSON
-  })
-  @ApiConflictResponse({
-    description: 'User with email or id already exists',
-    type: ExceptionJSON
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
-    type: ExceptionJSON
-  })
-  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  @HttpCode(openapi.create.status)
+  @ApiCreatedResponse(openapi.create.responses[201])
+  @ApiBadRequestResponse(openapi.create.responses[400])
+  @ApiConflictResponse(openapi.create.responses[409])
+  @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
+  @ApiBadGatewayResponse(OPENAPI_GLOBALS.responses[502])
   async create(@Body() dto: CreateUserDTO): Promise<IUser> {
     return await this.users.create(dto)
   }
@@ -99,19 +90,13 @@ export default class UsersController {
    * @param {string} id - UID of user to find
    * @return {Promise<void>} Empty promise when user is deleted
    */
-  @HttpCode(HttpStatus.NO_CONTENT)
   @UseInterceptors(AuthInterceptor)
   @Delete(':user')
-  @ApiNoContentResponse({ description: 'Deleted user' })
-  @ApiUnauthorizedResponse({
-    description: 'User not logged in',
-    type: ExceptionJSON
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
-    type: ExceptionJSON
-  })
-  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  @HttpCode(openapi.delete.status)
+  @ApiNoContentResponse(openapi.delete.responses[204])
+  @ApiUnauthorizedResponse(openapi.delete.responses[401])
+  @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
+  @ApiBadGatewayResponse(OPENAPI_GLOBALS.responses[502])
   async delete(@Param('user') id: IUser['id']): Promise<void> {
     await this.users.delete(id, true)
     return
@@ -129,18 +114,12 @@ export default class UsersController {
    * @param {Projection<IUser>} [query.projection] - Projection operators
    * @return {Promise<PartialOr<IUser>[]>} Promise containing results
    */
-  @HttpCode(HttpStatus.OK)
   @Get()
-  @ApiOkResponse({
-    description: 'Successfully queried database',
-    isArray: true,
-    type: PartialUser
-  })
-  @ApiBadRequestResponse({
-    description: 'Error executing query',
-    type: ExceptionJSON
-  })
-  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  @HttpCode(openapi.find.status)
+  @ApiOkResponse(openapi.find.responses[200])
+  @ApiBadRequestResponse(openapi.find.responses[400])
+  @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
+  @ApiBadGatewayResponse(OPENAPI_GLOBALS.responses[502])
   async find(@Query() query: UserQueryParams = {}): Promise<Partial<IUser>[]> {
     return this.users.find(query)
   }
@@ -156,19 +135,14 @@ export default class UsersController {
    * @param {UserQueryParams} [query] - Query parameters
    * @return {Promise<PartialOr<IUser>>} Promise containing user data
    */
-  @HttpCode(HttpStatus.OK)
   @UseInterceptors(AuthInterceptor)
   @Get(':user')
-  @ApiOkResponse({
-    description: 'Found user by ID or email address',
-    type: PartialUser
-  })
-  @ApiBadRequestResponse({
-    description: 'Error executing query',
-    type: ExceptionJSON
-  })
-  @ApiNotFoundResponse({ description: 'User not found', type: ExceptionJSON })
-  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  @HttpCode(openapi.findOne.status)
+  @ApiOkResponse(openapi.findOne.responses[200])
+  @ApiBadRequestResponse(openapi.findOne.responses[400])
+  @ApiNotFoundResponse(openapi.findOne.responses[404])
+  @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
+  @ApiBadGatewayResponse(OPENAPI_GLOBALS.responses[502])
   async findOne(
     @Param('user') user: IUser['email'] | IUser['id'],
     @Param('authorized', ParseBoolPipe) authorized: boolean = false,
@@ -194,23 +168,14 @@ export default class UsersController {
    * @param {string[]} [rfields] - Additional readonly fields
    * @return {Promise<IUser>} Promise containing updated user
    */
-  @HttpCode(HttpStatus.OK)
   @UseInterceptors(AuthInterceptor)
   @Put(':user')
-  @ApiOkResponse({ description: 'Successfully updated user', type: User })
-  @ApiBadRequestResponse({
-    description: 'Schema validation error',
-    type: ExceptionJSON
-  })
-  @ApiConflictResponse({
-    description: 'User with email already exists',
-    type: ExceptionJSON
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error',
-    type: ExceptionJSON
-  })
-  @ApiBadGatewayResponse({ description: 'Vercel hosting error' })
+  @HttpCode(openapi.patch.status)
+  @ApiOkResponse(openapi.patch.responses[200])
+  @ApiBadRequestResponse(openapi.patch.responses[400])
+  @ApiConflictResponse(openapi.patch.responses[409])
+  @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
+  @ApiBadGatewayResponse(OPENAPI_GLOBALS.responses[502])
   async patch(
     @Param('user') id: IUser['id'],
     @Body() dto: PatchUserDTO,

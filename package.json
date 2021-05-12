@@ -28,12 +28,12 @@
     "start:debug": "yarn start --debug"
   },
   "dependencies": {
-    "@flex-development/dreepo": "3.0.0",
+    "@flex-development/dreepo": "3.0.1",
     "@nestjs/common": "next",
     "@nestjs/config": "latest",
     "@nestjs/core": "next",
     "@nestjs/platform-express": "next",
-    "@nestjs/swagger": "next",
+    "@nestjs/swagger": "latest",
     "@types/bcryptjs": "latest",
     "@types/express": "latest",
     "@types/lodash.clamp": "latest",

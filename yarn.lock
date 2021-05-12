@@ -1216,10 +1216,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flex-development/dreepo@3.0.0":
-  version "3.0.0"
-  resolved "https://npm.pkg.github.com/download/@flex-development/dreepo/3.0.0/3e0a4da4aa134287883861a6e99f9fce9e683ce1046a0b594283fbacd2b1b7ed#759e8bab42817582df8299e0177b7eb5d533d408"
-  integrity sha512-sq32YRgGR/CVBJ3n7oeS6O/bKyEUyzXyvh8QFBQkAW36eaxvU7tfs+qrx/yb9BusjdaFTfdZn3PFwdTYiT0h7Q==
+"@flex-development/dreepo@3.0.1":
+  version "3.0.1"
+  resolved "https://npm.pkg.github.com/download/@flex-development/dreepo/3.0.1/4dea5c7f8959c53c397fee82c0127423276c3ff761bfbd9448b37e84f0c9b64e#3fc0fe9ce3f8d585bf57c68853c47a9d7e3af9e6"
+  integrity sha512-kLO1t7Xr8iINGOL8AdzVeB0CqxV8tVsA/7gQapG1OuZ35O0X5CUDGWqGh0nAFTapZJowSgIb2vbejSUr6ieLZQ==
   dependencies:
     "@flex-development/exceptions" "2.0.0"
     "@types/debug" "4.1.5"
@@ -1554,10 +1554,10 @@
     tslib "2.1.0"
     uuid "8.3.2"
 
-"@nestjs/mapped-types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-0.0.5.tgz#0c3462de4125eea0e85e3a520f0de4e7e8dcfa40"
-  integrity sha512-QjZCSMHHy8IW4UUTS49QJQ0NrA8MHv6XevNrPLJwh4n3lN7wY9aSRwd1+cBIUDBXEHRKngcYdPtC4oG0fimw+A==
+"@nestjs/mapped-types@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-0.4.0.tgz#352b9a661d6d36863cf48b2057616cef1b2c802d"
+  integrity sha512-TVtd/aTb7EqPhVczdeuvzF9dY0fyE3ivvCstc2eO+AkNqrfzSG1kXYYiUUznKjd0qDa8g2TmPSmHUQ21AXsV1Q==
 
 "@nestjs/platform-express@^7.6.7":
   version "7.6.15"
@@ -1592,13 +1592,13 @@
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
 
-"@nestjs/swagger@next":
-  version "4.5.12-next.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.5.12-next.1.tgz#7ba9ce710e058eb0f061ee1cec8e5710ef060da3"
-  integrity sha512-N75BoYYFx0hQ/Oa1lbtgzJGi7phgi+veeVXRwmF9QugV6u1LZkY8TQcKRLsZN3fkZVeV9JmJDulxynQoxVswZA==
+"@nestjs/swagger@latest":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.8.0.tgz#7ebfeb0d59e0c27ff40beb429d7311b752c0dca4"
+  integrity sha512-YU+ahCOoOTZwSHrODHBiQDCqi7GWEjmSFg3Tot/lwVuQ321/3fIOz/lf+ehVQ5DFr7nVMhB7BRWFJLtE/+NhqQ==
   dependencies:
-    "@nestjs/mapped-types" "0.0.5"
-    lodash "4.17.19"
+    "@nestjs/mapped-types" "0.4.0"
+    lodash "4.17.21"
     path-to-regexp "3.2.0"
 
 "@nestjs/testing@latest":
@@ -6592,12 +6592,7 @@ lodash.uniq@4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.19:
-  version "4.17.19"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
-  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
-
-lodash@4.x, lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.7.0:
+lodash@4.17.21, lodash@4.x, lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==

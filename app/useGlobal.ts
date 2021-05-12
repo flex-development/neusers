@@ -1,8 +1,10 @@
 import type { INestApplication } from '@nestjs/common'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import merge from 'lodash.merge'
 import * as pkg from '../package.json'
 import { CONF } from './config/configuration'
+import { OPENAPI_GLOBALS as OPENAPI } from './lib'
 
 /**
  * @file Implementation - useGlobal
@@ -34,9 +36,20 @@ const useGlobal = async (app: App): Promise<typeof app> => {
   builder.setContact('GitHub', homepage, (null as unknown) as string)
   builder.addServer(CONF.URL, CONF.VERCEL_ENV.toUpperCase())
   builder.addTag('users', 'CRUD operations')
+  builder.addBasicAuth({
+    description: 'User email and password',
+    scheme: 'basic',
+    type: 'http'
+  })
 
   // Generate OpenAPI object
-  const openapi = SwaggerModule.createDocument(app, builder.build())
+  const openapi = SwaggerModule.createDocument(app, builder.build(), {
+    extraModels: []
+  })
+
+  // Merge additional schemas
+  const schemas = merge({}, openapi.components?.schemas, OPENAPI.schemas)
+  if (openapi.components) openapi.components.schemas = schemas
 
   // Expose OpenAPI documntation as JSON
   app.getHttpAdapter().get('', (req, res) => res.json(openapi))

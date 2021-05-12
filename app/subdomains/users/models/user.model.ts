@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger'
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
 import { IsStrongPassword } from '../decorators'
 import type { IUser } from '../interfaces'
-import Meta from '../metadata/user.metadata'
 
 /**
  * @file Users Subdomain Model - User
@@ -11,34 +10,61 @@ import Meta from '../metadata/user.metadata'
  */
 
 export default class User extends Entity implements IUser {
-  @ApiProperty(Meta.created_at)
   @IsUnixTimestamp()
+  @ApiProperty({
+    description: 'Date and time entity was created',
+    type: 'number'
+  })
   created_at: IUser['created_at']
 
-  @ApiProperty(Meta.email)
   @IsEmail()
+  @ApiProperty({
+    description:
+      'Unique email address for the user. Attempting to assign the same email to multiple users returns an error',
+    format: 'email',
+    type: 'string'
+  })
   email: IUser['email']
 
-  @ApiProperty(Meta.first_name)
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    description: "User's first name",
+    minLength: 1,
+    type: 'string'
+  })
   first_name: IUser['first_name']
 
-  @ApiProperty(Meta.id)
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    description: 'Unique identifier for the user',
+    type: 'string'
+  })
   id: IUser['id']
 
-  @ApiProperty(Meta.last_name)
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    description: "User's last name",
+    minLength: 1,
+    type: 'string'
+  })
   last_name: IUser['last_name']
 
-  @ApiProperty(Meta.password)
   @IsStrongPassword({ minSymbols: 0 })
+  @ApiProperty({
+    description:
+      'Hashed password. Passwords must contain at least 1 lower and uppercase letter, 1 number, and be at least 8 characters',
+    minLength: 8,
+    type: 'string'
+  })
   password: IUser['email']
 
-  @ApiProperty(Meta.updated_at)
   @IsUnixTimestamp()
+  @ApiProperty({
+    description: 'Date and time entity was last modified',
+    type: 'number'
+  })
   updated_at: IUser['updated_at']
 }

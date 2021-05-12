@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common'
 import omit from 'lodash.omit'
 import isEmail from 'validator/lib/isEmail'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
-import type { IUser } from '../interfaces'
+import type { IUser, IUsersService } from '../interfaces'
 import type { UserQueryParams as Query } from '../users.types'
 import UsersRepository from './users.repository'
 
@@ -20,7 +20,7 @@ import UsersRepository from './users.repository'
  */
 
 @Injectable()
-export default class UsersService {
+export default class UsersService implements IUsersService {
   constructor(readonly repo: UsersRepository) {}
 
   /**

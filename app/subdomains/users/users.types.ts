@@ -23,4 +23,4 @@ export type BasicAuthDecoded = {
 /**
  * Query parameters accepted by the `UsersRepository`.
  */
-export type UserQueryParams = QueryParams<IUser>
+export type UserQueryParams = Omit<QueryParams<IUser>, 'projection'>

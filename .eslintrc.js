@@ -132,7 +132,7 @@ module.exports = {
       }
     },
     {
-      files: ['.eslintrc.*', 'webpack.*'],
+      files: ['.eslintrc.*', 'webpack.*', '*.model.ts', '*.openapi.ts'],
       rules: {
         'sort-keys': 0
       }

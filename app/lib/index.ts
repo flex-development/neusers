@@ -3,10 +3,10 @@
  * @module app/lib
  */
 
+export * from './constants'
 export * from './filters'
 export * from './interceptors'
 export * from './interfaces'
-export * from './metadata'
 export * from './models'
 export * from './pipes'
 export * from './types'

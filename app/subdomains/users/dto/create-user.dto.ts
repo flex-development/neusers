@@ -1,28 +1,24 @@
 import type { EntityDTO } from '@flex-development/dreepo'
-import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsNotEmpty } from 'class-validator'
+import { ApiPropertyOptional, OmitType } from '@nestjs/swagger'
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
 import type { IUser } from '../interfaces'
-import Meta from '../metadata/create-user-dto.metadata'
+import User from '../models/user.model'
 
 /**
  * @file Users Subdomain DTO - CreateUserDTO
  * @module app/subdomains/users/dto/CreateUser
+ * @see https://docs.nestjs.com/openapi/mapped-types#omit
  */
 
-export default class CreateUserDTO implements EntityDTO<IUser> {
-  @ApiProperty(Meta.email)
-  @IsEmail()
-  email: IUser['email']
-
-  @ApiProperty(Meta.first_name)
+export default class CreateUserDTO
+  extends OmitType(User, ['created_at', 'id', 'updated_at'] as const)
+  implements EntityDTO<IUser> {
+  @IsOptional()
+  @IsString()
   @IsNotEmpty()
-  first_name: IUser['first_name']
-
-  @ApiProperty(Meta.last_name)
-  @IsNotEmpty()
-  last_name: IUser['last_name']
-
-  @ApiProperty(Meta.password)
-  @IsNotEmpty()
-  password: IUser['password']
+  @ApiPropertyOptional({
+    description: 'Unique identifier for the user',
+    type: 'string'
+  })
+  id?: IUser['id']
 }

@@ -2,12 +2,11 @@ import type { OrNever, PartialOr } from '@flex-development/dreepo'
 import { Repository } from '@flex-development/dreepo'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
-import type { OnModuleInit } from '@nestjs/common'
 import { Injectable } from '@nestjs/common'
 import { hashSync } from 'bcryptjs'
 import DBCONNS from '../../../config/database'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
-import type { IUser } from '../interfaces'
+import type { IUser, IUsersRepository } from '../interfaces'
 import User from '../models/user.model'
 import type { UserQueryParams as Query } from '../users.types'
 
@@ -19,7 +18,7 @@ import type { UserQueryParams as Query } from '../users.types'
 @Injectable()
 export class UsersRepository
   extends Repository<IUser, Query>
-  implements OnModuleInit {
+  implements IUsersRepository {
   constructor() {
     super(DBCONNS.users, User)
   }
