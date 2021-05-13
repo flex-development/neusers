@@ -97,7 +97,7 @@ module.exports = {
       const lib = directories(LIB, readdirSync(LIB))
       const subdomains = directories(SUBDOMAINS, readdirSync(SUBDOMAINS))
 
-      return [2, 'always', [...app, ...lib, ...subdomains, 'types']]
+      return [2, 'always', [...app, ...lib, ...subdomains, 'deps', 'types']]
     }
   }
 }
