@@ -22,6 +22,7 @@ import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse
 } from '@nestjs/swagger'
@@ -105,6 +106,7 @@ export default class UsersController implements IUsersController {
    */
   @Get()
   @HttpCode(openapi.find.status)
+  @ApiQuery(openapi.find.query)
   @ApiOkResponse(openapi.find.responses[200])
   @ApiBadRequestResponse(openapi.find.responses[400])
   @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
@@ -127,6 +129,7 @@ export default class UsersController implements IUsersController {
   @UseInterceptors(AuthInterceptor)
   @Get(':user')
   @HttpCode(openapi.findOne.status)
+  @ApiQuery(openapi.findOne.query)
   @ApiOkResponse(openapi.findOne.responses[200])
   @ApiBadRequestResponse(openapi.findOne.responses[400])
   @ApiNotFoundResponse(openapi.findOne.responses[404])

@@ -1,5 +1,4 @@
 import { SortOrder } from '@flex-development/dreepo'
-import { PlainObject } from 'simplytyped'
 import { ExceptionJSON } from './models'
 
 /**
@@ -21,9 +20,15 @@ export const $SORT_ENUM: number[] = (() => {
 })()
 
 /**
- * @property {PlainObject} OPENAPI_GLOBALS - OpenAPI global constants
+ * @property {object} OPENAPI_GLOBALS - OpenAPI global constants
  */
-export const OPENAPI_GLOBALS: PlainObject = {
+export const OPENAPI_GLOBALS = {
+  externalDocs: {
+    Filtering: {
+      description: 'Filtering',
+      url: 'https://github.com/fox1t/qs-to-mongo#filtering'
+    }
+  },
   refs: {
     JSONValue: { $ref: '#/components/schemas/JSONValue' }
   },

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common'
 import { CONF } from '../../config/configuration'
 import { ExceptionJSON } from '../../lib'
-import { PartialUser, User } from './models'
+import { PartialUser, User, UserUrlQuery } from './models'
 
 /**
  * @file Subdomain OpenAPI Docs - Users
@@ -35,7 +35,7 @@ export default {
   },
   find: {
     status: HttpStatus.OK,
-    query: {},
+    query: { type: UserUrlQuery },
     responses: {
       200: {
         description: 'Successfully queried database',
@@ -50,7 +50,7 @@ export default {
   },
   findOne: {
     status: HttpStatus.OK,
-    query: {},
+    query: { type: UserUrlQuery },
     responses: {
       200: {
         description: 'Found user by ID or email address',

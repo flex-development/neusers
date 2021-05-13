@@ -4,7 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import merge from 'lodash.merge'
 import * as pkg from '../package.json'
 import { CONF } from './config/configuration'
-import { OPENAPI_GLOBALS as OPENAPI } from './lib'
+import { BaseUrlQuery, OPENAPI_GLOBALS as OPENAPI } from './lib'
+import { UserUrlQuery } from './subdomains/users/models'
 
 /**
  * @file Implementation - useGlobal
@@ -44,7 +45,7 @@ const useGlobal = async (app: App): Promise<typeof app> => {
 
   // Generate OpenAPI object
   const openapi = SwaggerModule.createDocument(app, builder.build(), {
-    extraModels: []
+    extraModels: [BaseUrlQuery, UserUrlQuery]
   })
 
   // Merge additional schemas
