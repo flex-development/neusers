@@ -28,7 +28,7 @@
     "start:debug": "yarn start --debug"
   },
   "dependencies": {
-    "@flex-development/dreepo": "3.0.1",
+    "@flex-development/dreepo": "4.0.0",
     "@nestjs/common": "next",
     "@nestjs/config": "latest",
     "@nestjs/core": "next",

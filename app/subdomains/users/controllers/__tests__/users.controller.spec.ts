@@ -2,7 +2,7 @@ import AppModule from '@/app.module'
 import { CreateUserDTO, PatchUserDTO } from '@/subdomains/users/dto'
 import { UsersRepository, UsersService } from '@/subdomains/users/providers'
 import UsersModule from '@/subdomains/users/users.module'
-import type { UserQueryParams } from '@/subdomains/users/users.types'
+import type { UserQuery } from '@/subdomains/users/users.types'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import type { INestApplication } from '@nestjs/common'
 import { HttpStatus } from '@nestjs/common'
@@ -68,7 +68,7 @@ describe('e2e:subdomains/users/controllers/UsersController', () => {
     describe('GET', () => {
       describe('200 OK', () => {
         it('should query database', async () => {
-          const query: UserQueryParams = { email: USERS[0].email }
+          const query: UserQuery = { email: USERS[0].email }
 
           const ebody = await Service.find(query)
 

@@ -8,7 +8,7 @@ import DBCONNS from '../../../config/database'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
 import type { IUser, IUsersRepository } from '../interfaces'
 import User from '../models/user.model'
-import type { UserQueryParams as Query } from '../users.types'
+import type { UserParams, UserQuery } from '../users.types'
 
 /**
  * @file Users Subdomain Providers - UsersRepository
@@ -17,10 +17,15 @@ import type { UserQueryParams as Query } from '../users.types'
 
 @Injectable()
 export class UsersRepository
-  extends Repository<IUser, Query>
+  extends Repository<IUser, UserParams, UserQuery>
   implements IUsersRepository {
   constructor() {
-    super(DBCONNS.users, User)
+    super(DBCONNS.users, User, {
+      qbuilder: {
+        fullTextFields: ['first_name', 'last_name'],
+        ignoredFields: ['path']
+      }
+    })
   }
 
   /**
@@ -70,7 +75,7 @@ export class UsersRepository
    *
    * @async
    * @param {string} [email] - Email address of user to find
-   * @param {Query} [params] - Users repository query parameters
+   * @param {UserParams} [params] - Users repository search parameters
    * @param {boolean} [exists] - If `true`, throw error if user does exist;
    * othwerwise throw error if user exists
    * @return {PartialOr<IUser> | null} User or null
@@ -78,7 +83,7 @@ export class UsersRepository
    */
   findOneByEmail(
     email: IUser['email'] = '',
-    params: Query = {},
+    params: UserParams = {},
     exists: boolean = true
   ): PartialOr<IUser> | null {
     const users = this.find({ ...params, email })
@@ -137,6 +142,25 @@ export class UsersRepository
     }
 
     return super.patch(id, dto, rfields)
+  }
+
+  /**
+   * Query a user by email address.
+   *
+   * @async
+   * @param {string} [email] - Email address of user to find
+   * @param {UserQuery} [query] - Users repository URL query parameters
+   * @param {boolean} [exists] - If `true`, throw error if user does exist;
+   * othwerwise throw error if user exists
+   * @return {PartialOr<IUser> | null} User or null
+   * @throws {Exception}
+   */
+  queryOneByEmail(
+    email: IUser['email'] = '',
+    query?: UserQuery,
+    exists?: boolean
+  ): PartialOr<IUser> | null {
+    return this.findOneByEmail(email, this.qbuilder.params(query), exists)
   }
 }
 

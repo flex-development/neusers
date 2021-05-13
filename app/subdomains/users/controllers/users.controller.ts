@@ -1,10 +1,4 @@
-import type {
-  EntityPath,
-  PartialOr,
-  ProjectionCriteria as Projection,
-  ProjectStage
-} from '@flex-development/dreepo'
-import { SortOrder } from '@flex-development/dreepo'
+import type { PartialOr } from '@flex-development/dreepo'
 import {
   Body,
   Controller,
@@ -38,7 +32,7 @@ import { AuthInterceptor } from '../interceptors'
 import type { IUser, IUsersController } from '../interfaces'
 import { UsersService } from '../providers'
 import openapi from '../users.openapi'
-import type { UserQueryParams } from '../users.types'
+import type { UserQuery } from '../users.types'
 
 /**
  * @file Users Subdomain Controller - UsersController
@@ -106,12 +100,7 @@ export default class UsersController implements IUsersController {
    * Queries the users database.
    *
    * @async
-   * @param {UserQueryParams} [query] - Query parameters
-   * @param {number} [query.$limit] - Limit number of results
-   * @param {ProjectStage<IUser>} [query.$project] - Fields to include
-   * @param {number} [query.$skip] - Skips the first n entities
-   * @param {Record<EntityPath<IUser>, SortOrder>} [query.$sort] - Sorting rules
-   * @param {Projection<IUser>} [query.projection] - Projection operators
+   * @param {UserQuery} [query] - Users URL query parameters
    * @return {Promise<PartialOr<IUser>[]>} Promise containing results
    */
   @Get()
@@ -120,19 +109,19 @@ export default class UsersController implements IUsersController {
   @ApiBadRequestResponse(openapi.find.responses[400])
   @ApiInternalServerErrorResponse(OPENAPI_GLOBALS.responses[500])
   @ApiBadGatewayResponse(OPENAPI_GLOBALS.responses[502])
-  async find(@Query() query: UserQueryParams = {}): Promise<Partial<IUser>[]> {
+  async find(@Query() query: UserQuery = {}): Promise<Partial<IUser>[]> {
     return this.users.find(query)
   }
 
   /**
-   * Finds user by ID or email address.
+   * Queries a user by ID or email address.
    *
    * Throws an error if the user isn't found.
    *
    * @async
    * @param {string} user - UID or email address of user to find
    * @param {boolean} [authorized] - Boolean indicating is user is logged in
-   * @param {UserQueryParams} [query] - Query parameters
+   * @param {UserQuery} [query] - Users URL query parameters
    * @return {Promise<PartialOr<IUser>>} Promise containing user data
    */
   @UseInterceptors(AuthInterceptor)
@@ -146,7 +135,7 @@ export default class UsersController implements IUsersController {
   async findOne(
     @Param('user') user: IUser['email'] | IUser['id'],
     @Param('authorized', ParseBoolPipe) authorized: boolean = false,
-    @Query() query: UserQueryParams = {}
+    @Query() query: UserQuery = {}
   ): Promise<PartialOr<IUser>> {
     const found = await this.users.findOne(user, query)
 

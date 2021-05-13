@@ -49,39 +49,39 @@ describe('unit:app/subdomains/users/providers/UsersService', () => {
   })
 
   describe('#find', () => {
-    it('should call #repo.find', async () => {
+    it('should call #repo.query', async () => {
       const { first_name } = TestSubject.repo.cache.collection[0]
 
-      const spy_repo_find = jest.spyOn(TestSubject.repo, 'find')
+      const spy_repo_query = jest.spyOn(TestSubject.repo, 'query')
 
       await TestSubject.find()
       await TestSubject.find({ first_name })
 
-      expect(spy_repo_find).toBeCalledTimes(2)
+      expect(spy_repo_query).toBeCalledTimes(2)
     })
   })
 
   describe('#findOne', () => {
-    it('should call #repo.findOneByEmail', async () => {
+    it('should call #repo.queryOneByEmail', async () => {
       const { email } = TestSubject.repo.cache.collection[0]
 
-      const spy_method = 'findOneByEmail'
-      const spy_repo_findOneByEmail = jest.spyOn(TestSubject.repo, spy_method)
+      const spy_method = 'queryOneByEmail'
+      const spy_repo_queryOneByEmail = jest.spyOn(TestSubject.repo, spy_method)
 
       await TestSubject.findOne(email)
 
-      expect(spy_repo_findOneByEmail).toBeCalledTimes(1)
+      expect(spy_repo_queryOneByEmail).toBeCalledTimes(1)
     })
 
-    it('should call #repo.findOneOrFail', async () => {
+    it('should call #repo.queryOneOrFail', async () => {
       const { id } = TestSubject.repo.cache.collection[0]
 
-      const spy_method = 'findOneOrFail'
-      const spy_repo_findOneOrFail = jest.spyOn(TestSubject.repo, spy_method)
+      const spy_method = 'queryOneOrFail'
+      const spy_repo_queryOneOrFail = jest.spyOn(TestSubject.repo, spy_method)
 
       await TestSubject.findOne(id)
 
-      expect(spy_repo_findOneOrFail).toBeCalledTimes(1)
+      expect(spy_repo_queryOneOrFail).toBeCalledTimes(1)
     })
   })
 

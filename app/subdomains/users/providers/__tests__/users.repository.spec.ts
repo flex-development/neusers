@@ -1,3 +1,4 @@
+import { RepoSearchParamsBuilder } from '@flex-development/dreepo'
 import Repository from '@flex-development/dreepo/repositories/repository'
 import { ExceptionStatusCode } from '@flex-development/exceptions/enums'
 import Exception from '@flex-development/exceptions/exceptions/base.exception'
@@ -12,7 +13,8 @@ import { USERS_MOCK_CACHE as mockCache } from '@tests/fixtures/users.fixture'
 import { hashSync } from 'bcryptjs'
 import faker from 'faker'
 import omit from 'lodash.omit'
-import { PlainObject } from 'simplytyped'
+import type { PlainObject } from 'simplytyped'
+import type { IUser } from '../../interfaces'
 import TestSubject from '../users.repository'
 
 /**
@@ -30,6 +32,9 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
 
   // @ts-expect-error mocking cache
   Subject.cache = Object.assign({}, mockCache)
+
+  // @ts-expect-error mocking qbuilder
+  Subject.qbuilder = new RepoSearchParamsBuilder<IUser>()
 
   describe('constructor', () => {
     const { constructor } = MockRepository.prototype
@@ -211,6 +216,29 @@ describe('unit:app/subdomains/users/providers/UsersRepository', () => {
 
       expect(ejson.code).toBe(ExceptionStatusCode.INTERNAL_SERVER_ERROR)
       expect(ejson.data).toMatchObject(omit(dto, 'password'))
+    })
+  })
+
+  describe('#queryOneByEmail', () => {
+    const EMAIL = Subject.cache.collection[0].email
+
+    const spy_find = jest.spyOn(Subject, 'find')
+
+    const spy_qbuilder_params = jest.spyOn(Subject.qbuilder, 'params')
+    const spy_findOneByEmail = jest.spyOn(Subject, 'findOneByEmail')
+
+    beforeEach(() => {
+      spy_find.mockReturnValueOnce(Subject.cache.collection)
+      Subject.queryOneByEmail(EMAIL)
+    })
+
+    it('should call #qbuilder.params', () => {
+      expect(spy_qbuilder_params).toBeCalledTimes(1)
+      expect(spy_qbuilder_params).toBeCalledWith(undefined)
+    })
+
+    it('should call #findOneByEmail', () => {
+      expect(spy_findOneByEmail).toBeCalledTimes(1)
     })
   })
 })

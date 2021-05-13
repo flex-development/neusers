@@ -1,17 +1,10 @@
-import type {
-  EntityPath,
-  OneOrMany,
-  PartialOr,
-  ProjectionCriteria as Projection,
-  ProjectStage
-} from '@flex-development/dreepo'
-import { SortOrder } from '@flex-development/dreepo'
+import type { OneOrMany, PartialOr } from '@flex-development/dreepo'
 import { Injectable } from '@nestjs/common'
 import omit from 'lodash.omit'
 import isEmail from 'validator/lib/isEmail'
 import { CreateUserDTO, PatchUserDTO } from '../dto'
 import type { IUser, IUsersService } from '../interfaces'
-import type { UserQueryParams as Query } from '../users.types'
+import type { UserQuery } from '../users.types'
 import UsersRepository from './users.repository'
 
 /**
@@ -68,32 +61,30 @@ export default class UsersService implements IUsersService {
    * Queries the users database.
    *
    * @async
-   * @param {Query} [query] - Query parameters
-   * @param {number} [query.$limit] - Limit number of results
-   * @param {ProjectStage<IUser>} [query.$project] - Fields to include
-   * @param {number} [query.$skip] - Skips the first n entities
-   * @param {Record<EntityPath<IUser>, SortOrder>} [query.$sort] - Sorting rules
-   * @param {Projection<IUser>} [query.projection] - Projection operators
+   * @param {UserQuery} [query] - Users URL query parameters
    * @return {Promise<Partial<IUser>[]>} Promise containing search results
    */
-  async find(query: Query = {}): Promise<Partial<IUser>[]> {
-    const users = this.repo.find(query)
+  async find(query: UserQuery = {}): Promise<Partial<IUser>[]> {
+    const users = this.repo.query(query)
     return users.length ? users.map(u => omit(u, ['password'])) : users
   }
 
   /**
-   * Finds user by ID or email address.
+   * Queries a user by ID or email address.
    *
    * Throws an error if the user isn't found.
    *
    * @async
    * @param {string} user - UID or email address of user to find
-   * @param {Query} [query] - Query parameters
+   * @param {UserQuery} [query] - Users URL query parameters
    * @return {Promise<PartialOr<IUser>>} Promise containing user data
    */
-  async findOne(user: string, query: Query = {}): Promise<PartialOr<IUser>> {
-    if (!isEmail(user)) return this.repo.findOneOrFail(user, query)
-    return this.repo.findOneByEmail(user, query) as IUser
+  async findOne(
+    user: string,
+    query: UserQuery = {}
+  ): Promise<PartialOr<IUser>> {
+    if (!isEmail(user)) return this.repo.queryOneOrFail(user, query)
+    return this.repo.queryOneByEmail(user, query) as IUser
   }
 
   /**

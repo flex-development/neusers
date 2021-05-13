@@ -1216,10 +1216,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flex-development/dreepo@3.0.1":
-  version "3.0.1"
-  resolved "https://npm.pkg.github.com/download/@flex-development/dreepo/3.0.1/4dea5c7f8959c53c397fee82c0127423276c3ff761bfbd9448b37e84f0c9b64e#3fc0fe9ce3f8d585bf57c68853c47a9d7e3af9e6"
-  integrity sha512-kLO1t7Xr8iINGOL8AdzVeB0CqxV8tVsA/7gQapG1OuZ35O0X5CUDGWqGh0nAFTapZJowSgIb2vbejSUr6ieLZQ==
+"@flex-development/dreepo@4.0.0":
+  version "4.0.0"
+  resolved "https://npm.pkg.github.com/download/@flex-development/dreepo/4.0.0/9e9739344c19185ccdccdd38665faa8bd4555226171c0764b45cf58a79439748#b207893f4930ecc5ff69209be02fe1393fc0ac22"
+  integrity sha512-gb97M+wk6MERqt0fS71giCofkCd3lHASWwCrLiybSKTJ1SiqLCO7v6RdLCidodw1oJWK64YuhD4JSX60cjyDbA==
   dependencies:
     "@flex-development/exceptions" "2.0.0"
     "@types/debug" "4.1.5"
@@ -1229,6 +1229,7 @@
     "@types/lodash.pick" "4.4.6"
     "@types/lodash.uniq" "4.5.6"
     "@types/node" "15.0.1"
+    "@types/qs" "6.9.6"
     "@types/uuid" "8.3.0"
     axios "0.21.1"
     class-transformer "0.4.0"
@@ -1242,6 +1243,7 @@
     lodash.pick "4.4.0"
     lodash.uniq "4.5.0"
     mingo "4.1.2"
+    qs-to-mongo "2.0.0"
     reflect-metadata "0.1.13"
     uuid "8.3.2"
 
@@ -2093,7 +2095,7 @@
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.2.3.tgz#ef65165aea2924c9359205bf748865b8881753c0"
   integrity sha512-PijRCG/K3s3w1We6ynUKdxEc5AcuuH3NBmMDP8uvKVp6X43UY7NQlTzczakXP3DJR0F4dfNQIGjU2cUeRYs2AA==
 
-"@types/qs@*":
+"@types/qs@*", "@types/qs@6.9.6":
   version "6.9.6"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.6.tgz#df9c3c8b31a247ec315e6996566be3171df4b3b1"
   integrity sha512-0/HnwIfW4ki2D8L8c9GVcG5I72s9jP5GSLVF0VIXDW00kmIpA6O33G7a8n59Tmh7Nz0WUC3rSb7PTY/sdW2JzA==
@@ -3006,6 +3008,11 @@ bser@2.1.1:
   integrity sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==
   dependencies:
     node-int64 "^0.4.0"
+
+bson-objectid@~1.2.4:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/bson-objectid/-/bson-objectid-1.2.5.tgz#622c0c9d40c02aece5ac5b61a70248ec303047f0"
+  integrity sha512-tKLZNr1eyK/Dd48k/5FHXmpN69dUHMioQCvNv1kxy8qJINkoyQkjf7+u933EZ77bMXC3lmN1HmyFm2WS6mRYxg==
 
 buffer-equal-constant-time@1.0.1:
   version "1.0.1"
@@ -7891,6 +7898,14 @@ qrcode-terminal@^0.12.0:
   resolved "https://registry.yarnpkg.com/qrcode-terminal/-/qrcode-terminal-0.12.0.tgz#bb5b699ef7f9f0505092a3748be4464fe71b5819"
   integrity sha512-EXtzRZmC+YGmGlDFbXKxQiMZNwCLEO6BANKXG4iCtSIM0yqc/pappSx3RIKr4r0uh5JsBckOXeKrB3Iz7mdQpQ==
 
+qs-to-mongo@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/qs-to-mongo/-/qs-to-mongo-2.0.0.tgz#d4d26dc90395b39924ea565d88765631cc34613b"
+  integrity sha512-OHgOMJnZdxw8pavgMKve/1WHZu2bcHXzPvRMprpVDsVz7c2K6ugXa2me8dbwjkbywvLvspK33zIOHq9OWUVLNw==
+  dependencies:
+    bson-objectid "~1.2.4"
+    qs "~6.7.0"
+
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -7907,6 +7922,11 @@ qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+
+qs@~6.7.0:
+  version "6.7.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.2.tgz#3d55fb505cc82dbeb0f6125ddad0921639aa12ef"
+  integrity sha512-pIxa8oGRlwdn9r+PfxMWAa27MPUvZV8+FU9m7VKkC9Ppe0Mi789ge1lDwqYiMFb3ZS7SBZMtII9dTs0UGqHvNA==
 
 query-string@^6.13.8:
   version "6.14.1"

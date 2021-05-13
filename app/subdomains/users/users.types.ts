@@ -1,4 +1,8 @@
-import type { PartialOr, QueryParams } from '@flex-development/dreepo'
+import type {
+  PartialOr,
+  RepoParsedUrlQuery,
+  RepoSearchParams
+} from '@flex-development/dreepo'
 import type { InterceptorResponse } from '../../lib/types'
 import type { IUser } from './interfaces'
 
@@ -21,6 +25,11 @@ export type BasicAuthDecoded = {
 }
 
 /**
- * Query parameters accepted by the `UsersRepository`.
+ * Search parameters accepted by the `UsersRepository`.
  */
-export type UserQueryParams = Omit<QueryParams<IUser>, 'projection'>
+export type UserParams = Omit<RepoSearchParams<IUser>, 'projection'>
+
+/**
+ * URL query parameters accepted by the `UsersRepository`.
+ */
+export type UserQuery = RepoParsedUrlQuery<IUser>

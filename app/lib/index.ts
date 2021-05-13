@@ -8,7 +8,6 @@ export * from './filters'
 export * from './interceptors'
 export * from './interfaces'
 export * from './models'
-export * from './pipes'
 export * from './types'
 
 /* eslint-disable prettier/prettier */

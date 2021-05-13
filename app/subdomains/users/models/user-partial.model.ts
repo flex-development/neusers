@@ -1,4 +1,4 @@
-import { PartialType, PickType } from '@nestjs/swagger'
+import { PartialType } from '@nestjs/swagger'
 import type { IUser } from '../interfaces'
 import User from './user.model'
 
@@ -10,5 +10,5 @@ import User from './user.model'
  */
 
 export default class PartialUser
-  extends PickType(PartialType(User), ['id'] as const)
+  extends PartialType(User)
   implements Partial<IUser> {}
