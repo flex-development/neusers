@@ -81,6 +81,6 @@ Endpoints that don't require authentication.
 [4]: https://neusers.flexdevlopment.vercel.app
 [5]: https://vercel.com/docs/serverless-functions/introduction
 [6]: https://github.com/dcodeIO/bcrypt.js
-[7]: https://github.com/flex-development/dreepo/tree/v2.0.0
+[7]: https://github.com/flex-development/dreepo
 [8]: https://github.com/jlarmstrongiv/create-vercel-http-server-handler
 [9]: https://github.com/wusuopu/ts-ga-measurement-protocol
