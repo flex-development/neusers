@@ -139,21 +139,42 @@ To review our linting guidelines, see our configuration files:
 - Configuration: [`.eslintrc.js`](../.eslintrc.js)
 - Ignore Patterns: [`.eslintignore`](../.eslintignore)
 
-## :construction: Making Changes
+## Making Changes
 
-**TODO**: Update documentation.
+All source can be found under the [app](../app) directory.
+
+### Config
+
+Application configuration files.
+
+**Directory**: [`app/config`](.../app/config)
+
+### Library
+
+Global application modules and type defintions.
+
+**Directory**: [`app/lib`](.../app/lib)
+
+### Subdomains
+
+[Domain][7] specific modules.
+
+**Directory**: [`app/subdomains`](.../app/subdomains)
 
 ## Documentation
 
-- JavaScript & TypeScript: [JSDoc][7], linted with [`eslint-plugin-jsdoc`][8]
+- JavaScript & TypeScript: [JSDoc][8], linted with [`eslint-plugin-jsdoc`][9]
 
 Before making a pull request, be sure your code is well documented, as it will
 be part of your code review.
 
 ## Testing
 
-This project uses [Jest][9] as its test runner. To run the tests in this
+This project uses [Jest][10] as its test runner. To run the tests in this
 project, run `yarn test` from the project root.
+
+To learn more about testing NestJS applications, reading [Testing][11] from the
+NestJS docs.
 
 Husky is configured to run tests before every push. If a bug report concerning a
 failed test is needed, use the command `git pnv` to push your code without
@@ -182,8 +203,10 @@ this project.
 [2]: https://github.com/typicode/husky
 [3]: https://www.conventionalcommits.org/
 [4]: https://github.com/conventional-changelog/commitlint
-[5]: https://prettier.io/
-[6]: https://eslint.org/
-[7]: https://jsdoc.app
-[8]: https://github.com/gajus/eslint-plugin-jsdoc
-[9]: https://jestjs.io/
+[5]: https://prettier.io
+[6]: https://eslint.org
+[7]: https://khalilstemmler.com/articles/domain-driven-design-intro
+[8]: https://jsdoc.app
+[9]: https://github.com/gajus/eslint-plugin-jsdoc
+[10]: https://jestjs.io
+[11]: https://docs.nestjs.com/fundamentals/testing
